@@ -95,29 +95,8 @@ const {
     </main>
 
     <!-- Cockpit Terminal & Verified Footer -->
-    <footer id="iletisim" class="border-t border-white/[0.06] bg-[#07080a] pt-16 pb-12 px-6">
-      <div class="max-w-5xl mx-auto space-y-12">
-        <!-- Direct Terminal Channel -->
-        <div class="rounded-xl border border-white/[0.08] bg-[#090a0d] p-5 font-mono text-xs space-y-3">
-          <div class="flex items-center justify-between text-neutral-500 border-b border-white/[0.05] pb-2">
-            <span class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-              DIRECT SYSTEM ACCESS // CLI ENDPOINT
-            </span>
-            <span class="text-[10px] text-neutral-600">BASH / CURL</span>
-          </div>
-          <div class="flex flex-wrap items-center gap-3 text-neutral-300 pt-1">
-            <span class="text-[#00e5ff]">$</span>
-            <code>curl -s https://arbag.dev/cv.txt</code>
-            <button
-              onclick="navigator.clipboard.writeText('curl -s https://arbag.dev/cv.txt'); alert('Komut panoya kopyalandı.');"
-              class="ml-auto text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white transition-colors"
-            >
-              Kopyala
-            </button>
-          </div>
-        </div>
-
+    <footer id="iletisim" class="border-t border-white/[0.06] bg-[#07080a] pt-12 pb-12 px-6">
+      <div class="max-w-5xl mx-auto space-y-8">
         <!-- Footer Meta & Links -->
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 text-xs text-neutral-500">
           <div>
@@ -133,9 +112,6 @@ const {
             </a>
             <a href="mailto:muhammet@arbag.dev" class="hover:text-[#00e5ff] transition-colors">
               muhammet@arbag.dev
-            </a>
-            <a href="mailto:muhammetarbag01@gmail.com" class="hover:text-[#00e5ff] transition-colors">
-              muhammetarbag01@gmail.com
             </a>
           </div>
         </div>
