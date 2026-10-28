@@ -1,0 +1,549 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const laboratories = [
+  {
+    ata: "ATA 24",
+    title: "Aircraft Electrical Power Lab",
+    kicker: "Uçak Elektrik Güç Dağıtımı",
+    desc: "115V AC 400Hz ve 28V DC bara topolojisi, IDG/APU jeneratör yönetimi, otomatik Bus Tie transferi ve 10 arıza senaryosu.",
+    url: "https://muhammetarbag.github.io/aircraft-electrical-power-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "AEE 301 / ATA 34",
+    title: "Radio Navigation & ILS Lab",
+    kicker: "Radyo Navigasyon & ILS Yaklaşma",
+    desc: "VHF Localizer ve UHF Glideslope DDM (modülasyon farkı) ayrıştırımı, rüzgâr sapması ve Runway 35R aletli iniş sistemi.",
+    url: "https://muhammetarbag.github.io/radio-navigation-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "ATA 21 / 36",
+    title: "Bleed Air & Cabin Pressurization",
+    kicker: "Pnömatik & Kabin Basıncı",
+    desc: "Motor kompresör kademelerinden pack ve outflow valve'a uzanan pnömatik döngü; ani dekompresyon teşhisi.",
+    url: "https://muhammetarbag.github.io/bleed-air-pressurization-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "ATA 29",
+    title: "Hydraulic Power Lab",
+    kicker: "Uçak Hidrolik Güç Sistemi",
+    desc: "3000 PSI Yeşil, Mavi ve Sarı rezervuar hatları, motor pompaları (EDP) ve çift yönlü Power Transfer Unit (PTU) mantığı.",
+    url: "https://muhammetarbag.github.io/hydraulic-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "ATA 28 / 47",
+    title: "Aircraft Fuel System Lab",
+    kicker: "Uçak Yakıt & Inerting Sistemleri",
+    desc: "Kanat ve merkez tanklar, crossfeed vana yönetimi, yakıt transfer pompaları ve kanat yük dengesi (W&B).",
+    url: "https://muhammetarbag.github.io/aircraft-fuel-system-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "ATA 22 / AEE 303",
+    title: "Autoflight Systems Virtual Lab",
+    kicker: "Otopilot & Uçuş Yönlendirici",
+    desc: "Uçuş kontrol bilgisayarı PID döngüleri, pitch/roll komuta kanalları, irtifa tutma ve yaklaşma modu mimarisi.",
+    url: "https://muhammetarbag.github.io/autoflight-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "PROPULSION",
+    title: "Turbofan Engine Virtual Lab",
+    kicker: "İki Kademeli Turbofan Motoru",
+    desc: "Fan, kompresör, yanma odası ve türbin gaz akışı termodinamiği; interaktif N1/N2 ve EGT telemetri göstergeleri.",
+    url: "https://muhammetarbag.github.io/turbofan-lab/",
+    badge: "EĞİTİM MODÜLÜ",
+    status: "NORMAL",
+    statusColor: "cyan"
+  },
+  {
+    ata: "AERODYNAMICS",
+    title: "Rüzgâr Tüneli & Aerodinamik Lab",
+    kicker: "Kanat Profili & Akışkanlar",
+    desc: "NACA kanat kesitleri üzerinde hücum açısı (AoA), kaldırma/sürükleme (L/D) oranları ve perdövites (stall) dinamiği.",
+    url: "https://muhammetarbag.github.io/ruzgar-lab/",
+    badge: "EĞİTİM MODÜLÜ",
+    status: "NORMAL",
+    statusColor: "cyan"
+  },
+  {
+    ata: "VTOL PLATFORM",
+    title: "ARK04 Stealth VTOL Drone",
+    kicker: "3D Gövde & Aviyonik Entegrasyonu",
+    desc: "Dört kaldırma motoru ve itki geçiş koridoru hesapları, 3D CAD yüzey modellemesi, gövde içi aviyonik yerleşimi.",
+    url: "#vtol-spec",
+    badge: "3D CAD PROTOTİP",
+    status: "TASARIM",
+    statusColor: "amber"
+  }
+];
+---
+
+<Layout>
+  <!-- HERO SECTION (Asymmetrical 12-Column Bento Grid) -->
+  <section class="max-w-6xl mx-auto px-6 mb-24">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Primary Core Bento: Identity & Statement (Col 8, Row 2) -->
+      <div class="lg:col-span-8 hardware-card">
+        <div class="hardware-card-inner flex flex-col justify-between">
+          <div class="specular-line"></div>
+          
+          <div class="space-y-6">
+            <!-- Eyebrow Tag -->
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/[0.04]">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#00e5ff]"></span>
+              <span class="mono-telemetry text-[10px] text-neutral-300 font-medium">
+                ATA SPEC 2200 // SYSTEMS & AVIONICS RESEARCH
+              </span>
+            </div>
+
+            <!-- Main Heading -->
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.12]">
+              Fiziksel dünyanın determinizmi ile sistem yazılımının sınırları.
+            </h1>
+
+            <!-- Narrative Paragraph -->
+            <p class="text-neutral-400 text-sm sm:text-base leading-relaxed max-w-2xl">
+              Erciyes Üniversitesi Havacılık Elektrik & Elektroniği öğrencisi. Kodun sadece ideal senaryoda nasıl çalıştığıyla değil; 
+              güç düşüşlerinde, bus tie arızalarında, donanım register kısıtlarında ve bellek baskısında nasıl hayatta kaldığıyla ilgilenirim.
+            </p>
+          </div>
+
+          <!-- CTAs & Action Ribbon -->
+          <div class="pt-8 flex flex-wrap items-center gap-4">
+            <a
+              href="#vaka-analizi"
+              class="group relative inline-flex items-center gap-3 pl-5 pr-2 py-2 rounded-full border border-white/20 bg-white/[0.08] hover:bg-white/[0.14] hover:border-white/30 active:scale-[0.98] transition-all"
+            >
+              <span class="text-xs font-semibold text-white tracking-tight">ATA 24 Vaka Analizini Gör</span>
+              <span class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform text-[#00e5ff]">
+                ↘
+              </span>
+            </a>
+
+            <a
+              href="#laboratuvarlar"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium text-neutral-400 hover:text-white border border-white/5 hover:border-white/10 transition-colors"
+            >
+              <span>9 Laboratuvarı İncele</span>
+              <span class="text-neutral-600 font-mono">/ 09</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Secondary Bento 1: Live Primary Flight Display (PFD) HUD (Col 4, Row 1) -->
+      <div class="lg:col-span-4 hardware-card">
+        <div class="hardware-card-inner flex flex-col justify-between" id="hud-card">
+          <div class="specular-line"></div>
+          
+          <div class="flex items-center justify-between border-b border-white/[0.05] pb-2 text-[10px] mono-telemetry text-neutral-500">
+            <span>PFD INSTRUMENT // FLIGHT DISPLAY</span>
+            <span class="text-[#00e676]">ACTIVE</span>
+          </div>
+
+          <!-- Interactive Cockpit HUD Canvas / Visual -->
+          <div class="my-4 relative h-40 bg-[#07080b] rounded-lg border border-white/10 flex items-center justify-center overflow-hidden">
+            <!-- Artificial Horizon Crosshair Grid -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
+              <div class="w-full h-[1px] bg-[#00e5ff]/50"></div>
+              <div class="absolute w-[1px] h-full bg-[#00e5ff]/50"></div>
+              <div class="w-20 h-20 rounded-full border border-[#00e5ff]/40"></div>
+            </div>
+
+            <!-- Pitch & Roll Indicator -->
+            <div class="text-center font-mono space-y-1 relative z-10">
+              <div class="text-xs text-[#00e676] font-semibold tracking-wider">[ ILS CAT III APPR ]</div>
+              <div class="text-[10px] text-neutral-400">LOC: 0.00° DDM | GS: -3.00°</div>
+              <div class="text-[11px] text-[#00e5ff] font-bold">RWY 35R • 109.50 MHz</div>
+            </div>
+
+            <!-- Altimeter & Airspeed Tapes -->
+            <div class="absolute left-2 top-2 bottom-2 w-8 border-r border-white/10 flex flex-col justify-between text-[9px] font-mono text-neutral-500 py-1">
+              <span>180</span>
+              <span class="text-white font-bold bg-[#00e5ff]/20 px-0.5 rounded">145</span>
+              <span>120</span>
+            </div>
+            <div class="absolute right-2 top-2 bottom-2 w-10 border-l border-white/10 flex flex-col justify-between text-[9px] font-mono text-neutral-500 py-1 text-right">
+              <span>FL320</span>
+              <span class="text-[#00e676] font-bold bg-[#00e676]/20 px-0.5 rounded">FL015</span>
+              <span>0800</span>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-[10px] mono-telemetry text-neutral-400">
+            <span>BARO: 1013 hPa / QNH</span>
+            <span>HDG: 352° MAG</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Secondary Bento 2: Core Engineering Specs (Col 4, Row 1) -->
+      <div class="lg:col-span-4 hardware-card">
+        <div class="hardware-card-inner space-y-4">
+          <div class="specular-line"></div>
+          
+          <div class="flex items-center justify-between text-[10px] mono-telemetry text-neutral-500 border-b border-white/[0.05] pb-2">
+            <span>SYSTEM CONSTRAINTS</span>
+            <span>SPEC: ARBAG-01</span>
+          </div>
+
+          <div class="space-y-3 font-mono text-xs">
+            <div class="flex items-center justify-between">
+              <span class="text-neutral-400">Ana Bara Frekansı:</span>
+              <span class="text-white font-semibold">115V AC 400Hz</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-neutral-400">Arıza İzolasyon Hızı:</span>
+              <span class="text-[#00e676] font-semibold">&lt; 15 ms (BTC)</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-neutral-400">Simülasyon Çözücü:</span>
+              <span class="text-[#00e5ff] font-semibold">Kirchhoff Matris</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-neutral-400">Yazılım Standardı:</span>
+              <span class="text-neutral-300">DO-178C Level B İlkeleri</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- INTERACTIVE AMİRAL GEMİSİ: THE 9-SYSTEM SYNOPTIC MATRIX -->
+  <section id="laboratuvarlar" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-white/[0.06] pb-6">
+      <div>
+        <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">02 // CANLI ETKİLEŞİMLİ SİSTEMLER</div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">The 9-System Synoptic Matrix</h2>
+      </div>
+      <p class="text-xs text-neutral-400 max-w-md font-mono">
+        Her kart doğrudan çalışan bir web simülatörüdür. Gerçek aviyonik veri yolları, bara izolasyonları ve arıza enjeksiyon algoritmaları barındırır.
+      </p>
+    </div>
+
+    <!-- Live Synoptic Control Panel (Interactive Demo Component) -->
+    <div class="hardware-card mb-10">
+      <div class="hardware-card-inner space-y-6">
+        <div class="specular-line"></div>
+        
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.08] pb-4">
+          <div class="flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#00e676] shadow-[0_0_8px_#00e676]"></span>
+            <span class="font-mono text-xs font-bold text-white">ATA 24: ELEKTRIK GÜÇ BARA ŞEBEKESİ (CANLI SYNOPTIC)</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button
+              id="trip-idg-btn"
+              class="px-3 py-1 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-mono font-medium transition-colors"
+            >
+              [TRIP IDG 1 (ARIZA ENJEKTE ET)]
+            </button>
+            <button
+              id="reset-bus-btn"
+              class="px-3 py-1 rounded bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10 text-xs font-mono transition-colors"
+            >
+              [RESET BARA]
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Synoptic Diagram -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
+          <!-- IDG 1 & AC BUS 1 -->
+          <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-3" id="panel-ac1">
+            <div class="flex items-center justify-between">
+              <span class="text-neutral-400">SOL MOTOR JENERATÖRÜ (IDG 1)</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-[#00e676]" id="idg1-status">ONLINE</span>
+            </div>
+            <div class="text-xl font-bold text-white tracking-wider" id="idg1-volts">115V AC • 400 Hz</div>
+            <div class="text-[11px] text-neutral-500 border-t border-white/5 pt-2">
+              AC BUS 1: <span class="text-[#00e676]" id="ac1-source">IDG 1 Doğrudan Besliyor</span>
+            </div>
+          </div>
+
+          <!-- Bus Tie Contactor (BTC) Central Logic -->
+          <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-3 text-center flex flex-col justify-center" id="panel-btc">
+            <div class="text-neutral-400 text-[11px]">BUS TIE CONTACTOR (BTC)</div>
+            <div class="text-sm font-bold text-neutral-300" id="btc-status">AÇIK (NORMAL İZOLE)</div>
+            <div class="text-[10px] text-neutral-500">Break-Before-Make Koruması Aktif</div>
+          </div>
+
+          <!-- APU / IDG 2 & AC BUS 2 -->
+          <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-3" id="panel-ac2">
+            <div class="flex items-center justify-between">
+              <span class="text-neutral-400">SAĞ MOTOR JENERATÖRÜ (IDG 2)</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-[#00e676]">ONLINE</span>
+            </div>
+            <div class="text-xl font-bold text-white tracking-wider">115V AC • 400 Hz</div>
+            <div class="text-[11px] text-neutral-500 border-t border-white/5 pt-2">
+              AC BUS 2: <span class="text-[#00e676]">IDG 2 Doğrudan Besliyor</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-neutral-400 pt-2 font-mono">
+          <span id="fault-log" class="text-neutral-400">DURUM: Tüm baralar nominal ve dengeli besleniyor.</span>
+          <a
+            href="https://muhammetarbag.github.io/aircraft-electrical-power-lab/"
+            target="_blank"
+            class="text-[#00e5ff] hover:underline flex items-center gap-1 font-semibold"
+          >
+            Tam Laboratuvarı Aç ↗
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- The 9 Labs Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {laboratories.map((lab) => (
+        <a
+          href={lab.url}
+          target={lab.url.startsWith("http") ? "_blank" : "_self"}
+          rel="noopener noreferrer"
+          class="hardware-card group"
+        >
+          <div class="hardware-card-inner flex flex-col justify-between space-y-4">
+            <div class="specular-line"></div>
+            
+            <div class="space-y-3">
+              <div class="flex items-center justify-between text-[10px] mono-telemetry">
+                <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-neutral-300 font-semibold">
+                  {lab.ata}
+                </span>
+                <span class={`text-${lab.statusColor === 'emerald' ? '[#00e676]' : lab.statusColor === 'cyan' ? '[#00e5ff]' : '[#ffab00]'}`}>
+                  ● {lab.badge}
+                </span>
+              </div>
+
+              <div>
+                <p class="text-[11px] font-mono text-[#00e5ff] tracking-wide">{lab.kicker}</p>
+                <h3 class="text-base font-bold text-white group-hover:text-[#00e5ff] transition-colors">
+                  {lab.title}
+                </h3>
+              </div>
+
+              <p class="text-xs text-neutral-400 leading-relaxed">
+                {lab.desc}
+              </p>
+            </div>
+
+            <div class="pt-4 border-t border-white/[0.05] flex items-center justify-between text-xs font-mono text-neutral-400 group-hover:text-white transition-colors">
+              <span>Laboratuvara Git</span>
+              <span class="text-[#00e5ff] group-hover:translate-x-1 transition-transform">→</span>
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- KİLİT VAKA ANALİZLERİ (CASE STUDIES DEEP DIVE) -->
+  <section id="vaka-analizi" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
+    <div class="mb-12 border-b border-white/[0.06] pb-6">
+      <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">03 // MÜHENDİSLİK VAKA ANALİZLERİ</div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Kritik Kısıtlar & Çözüm Mimarisi</h2>
+      <p class="text-xs text-neutral-400 max-w-xl font-mono mt-2">
+        Sadece "ne yapıldı" değil; hangi operasyonel kısıtlar altında, hangi ödünleşimler (trade-offs) verilerek ve hangi kritik hatalar aşılarak inşa edildi?
+      </p>
+    </div>
+
+    <div class="space-y-8">
+      
+      <!-- Case Study 1: ATA 24 Power Grid -->
+      <div class="hardware-card">
+        <div class="hardware-card-inner p-8 space-y-6">
+          <div class="specular-line"></div>
+          
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.08] pb-4">
+            <span class="text-xs font-mono text-[#00e5ff] font-bold">VAKA 01 // ATA 24 AIRCRAFT ELECTRICAL POWER DISTRIBUTION</span>
+            <span class="text-[10px] mono-telemetry text-neutral-400">STANDART: DO-178C LEVEL B & ATA iSpec 2200</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="space-y-3 lg:col-span-1">
+              <h3 class="text-lg font-bold text-white">Operasyonel Problem & Kısıt</h3>
+              <p class="text-xs text-neutral-400 leading-relaxed">
+                Uçak AC jeneratörleri bağımsız frekanslarda çalıştığı için <strong>asla paralel bağlanamaz</strong>. 
+                Sol motor jeneratörü devreden çıktığında 15ms içinde `Bus Tie Contactor (BTC)` kapanmalı, sağ jeneratör barayı devralırken mutfak/kabin gibi hayati olmayan yükler otomatik olarak atılmalıdır (Load Shedding).
+              </p>
+            </div>
+
+            <div class="space-y-3 lg:col-span-1">
+              <h3 class="text-lg font-bold text-white">Mimari Ödünleşim (Trade-off)</h3>
+              <p class="text-xs text-neutral-400 leading-relaxed">
+                Ağır SPICE benzeri analog simülatörler web tarayıcısını dondurduğu için elendi. Bunun yerine 
+                <strong>Durum Tabanlı Kirchhoff Matris Çözücüsü</strong> sıfırdan yazıldı. Sonuç: 0.4ms deterministik tick süresi ve 60 FPS akıcı telemetri grafikleri.
+              </p>
+            </div>
+
+            <div class="space-y-3 lg:col-span-1">
+              <h3 class="text-lg font-bold text-white">The Hard Problem (Kritik Savaş Hikayesi)</h3>
+              <p class="text-xs text-neutral-400 leading-relaxed">
+                Fiziksel rölelerdeki kontaktör sıçraması (contact bounce) simülasyonda mikrosaniyelik çift besleme çakışmasına (bus clashing) yol açıyordu. 
+                Donanımsal <strong>"Break-Before-Make"</strong> kuralı matematiksel bir bariyer state-machine olarak modellenerek risk mutlak sıfıra indirildi.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Case Study 2: Tizen Smart TV & Reverse Engineering -->
+      <div class="hardware-card">
+        <div class="hardware-card-inner p-8 space-y-6">
+          <div class="specular-line"></div>
+          
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.08] pb-4">
+            <span class="text-xs font-mono text-[#00e5ff] font-bold">VAKA 02 // MHATv: KISITLI SMART TV DONANIMINDA DİNAMİK EKLENTİ YÜRÜTME</span>
+            <span class="text-[10px] mono-telemetry text-neutral-400">ORTAM: SAMSUNG TIZEN OS & GÖMÜLÜ LINUX</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="space-y-3 lg:col-span-1">
+              <h3 class="text-lg font-bold text-white">Kısıtlı Donanım Sınırı</h3>
+              <p class="text-xs text-neutral-400 leading-relaxed">
+                Eski nesil Tizen TV'lerin çift çekirdekli ARM işlemcileri ve 512 MB serbest RAM sınırı, modern SPA framework'lerinin DOM yükünü kaldıramıyordu.
+              </p>
+            </div>
+
+            <div class="space-y-3 lg:col-span-1">
+              <h3 class="text-lg font-bold text-white">Dinamik Eklenti & İzolasyon</h3>
+              <p class="text-xs text-neutral-400 leading-relaxed">
+                CloudStream benzeri, JavaScript eklentilerini çalışma zamanında izole eden ve video buffer'larını yerel C++ medya oynatıcı borusuna yönlendiren mikro-çekirdek geliştirildi.
+              </p>
+            </div>
+
+            <div class="space-y-3 lg:col-span-1">
+              <h3 class="text-lg font-bold text-white">Tersine Mühendislik Çıktısı</h3>
+              <p class="text-xs text-neutral-400 leading-relaxed">
+                Tizen WebAPI'nin dokümante edilmemiş bellek sızıntıları UART seri konsolu üzerinden loglanarak dinamik garbage-collection tetikleyicisiyle çözüldü.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TEKNİK RADAR & MÜHENDİSLİK EKOSİSTEMİ -->
+  <section id="ekosistem" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
+    <div class="mb-12 border-b border-white/[0.06] pb-6">
+      <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">04 // MÜHENDİSLİK RADARI</div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Yetkinlikler & Saha Donanımı</h2>
+      <p class="text-xs text-neutral-400 max-w-xl font-mono mt-2">
+        Logo çöplüğü yerine operasyonel alanlara göre sınıflandırılmış mühendislik yığını.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 font-mono text-xs">
+      <!-- Radar 1 -->
+      <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-4">
+        <div class="text-[#00e5ff] font-bold text-sm tracking-wider">[ 01. AVİYONİK & RF ]</div>
+        <ul class="space-y-2 text-neutral-400">
+          <li>• ATA 100 / iSpec 2200</li>
+          <li>• ARINC 429 Veri Yolları</li>
+          <li>• ILS / VOR / DME Navigasyon</li>
+          <li>• DO-178C / DO-254 Temelleri</li>
+          <li>• Uçak Elektrik Güç Dağıtımı</li>
+        </ul>
+      </div>
+
+      <!-- Radar 2 -->
+      <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-4">
+        <div class="text-[#00e676] font-bold text-sm tracking-wider">[ 02. SİSTEM & LINUX ]</div>
+        <ul class="space-y-2 text-neutral-400">
+          <li>• Linux Mimarisi & Çekirdek</li>
+          <li>• Düşük Seviye C / Shell</li>
+          <li>• Tersine Mühendislik (UART/RE)</li>
+          <li>• IPC & Bellek Haritalama</li>
+          <li>• Gömülü Sistemler (FreeRTOS)</li>
+        </ul>
+      </div>
+
+      <!-- Radar 3 -->
+      <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-4">
+        <div class="text-amber-400 font-bold text-sm tracking-wider">[ 03. YAZILIM & AI ]</div>
+        <ul class="space-y-2 text-neutral-400">
+          <li>• Python & Asyncio</li>
+          <li>• TypeScript & Astro</li>
+          <li>• Deterministik LLM Ajanları</li>
+          <li>• WebGL / Canvas2D Simülasyon</li>
+          <li>• Cloudflare Edge Dağıtımı</li>
+        </ul>
+      </div>
+
+      <!-- Radar 4 -->
+      <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-4">
+        <div class="text-purple-400 font-bold text-sm tracking-wider">[ 04. DONANIM & CAD ]</div>
+        <ul class="space-y-2 text-neutral-400">
+          <li>• Dijital Osiloskop & Multimetre</li>
+          <li>• Mantık Analizörü (Logic Analyzer)</li>
+          <li>• OpenSCAD & 3D Modelleme</li>
+          <li>• PCB Şematik & Pinout (KiCad)</li>
+          <li>• VTOL Gövde & Ağırlık/Denge</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Fault Injection Script for ATA 24 Synoptic -->
+  <script>
+    const tripBtn = document.getElementById('trip-idg-btn');
+    const resetBtn = document.getElementById('reset-bus-btn');
+    const idg1Status = document.getElementById('idg1-status');
+    const idg1Volts = document.getElementById('idg1-volts');
+    const ac1Source = document.getElementById('ac1-source');
+    const btcStatus = document.getElementById('btc-status');
+    const faultLog = document.getElementById('fault-log');
+
+    if (tripBtn && resetBtn) {
+      tripBtn.addEventListener('click', () => {
+        if (idg1Status && idg1Volts && ac1Source && btcStatus && faultLog) {
+          idg1Status.innerText = 'TRIPPED (OFF)';
+          idg1Status.className = 'text-[10px] px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 font-bold';
+          idg1Volts.innerText = '0V AC (KAYIP)';
+          ac1Source.innerText = 'BTC Üzerinden IDG 2 Besliyor';
+          ac1Source.className = 'text-amber-400 font-bold';
+          btcStatus.innerText = 'KAPALI (TRANSFER YAPILDI)';
+          btcStatus.className = 'text-sm font-bold text-amber-400';
+          faultLog.innerHTML = '<span class="text-amber-400 font-bold">UYARI:</span> IDG 1 düştü! 15ms içinde Bus Tie kapandı, yük atma (Load Shed) devreye alındı.';
+        }
+      });
+
+      resetBtn.addEventListener('click', () => {
+        if (idg1Status && idg1Volts && ac1Source && btcStatus && faultLog) {
+          idg1Status.innerText = 'ONLINE';
+          idg1Status.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-[#00e676] font-bold';
+          idg1Volts.innerText = '115V AC • 400 Hz';
+          ac1Source.innerText = 'IDG 1 Doğrudan Besliyor';
+          ac1Source.className = 'text-[#00e676] font-bold';
+          btcStatus.innerText = 'AÇIK (NORMAL İZOLE)';
+          btcStatus.className = 'text-sm font-bold text-neutral-300';
+          faultLog.innerText = 'DURUM: Tüm baralar nominal ve dengeli besleniyor.';
+        }
+      });
+    }
+  </script>
+</Layout>

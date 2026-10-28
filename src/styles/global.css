@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --canvas-base: #050506;
+    --canvas-subtle: #090a0c;
+    --surface-card: #0f1013;
+    --surface-elevated: #17181d;
+    --border-subtle: rgba(255, 255, 255, 0.06);
+    --border-active: rgba(255, 255, 255, 0.14);
+    --aero-green: #00e676;
+    --aero-cyan: #00e5ff;
+    --aero-amber: #ffab00;
+    --aero-red: #ff1744;
+  }
+
+  body {
+    background-color: var(--canvas-base);
+    color: #ededef;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Geist", Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
+    selection-background-color: #00e5ff;
+    selection-color: #050506;
+  }
+
+  ::selection {
+    background: rgba(0, 229, 255, 0.25);
+    color: #ffffff;
+  }
+}
+
+/* Procedural Noise Texture */
+.bg-noise {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Atmospheric Overhead Glow */
+.top-glow {
+  background: radial-gradient(ellipse 65% 35% at 50% -5%, rgba(0, 229, 255, 0.07) 0%, rgba(16, 185, 129, 0.02) 40%, transparent 80%);
+}
+
+/* Double-Bezel (Milled Hardware) Card Architecture */
+.hardware-card {
+  position: relative;
+  border-radius: 1.25rem;
+  padding: 1px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.03) 40%, transparent 100%);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.85);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hardware-card:hover {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.06) 50%, transparent 100%);
+  transform: translateY(-2px);
+}
+
+.hardware-card-inner {
+  position: relative;
+  border-radius: calc(1.25rem - 1px);
+  background-color: var(--surface-card);
+  padding: 1.5rem;
+  overflow: hidden;
+  height: 100%;
+}
+
+.specular-line {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.15) 50%, transparent 100%);
+}
+
+/* Monospace Telemetry Typography */
+.mono-telemetry {
+  font-family: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.14em;
+}

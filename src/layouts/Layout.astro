@@ -1,0 +1,162 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Muhammet Hüseyin Arbağ — Systems & Avionics Engineering",
+  description = "Havacılık elektrik-elektroniği, Linux sistemleri ve deterministik yapay zeka ajan mimarileri üzerine çalışan sistem araştırmacısı."
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="tr" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#050506" />
+    
+    <!-- OpenGraph / Social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://arbag.dev" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="twitter:card" content="summary_large_image" />
+    
+    <!-- Favicon: High-precision SVG Aircraft Crosshair / Radar -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050506'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-dasharray='4 2'/%3E%3Cpath d='M32 8v48M8 32h48' stroke='%2300e676' stroke-width='1.5' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%2300e676'/%3E%3C/svg%3E" />
+    
+    <!-- Fonts: Inter / JetBrains Mono via CDN fallback -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="/src/styles/global.css" />
+  </head>
+  <body class="bg-[#050506] text-[#ededef] min-h-screen relative selection:bg-[#00e5ff]/20 selection:text-white">
+    <!-- Procedural Noise Grain -->
+    <div class="bg-noise" aria-hidden="true"></div>
+    
+    <!-- Atmospheric Ambient Lighting -->
+    <div class="fixed top-0 left-0 right-0 h-[450px] top-glow pointer-events-none -z-10" aria-hidden="true"></div>
+
+    <!-- Floating Island Navbar -->
+    <header class="fixed top-5 inset-x-0 z-50 flex justify-center px-4">
+      <nav class="flex items-center justify-between gap-6 px-4 py-2 rounded-full border border-white/[0.08] bg-[#090a0c]/80 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] max-w-4xl w-full">
+        <!-- Brand / Identity -->
+        <a href="/" class="flex items-center gap-2.5 group">
+          <div class="w-6 h-6 rounded-md bg-white/[0.06] border border-white/10 flex items-center justify-center font-mono text-[11px] font-bold text-[#00e5ff] group-hover:border-[#00e5ff]/50 transition-colors">
+            A
+          </div>
+          <span class="font-mono text-xs tracking-wider text-neutral-200 font-semibold group-hover:text-white transition-colors">
+            arbag<span class="text-[#00e5ff]">.dev</span>
+          </span>
+        </a>
+
+        <!-- Telemetry Status Pill (Hidden on tiny mobile) -->
+        <div class="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.05]">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00e676] opacity-60"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#00e676] shadow-[0_0_8px_#00e676]"></span>
+          </span>
+          <span class="mono-telemetry text-[10px] text-neutral-300 font-medium">SYS: NORM</span>
+          <span class="text-neutral-600 font-mono text-[10px]">/</span>
+          <span class="mono-telemetry text-[10px] text-neutral-400" id="utc-clock">UTC --:--:--</span>
+        </div>
+
+        <!-- Links & Action Button -->
+        <div class="flex items-center gap-4 text-xs font-medium text-neutral-400">
+          <a href="#laboratuvarlar" class="hidden md:inline hover:text-white transition-colors">Laboratuvarlar</a>
+          <a href="#vaka-analizi" class="hidden md:inline hover:text-white transition-colors">Vaka Analizleri</a>
+          <a href="#ekosistem" class="hidden lg:inline hover:text-white transition-colors">Ekosistem</a>
+          <a href="#iletisim" class="hover:text-white transition-colors">İletişim</a>
+          
+          <!-- Button-in-Button CTA -->
+          <a
+            href="mailto:muhammet@arbag.dev"
+            class="group inline-flex items-center gap-2.5 pl-3.5 pr-1.5 py-1 rounded-full border border-white/10 bg-white/[0.05] hover:bg-white/[0.1] hover:border-white/20 active:scale-[0.98] transition-all"
+          >
+            <span class="text-[11px] text-neutral-200">Bağlantı</span>
+            <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[10px] text-neutral-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+              ↗
+            </span>
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Content Slot -->
+    <main class="pt-28 pb-20">
+      <slot />
+    </main>
+
+    <!-- Cockpit Terminal & Verified Footer -->
+    <footer id="iletisim" class="border-t border-white/[0.06] bg-[#07080a] pt-16 pb-12 px-6">
+      <div class="max-w-5xl mx-auto space-y-12">
+        <!-- Direct Terminal Channel -->
+        <div class="rounded-xl border border-white/[0.08] bg-[#090a0d] p-5 font-mono text-xs space-y-3">
+          <div class="flex items-center justify-between text-neutral-500 border-b border-white/[0.05] pb-2">
+            <span class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              DIRECT SYSTEM ACCESS // CLI ENDPOINT
+            </span>
+            <span class="text-[10px] text-neutral-600">BASH / CURL</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-3 text-neutral-300 pt-1">
+            <span class="text-[#00e5ff]">$</span>
+            <code>curl -s https://arbag.dev/cv.txt</code>
+            <button
+              onclick="navigator.clipboard.writeText('curl -s https://arbag.dev/cv.txt'); alert('Komut panoya kopyalandı.');"
+              class="ml-auto text-[10px] uppercase tracking-wider px-2 py-0.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white transition-colors"
+            >
+              Kopyala
+            </button>
+          </div>
+        </div>
+
+        <!-- Footer Meta & Links -->
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 text-xs text-neutral-500">
+          <div>
+            <p class="text-neutral-300 font-medium font-mono text-sm">Muhammet Hüseyin Arbağ</p>
+            <p class="text-[11px] mt-1 text-neutral-500">
+              Erciyes Üniversitesi Havacılık Elektrik & Elektroniği • Kayseri, TR
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-6 font-mono text-[11px]">
+            <a href="https://github.com/muhammetarbag" target="_blank" rel="noopener noreferrer" class="hover:text-[#00e5ff] transition-colors">
+              GitHub ↗
+            </a>
+            <a href="mailto:muhammet@arbag.dev" class="hover:text-[#00e5ff] transition-colors">
+              muhammet@arbag.dev
+            </a>
+            <a href="mailto:muhammetarbag01@gmail.com" class="hover:text-[#00e5ff] transition-colors">
+              muhammetarbag01@gmail.com
+            </a>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between border-t border-white/[0.04] pt-6 text-[10px] mono-telemetry text-neutral-600">
+          <span>HOSTED ON CLOUDFLARE EDGE // ZERO RUNTIME JS BY DEFAULT</span>
+          <span>© 2026 ARBAG.DEV • ALL CRITICAL BUSES NORMAL</span>
+        </div>
+      </div>
+    </footer>
+
+    <!-- UTC Clock Live Script (Minimal, 4 satır saf JS) -->
+    <script>
+      function updateClock() {
+        const el = document.getElementById('utc-clock');
+        if (el) {
+          const now = new Date();
+          el.innerText = 'UTC ' + now.toUTCString().slice(17, 25);
+        }
+      }
+      setInterval(updateClock, 1000);
+      updateClock();
+    </script>
+  </body>
+</html>

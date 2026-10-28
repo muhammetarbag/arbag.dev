@@ -1,0 +1,60 @@
+================================================================================
+MUHAMMET HÜSEYİN ARBAĞ
+================================================================================
+Avionics & Systems Engineer | Linux & AI Architecture
+Location: Kayseri, Turkey
+Email: muhammet@arbag.dev / muhammetarbag01@gmail.com
+GitHub: https://github.com/muhammetarbag
+Domain: https://arbag.dev
+
+--------------------------------------------------------------------------------
+PROFILE & CORE PHILOSOPHY
+--------------------------------------------------------------------------------
+Undergraduate in Aviation Electrical & Electronics (Erciyes University). Working 
+at the intersection of deterministic physical systems (avionics, ATA standards, 
+RF navigation, power grids) and modern systems software (Linux, reverse 
+engineering, autonomous AI agent pipelines). Believes that code is not judged 
+by how it runs in ideal scenarios, but by how it survives fault injection, 
+bus drops, and memory pressure.
+
+--------------------------------------------------------------------------------
+EDUCATION
+--------------------------------------------------------------------------------
+* Erciyes University — Aviation Electrical & Electronics Engineering (3rd Year)
+  Focus: Aircraft Electrical Systems (ATA 24), Radio Navigation & ILS (AEE 301),
+  Automatic Flight Control (ATA 22 / AEE 303), Pneumatics & Bleed Air (ATA 36),
+  Hydraulic Systems (ATA 29), Fuel Systems (ATA 28).
+
+--------------------------------------------------------------------------------
+PRIMARY PROJECTS & ENGINEERING LABS
+--------------------------------------------------------------------------------
+[1] ATA 24 Aircraft Electrical Power & Micro-Grid Lab
+    - Real-time Kirchhoff matrix solver for 115V AC 400Hz 3-phase and 28V DC bus
+      distribution with generator load-shedding and 15ms bus tie contactor transfer.
+    - URL: https://arbag.dev/aircraft-electrical-power-lab/
+
+[2] AEE 301 Radio Navigation & ILS Virtual Lab
+    - VHF/UHF Localizer and Glideslope difference in depth of modulation (DDM)
+      decoding and runway approach deviation tracking with autopilot coupling.
+    - URL: https://arbag.dev/radio-navigation-lab/
+
+[3] ARK04 Stealth VTOL Drone Platform
+    - Aerodynamic 3D surface modeling, avionics bay packaging, power-to-weight 
+      ratio budget, and tilt-wing transition flight dynamics.
+
+[4] MHATv & Tizen TV Reverse Engineering
+    - Dynamic plugin execution runtime for resource-constrained Smart TVs.
+      Memory leak containment, IPC, and custom media streaming protocol bridge.
+
+[5] Autonomous Agent Memory & Deterministic Data Collector Architecture
+    - Grunt vs. Judgment token-efficiency pipeline, minimizing LLM consumption 
+      via deterministic shell/API gathering prior to cognitive synthesis.
+
+--------------------------------------------------------------------------------
+TECHNICAL DOMAINS
+--------------------------------------------------------------------------------
+* Avionics & Aerospace : ATA 21/22/24/28/29/34, ARINC 429, ILS/VOR/DME, DO-178C
+* Systems & Core       : Linux Architecture, C/C++, Shell Scripting, Reverse Eng
+* Software & Web       : Python, TypeScript, Astro, Node.js, WebGL/Canvas
+* Hardware & Tools     : Digital Oscilloscope, Logic Analyzer, KiCad, OpenSCAD
+================================================================================
