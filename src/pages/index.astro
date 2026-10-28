@@ -1,171 +1,65 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import FlightDisplayHUD from '../components/FlightDisplayHUD.astro';
-import Arinc429Decoder from '../components/Arinc429Decoder.astro';
-import VtolTransitionSim from '../components/VtolTransitionSim.astro';
-import AvionicsQRHAgent from '../components/AvionicsQRHAgent.astro';
-import AdsbDissector from '../components/AdsbDissector.astro';
 import CommandPalette from '../components/CommandPalette.astro';
 
-const laboratories = [
+const aiProjects = [
   {
-    ata: "ATA 21 / 36",
-    category: "avionics",
-    title: "Bleed Air & Cabin Pressurization",
-    kicker: "Pnömatik & Kabin Basıncı",
-    desc: "Motor kompresör kademelerinden pack ve outflow valve'a uzanan pnömatik döngü; ani dekompresyon teşhisi.",
-    url: "https://muhammetarbag.github.io/bleed-air-pressurization-lab/",
-    badge: "CANLI SİMÜLATÖR",
-    status: "NORMAL",
-    statusColor: "emerald"
+    tag: "AJAN MİMARİSİ // DETERMINISTIC AI",
+    title: "Hermes & Avenox: Grunt vs. Judgment Ajan Modeli",
+    desc: "LLM'lerin halüsinasyon ve bağlam şişmesi (context rot) sorununu çözen iki kademeli karar mimarisi. Veri toplama deterministik shell/kod araçlarıyla (Grunt) sıfır token harcayarak yapılır; yüksek akıl yürütme (Judgment) modeline yalnızca filtrelenmiş karar matrisi iletilir.",
+    metrics: ["%70 Token Tasarrufu", "Sıfır Halüsinasyon", "Deterministik Sentez"],
+    tech: ["Python Asyncio", "Deterministic Filters", "Tool-Calling", "Context Guardrails"]
   },
   {
-    ata: "ATA 22 / AEE 303",
-    category: "avionics",
-    title: "Autoflight Systems Virtual Lab",
-    kicker: "Otopilot & Uçuş Yönlendirici",
-    desc: "Uçuş kontrol bilgisayarı PID döngüleri, pitch/roll komuta kanalları, irtifa tutma ve yaklaşma modu mimarisi.",
-    url: "https://muhammetarbag.github.io/autoflight-lab/",
-    badge: "CANLI SİMÜLATÖR",
-    status: "NORMAL",
-    statusColor: "emerald"
+    tag: "EMNİYET VE ONAY // SAFETY GATE",
+    title: "Draft-Gate: İki Kademeli Durum Mutasyon Protokolü",
+    desc: "Otonom ajanların harici sistemleri kontrolsüz değiştirmesini engelleyen 'Draft-Only' yayınlama mimarisi. Dış dünyaya etki eden, geri döndürülemez hiçbir eylem (dosya yazma, durum değiştirme, donanım komutu) operatör onayı ve işlem makbuzu olmadan yürütülemez.",
+    metrics: ["Operatör Makbuzu", "Geri Alınabilir Durum", "Fail-Safe Default"],
+    tech: ["Audit Trail", "Human-in-the-Loop", "State Machine", "Approval Gates"]
   },
   {
-    ata: "ATA 24",
-    category: "power",
-    title: "Aircraft Electrical Power Lab",
-    kicker: "Uçak Elektrik Güç Dağıtımı",
-    desc: "115V AC 400Hz ve 28V DC bara topolojisi, IDG/APU jeneratör yönetimi, otomatik Bus Tie transferi ve 10 arıza senaryosu.",
-    url: "https://muhammetarbag.github.io/aircraft-electrical-power-lab/",
-    badge: "CANLI SİMÜLATÖR",
-    status: "NORMAL",
-    statusColor: "emerald"
-  },
-  {
-    ata: "ATA 27 / AERO",
-    category: "aero",
-    title: "Rüzgâr Tüneli & Aerodinamik Lab",
-    kicker: "Kanat Profili & Akışkanlar",
-    desc: "NACA kanat kesitleri üzerinde hücum açısı (AoA), kaldırma/sürükleme (L/D) oranları ve perdövites (stall) dinamiği.",
-    url: "https://muhammetarbag.github.io/ruzgar-lab/",
-    badge: "EĞİTİM MODÜLÜ",
-    status: "NORMAL",
-    statusColor: "cyan"
-  },
-  {
-    ata: "ATA 28 / 47",
-    category: "power",
-    title: "Aircraft Fuel System Lab",
-    kicker: "Uçak Yakıt & Inerting Sistemleri",
-    desc: "Kanat ve merkez tanklar, crossfeed vana yönetimi, yakıt transfer pompaları ve kanat yük dengesi (W&B).",
-    url: "https://muhammetarbag.github.io/aircraft-fuel-system-lab/",
-    badge: "CANLI SİMÜLATÖR",
-    status: "NORMAL",
-    statusColor: "emerald"
-  },
-  {
-    ata: "ATA 29",
-    category: "power",
-    title: "Hydraulic Power Lab",
-    kicker: "Uçak Hidrolik Güç Sistemi",
-    desc: "3000 PSI Yeşil, Mavi ve Sarı rezervuar hatları, motor pompaları (EDP) ve çift yönlü Power Transfer Unit (PTU) mantığı.",
-    url: "https://muhammetarbag.github.io/hydraulic-lab/",
-    badge: "CANLI SİMÜLATÖR",
-    status: "NORMAL",
-    statusColor: "emerald"
-  },
-  {
-    ata: "ATA 34 / AEE 301",
-    category: "avionics",
-    title: "Radio Navigation & ILS Lab",
-    kicker: "Radyo Navigasyon & ILS Yaklaşma",
-    desc: "VHF Localizer ve UHF Glideslope DDM (modülasyon farkı) ayrıştırımı, rüzgâr sapması ve Runway 35R aletli iniş sistemi.",
-    url: "https://muhammetarbag.github.io/radio-navigation-lab/",
-    badge: "CANLI SİMÜLATÖR",
-    status: "NORMAL",
-    statusColor: "emerald"
-  },
-  {
-    ata: "ATA 72",
-    category: "aero",
-    title: "Turbofan Engine Virtual Lab",
-    kicker: "İki Kademeli Turbofan Motoru",
-    desc: "Fan, kompresör, yanma odası ve türbin gaz akışı termodinamiği; interaktif N1/N2 ve EGT telemetri göstergeleri.",
-    url: "https://muhammetarbag.github.io/turbofan-lab/",
-    badge: "EĞİTİM MODÜLÜ",
-    status: "NORMAL",
-    statusColor: "cyan"
-  },
-  {
-    ata: "ATA 85",
-    category: "aero",
-    title: "Dört Zamanlı Motor Lab (Motorlab)",
-    kicker: "Pistonlu İçten Yanmalı Motor",
-    desc: "Dört zamanlı benzinli motorun emme, sıkıştırma, yanma ve egzoz çevrimi; hareketli kesit ve P-V diyagramı.",
-    url: "https://muhammetarbag.github.io/motorlab/",
-    badge: "CANLI SİMÜLATÖR",
-    status: "NORMAL",
-    statusColor: "emerald"
-  },
-  {
-    ata: "PROTOTİP // VTOL",
-    category: "vtol",
-    title: "ARK04 Stealth VTOL Drone",
-    kicker: "3D Gövde & Aviyonik Entegrasyonu",
-    desc: "Dört kaldırma motoru ve itki geçiş koridoru hesapları, 3D CAD yüzey modellemesi, gövde içi aviyonik yerleşimi.",
-    url: "#vtol-spec",
-    badge: "3D CAD PROTOTİP",
-    status: "TASARIM",
-    statusColor: "amber"
+    tag: "AVİYONİK AI // DO-178C UYUMLU",
+    title: "Hermes-Avionics: Deterministik Kokpit Karar Destek Motoru",
+    desc: "DO-178C Level B emniyet kurallarına göre modellenmiş, arıza izolasyon el kitapları (FIM) ve QRH prosedürlerini uçuş ekibine gerçek zamanlı sunan kural tabanlı yapay zeka motoru. Çift jeneratör kaybı, kabin dekompresyonu gibi acil durumlarda <30s eylem planı üretir.",
+    metrics: ["DO-178C Emniyet", "<30s Çözümleme", "Hiyerarşik Ağaç"],
+    tech: ["Deterministic Logic", "Fault Trees", "QRH Protocols", "Aerospace Compliance"]
   }
 ];
 
-const upcomingProjects = [
+const systemsProjects = [
   {
-    tag: "RF & SDR // CANLI PROTOKOL",
-    title: "AEE-SDR: Open-Source 1090 MHz Mode-S & ADS-B Yer İstasyonu",
-    desc: "RTL-SDR ve HackRF tabanlı, 1090 MHz Extended Squitter (DF17/18) ICAO yayınlarını doğrudan RF demodülasyonu ile çözen açık kaynaklı hava gözetleme hattı.",
-    tech: ["RTL-SDR", "Python DSP", "CRC-24 DO-260B", "PPM Demodülatör", "Leaflet Radar"],
-    status: "DONANIM TESTİNDE",
-    statusColor: "cyan",
-    highlight: "2 MHz I/Q örnekleme ile sıfır gecikmeli irtifa ve vektör tespiti."
+    tag: "TERSİNE MÜHENDİSLİK // ARM EMBEDDED",
+    title: "MHATv: Kısıtlı Smart TV Mimarisi için C++ & Tersine Mühendislik",
+    desc: "512 MB serbest RAM ve eski nesil çift çekirdekli ARM işlemcili Samsung Tizen OS üzerinde çalışan, video arabelleklerini yerel C++ boru hattına aktaran ve bellek sızıntılarını UART seri konsolu üzerinden gideren yüksek performanslı çalışma zamanı motoru.",
+    metrics: ["512 MB RAM Kısıtı", "Sıfır Bellek Sızıntısı", "UART Hata Ayıklama"],
+    tech: ["Tizen OS", "ARM Assembly", "C++ Media Core", "UART / JTAG", "Ghidra / Rizin"]
   },
   {
-    tag: "ASKERİ AVİYONİK // SAVUNMA",
-    title: "MIL-STD-1553B Çift Yedekli Veri Yolu Terminali & Emülatörü",
-    desc: "Milli Muharip Uçak (KAAN), HÜRJET ve ATAK platformlarının omurgası olan 1553B veri yolunun Bus Controller (BC) ve Remote Terminal (RT) FPGA mantık emülasyonu.",
-    tech: ["FPGA (Verilog)", "Manchester II", "Dual-Redundant Bus A/B", "STM32H7", "Lojik Analizör"],
-    status: "ŞEMATİK & FPGA",
-    statusColor: "amber",
-    highlight: "< 2 µs bara yedekleme geçiş süresi ve elektriksel trafo izolasyonu."
+    tag: "SAYISAL İŞARET İŞLEME // RF SDR",
+    title: "AEE-SDR: 1090 MHz Mode-S & ADS-B Açık Kaynak Yer İstasyonu",
+    desc: "RTL-SDR ve HackRF USB donanımları üzerinden 2 MHz I/Q baseband RF sinyallerini dinleyen, PPM (Pulse Position Modulation) demodülasyonu ve DO-260B CRC-24 polinom sağlamasıyla hava trafik transponder paketlerini çözen sayısal gözetleme hattı.",
+    metrics: ["2 MHz I/Q Örnekleme", "CRC-24 DO-260B", "1090 MHz Taşıyıcı"],
+    tech: ["Python DSP", "RTL-SDR", "PPM Demodulator", "ICAO Annex 10", "Leaflet"]
   },
   {
-    tag: "GERÇEK ZAMANLI İŞLETİM // RTOS",
-    title: "AeroKernel: DO-178C Emniyet Seviyeli İHA Uçuş Mikroçekirdeği",
-    desc: "ARM Cortex-M7/M4 işlemcilerde koşan, statik bellek tahsisli, ARINC 653 ilkeli bölümlendirilmiş deterministik mikroçekirdek mimarisi.",
-    tech: ["C99 / ASM", "STM32H7 Dual-Core", "Rate Monotonic Scheduling", "MPU İzolasyonu", "DO-178C"],
-    status: "ÇEKİRDEK KODLAMA",
-    statusColor: "emerald",
-    highlight: "Kritik 100 Hz uçuş döngüleri için deterministik WCET garantisi."
-  },
-  {
-    tag: "GÖMÜLÜ LINUX // TERSİNE MÜHENDİSLİK",
-    title: "Hermes-Edge: Tizen OS & ARM Donanım Tersine Mühendislik Laboratuvarı",
-    desc: "Eski nesil akıllı ekranlar ve özel aviyonik terminaller için firmware çıkarma, UART/eMMC donanım tap'leme ve düşük seviye ikili yama araç takımı.",
-    tech: ["Ghidra / Rizin", "UART / JTAG", "ARM Assembly", "Squashfs Unpack", "C++ Media Core"],
-    status: "AÇIK KAYNAK ARAÇ KİTİ",
-    statusColor: "purple",
-    highlight: "512 MB kısıtlı RAM donanımlarda sıfır sızıntılı C++ medya boru hattı."
+    tag: "GÖMÜLÜ LINUX // IPC VE DONANIM",
+    title: "Linux Çekirdeği, IPC & Bellek Haritalama Mimarisi",
+    desc: "POSIX paylaşımlı bellek (shm), mesaj kuyrukları ve Linux soket IPC katmanları üzerinde mikrosaniyelik deterministik veri transferi. FreeRTOS ve STM32 mikrodenetleyiciler üzerinde Rate Monotonic Scheduling (RMS) görev zamanlaması.",
+    metrics: ["<15 µs IPC Gecikmesi", "Statik Bellek", "Sert Gerçek Zaman"],
+    tech: ["Linux Kernel", "FreeRTOS", "POSIX IPC", "STM32H7", "C99 / ASM"]
   }
 ];
 ---
 
-<Layout>
-  <!-- HERO SECTION (Asymmetrical 12-Column Bento Grid with Profile & PFD HUD) -->
-  <section class="max-w-6xl mx-auto px-6 mb-24">
+<Layout
+  title="Muhammet Hüseyin Arbağ — AI & Systems Software Engineer"
+  description="Deterministik yapay zeka ajan mimarileri, Linux çekirdeği, tersine mühendislik ve havacılık elektrik-elektroniği üzerine çalışan sistem araştırmacısı."
+>
+  <!-- HERO SECTION (Asymmetrical Bento Grid with Profile & Systems Vision) -->
+  <section class="max-w-6xl mx-auto px-6 mb-28">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       
-      <!-- Profile & Identity Bento (Col 4, Row 2) -->
+      <!-- Profile Card (Col 4) -->
       <div class="lg:col-span-4 hardware-card">
         <div class="hardware-card-inner flex flex-col justify-between space-y-6">
           <div class="specular-line"></div>
@@ -176,15 +70,15 @@ const upcomingProjects = [
               <img
                 src="/profile.webp"
                 alt="Muhammet Hüseyin Arbağ"
-                class="w-full h-full object-cover object-top filter grayscale contrast-105 hover:grayscale-0 transition-all duration-500"
+                class="w-full h-full object-cover object-center filter contrast-105 hover:scale-[1.02] transition-all duration-500"
               />
-              <div class="absolute inset-0 bg-gradient-to-t from-[#050506] via-transparent to-transparent opacity-80"></div>
+              <div class="absolute inset-0 bg-gradient-to-t from-[#050506] via-transparent to-transparent opacity-75"></div>
               <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-mono text-[#00e676]">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-[10px] font-mono text-[#00e676]">
                   <span class="w-1.5 h-1.5 rounded-full bg-[#00e676] animate-pulse"></span>
-                  STAJ &amp; ÇALIŞMAYA AÇIK
+                  STAJ &amp; AR-GE'YE AÇIK
                 </span>
-                <span class="text-[10px] font-mono text-neutral-400 bg-black/60 px-2 py-0.5 rounded border border-white/5">
+                <span class="text-[10px] font-mono text-neutral-300 bg-black/70 backdrop-blur-md px-2 py-0.5 rounded border border-white/10">
                   ERU H.E.E.
                 </span>
               </div>
@@ -192,9 +86,9 @@ const upcomingProjects = [
 
             <div>
               <h2 class="text-xl font-bold text-white tracking-tight">Muhammet Hüseyin Arbağ</h2>
-              <p class="text-xs text-[#00e5ff] font-mono mt-0.5">Avionics &amp; Systems Engineer</p>
+              <p class="text-xs text-[#00e5ff] font-mono mt-0.5 font-semibold">AI Systems &amp; Software Engineer</p>
               <p class="text-[11px] text-neutral-400 mt-2 leading-relaxed">
-                Erciyes Üniversitesi Havacılık Elektrik &amp; Elektroniği (3. Sınıf). Uçak aviyonik şebekeleri ve Linux sistemleri araştırmacısı.
+                Erciyes Üniversitesi Havacılık Elektrik &amp; Elektroniği (3. Sınıf). Deterministik yapay zeka ajan mimarileri, Linux sistemleri ve gömülü yazılım araştırmacısı.
               </p>
             </div>
           </div>
@@ -212,116 +106,137 @@ const upcomingProjects = [
         </div>
       </div>
 
-      <!-- Primary Statement Bento (Col 8, Row 2) -->
+      <!-- Primary Statement Bento (Col 8) -->
       <div class="lg:col-span-8 hardware-card">
         <div class="hardware-card-inner flex flex-col justify-between">
           <div class="specular-line"></div>
           
           <div class="space-y-6">
             <!-- Eyebrow Tag -->
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/[0.04]">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#00e5ff]/30 bg-[#00e5ff]/10">
               <span class="w-1.5 h-1.5 rounded-full bg-[#00e5ff]"></span>
-              <span class="mono-telemetry text-[10px] text-neutral-300 font-medium">
-                ATA SPEC 2200 // AVIONICS &amp; LOW-LEVEL SYSTEMS
+              <span class="mono-telemetry text-[10px] text-[#00e5ff] font-bold">
+                MISSION-CRITICAL SOFTWARE // DETERMINISTIC AI // SYSTEMS ENGINEERING
               </span>
             </div>
 
             <!-- Main Heading -->
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.12]">
-              Fiziksel dünyanın determinizmi ile sistem yazılımının sınırları.
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.14]">
+              Deterministik yapay zeka ajanları ve düşük seviye sistem yazılımları.
             </h1>
 
             <!-- Narrative Paragraph -->
-            <p class="text-neutral-400 text-sm sm:text-base leading-relaxed max-w-2xl">
-              Havacılık elektrik-elektroniği disipliniyle yetişmiş; uçak güç dağıtımı (ATA 24), radyo seyrüsefer (ATA 34 / ILS), 
-              Linux çekirdeği ve deterministik yapay zeka ajan mimarileri üzerine çalışan sistem araştırmacısı. 
-              Kodun yalnızca çalıştığı anla değil; bus transfer gecikmelerinde, frekans dalgalanmalarında ve bellek kısıtlarında nasıl davrandığıyla ilgilenirim.
+            <p class="text-neutral-300 text-sm sm:text-base leading-relaxed max-w-2xl">
+              Geleneksel web yazılımının ötesinde; deterministik LLM ajan mimarileri, Linux çekirdeği, tersine mühendislik 
+              ve havacılık seviyesinde (<strong class="text-white">DO-178C</strong>) sıfır toleranslı emniyet disiplini üzerine odaklanan sistem araştırmacısı.
+            </p>
+
+            <p class="text-neutral-400 text-xs sm:text-sm leading-relaxed max-w-2xl">
+              Havacılık elektrik-elektroniği disiplinimin getirdiği donanım bilinciyle; kodun yalnızca ideal senaryoda çalıştığı anla değil; 
+              veri yolu gecikmelerinde, frekans dalgalanmalarında, bellek sınırlarında ve kritik kısıtlar altında nasıl davrandığıyla ilgilenirim.
             </p>
           </div>
 
           <!-- CTAs & Action Ribbon -->
-          <div class="pt-8 flex flex-wrap items-center gap-4">
+          <div class="pt-8 flex flex-wrap items-center gap-3.5">
+            <a
+              href="#yazilim-ai"
+              class="group relative inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-[#00e5ff]/40 bg-[#00e5ff]/15 hover:bg-[#00e5ff]/25 active:scale-[0.98] transition-all text-xs font-semibold text-white tracking-tight shadow-[0_0_15px_rgba(0,229,255,0.2)]"
+            >
+              <span>Yapay Zeka &amp; Sistemleri Keşfet</span>
+              <span class="text-[#00e5ff] group-hover:translate-y-0.5 transition-transform">↓</span>
+            </a>
+
+            <a
+              href="/lab"
+              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-semibold text-neutral-200 hover:text-white border border-white/10 hover:border-[#00e5ff]/40 bg-white/[0.04] hover:bg-white/[0.08] transition-all font-mono"
+            >
+              <span>Canlı Simülasyon Laboratuvarı</span>
+              <span class="text-[#00e5ff]">⚡</span>
+            </a>
+
             <a
               href="#ozgecmis"
-              class="group relative inline-flex items-center gap-3 pl-5 pr-2 py-2 rounded-full border border-white/20 bg-white/[0.08] hover:bg-white/[0.14] hover:border-white/30 active:scale-[0.98] transition-all"
+              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-medium text-neutral-400 hover:text-white border border-transparent hover:border-white/10 transition-colors"
             >
-              <span class="text-xs font-semibold text-white tracking-tight">Özgeçmiş &amp; Yetkinlikleri İncele</span>
-              <span class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-xs group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform text-[#00e5ff]">
-                ↓
-              </span>
-            </a>
-
-            <a
-              href="#aviyonik-araclar"
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium text-[#00e5ff] hover:text-white border border-[#00e5ff]/30 bg-[#00e5ff]/5 hover:bg-[#00e5ff]/10 transition-colors font-mono"
-            >
-              <span>Aviyonik Araçları</span>
-              <span class="text-xs">⚡</span>
-            </a>
-
-            <a
-              href="#laboratuvarlar"
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium text-neutral-400 hover:text-white border border-white/5 hover:border-white/10 transition-colors"
-            >
-              <span>The 9-System Matrix</span>
-              <span class="text-neutral-600 font-mono">/ 10</span>
+              <span>Özgeçmiş</span>
+              <span class="text-neutral-600 font-mono">/ CV</span>
             </a>
           </div>
         </div>
       </div>
 
-      <!-- Secondary Bento 1: Live Primary Flight Display (PFD) HUD (Col 6) -->
-      <div class="lg:col-span-6 hardware-card">
-        <div class="hardware-card-inner flex flex-col justify-between" id="hud-card">
-          <div class="specular-line"></div>
-          
-          <div class="flex items-center justify-between border-b border-white/[0.05] pb-2 text-[10px] mono-telemetry text-neutral-500">
-            <span>PFD INSTRUMENT // CANLI KOKPİT GÖSTERGESİ (60 FPS CANVAS)</span>
-            <span class="text-[#00e676]">GYRO AKTİF</span>
-          </div>
-
-          <!-- Interactive Primary Flight Display Component -->
-          <div class="my-3">
-            <FlightDisplayHUD />
-          </div>
-
-          <div class="flex items-center justify-between text-[10px] mono-telemetry text-neutral-400 pt-1">
-            <span>FARE İLE PİTCH &amp; ROLL DÖNGÜSÜNÜ TEST ET</span>
-            <span class="text-[#00e5ff]">CANVAS RENDERER</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Secondary Bento 2: Core Engineering Specs (Col 6) -->
+      <!-- Secondary Bento 1: AI Architectural Pillars (Col 6) -->
       <div class="lg:col-span-6 hardware-card">
         <div class="hardware-card-inner space-y-4">
           <div class="specular-line"></div>
           
-          <div class="flex items-center justify-between text-[10px] mono-telemetry text-neutral-500 border-b border-white/[0.05] pb-2">
-            <span>SYSTEM CONSTRAINTS &amp; STANDARDS</span>
-            <span>SPEC: ARBAG-01</span>
+          <div class="flex items-center justify-between border-b border-white/[0.05] pb-2 text-[10px] mono-telemetry text-neutral-400">
+            <span class="text-[#00e5ff] font-bold">01 // YAPAY ZEKA VE AJAN FELSEFESİ</span>
+            <span>HERMES &amp; AVENOX</span>
           </div>
 
           <div class="space-y-3 font-mono text-xs">
-            <div class="flex items-center justify-between">
-              <span class="text-neutral-400">Uçak Güç Standardı:</span>
-              <span class="text-white font-semibold">115V AC 400Hz (3-Faz) / 28V DC</span>
+            <div class="flex items-start gap-2.5">
+              <span class="text-[#00e5ff] font-bold mt-0.5">▹</span>
+              <div>
+                <strong class="text-white">Deterministik Grunt vs. Judgment:</strong>
+                <p class="text-[11px] text-neutral-400 mt-0.5">Veri toplamayı LLM yerine saf betiklerle yapıp, modele yalnızca damıtılmış sentez bırakma mimarisi.</p>
+              </div>
             </div>
-            <div class="flex items-center justify-between">
-              <span class="text-neutral-400">Bara İzolasyon Hızı:</span>
-              <span class="text-[#00e676] font-semibold">&lt; 15 ms (Bus Tie Contactor)</span>
+
+            <div class="flex items-start gap-2.5">
+              <span class="text-[#00e5ff] font-bold mt-0.5">▹</span>
+              <div>
+                <strong class="text-white">Draft-Gate Onay Mekanizması:</strong>
+                <p class="text-[11px] text-neutral-400 mt-0.5">Dış dünyaya etki eden mutasyonların operatör makbuzu olmadan gerçekleşmesini engelleyen emniyet kapısı.</p>
+              </div>
             </div>
-            <div class="flex items-center justify-between">
-              <span class="text-neutral-400">Aviyonik Veri Yolu:</span>
-              <span class="text-[#00e5ff] font-semibold">ARINC 429 &amp; MIL-STD-1553B</span>
+
+            <div class="flex items-start gap-2.5">
+              <span class="text-[#00e5ff] font-bold mt-0.5">▹</span>
+              <div>
+                <strong class="text-white">Mission-Critical AI Karar Motoru:</strong>
+                <p class="text-[11px] text-neutral-400 mt-0.5">DO-178C havacılık emniyeti kurallarına göre modellenmiş, sıfır halüsinasyonlu kural ağacı.</p>
+              </div>
             </div>
-            <div class="flex items-center justify-between">
-              <span class="text-neutral-400">Mühendislik Kuralı:</span>
-              <span class="text-neutral-300">DO-178C Level B &amp; Fail-Safe Redundancy</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Secondary Bento 2: Low-Level Systems Pillars (Col 6) -->
+      <div class="lg:col-span-6 hardware-card">
+        <div class="hardware-card-inner space-y-4">
+          <div class="specular-line"></div>
+          
+          <div class="flex items-center justify-between border-b border-white/[0.05] pb-2 text-[10px] mono-telemetry text-neutral-400">
+            <span class="text-[#00e676] font-bold">02 // SİSTEM YAZILIMI &amp; DONANIM</span>
+            <span>LINUX &amp; EMBEDDED</span>
+          </div>
+
+          <div class="space-y-3 font-mono text-xs">
+            <div class="flex items-start gap-2.5">
+              <span class="text-[#00e676] font-bold mt-0.5">▹</span>
+              <div>
+                <strong class="text-white">Gömülü Linux &amp; Çekirdek:</strong>
+                <p class="text-[11px] text-neutral-400 mt-0.5">POSIX paylaşımlı bellek, soket IPC boru hatları ve FreeRTOS gerçek zamanlı görev zamanlaması.</p>
+              </div>
             </div>
-            <div class="flex items-center justify-between">
-              <span class="text-neutral-400">Uçak Simülatörleri:</span>
-              <span class="text-amber-400 font-semibold">10 Canlı ATA Laboratuvarı</span>
+
+            <div class="flex items-start gap-2.5">
+              <span class="text-[#00e676] font-bold mt-0.5">▹</span>
+              <div>
+                <strong class="text-white">Tersine Mühendislik &amp; Donanım:</strong>
+                <p class="text-[11px] text-neutral-400 mt-0.5">Kısıtlı ARM cihazlarda (Tizen OS) UART/JTAG seri hata ayıklama, ikili analiz ve C++ bellek optimizasyonu.</p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-2.5">
+              <span class="text-[#00e676] font-bold mt-0.5">▹</span>
+              <div>
+                <strong class="text-white">Aviyonik Veri Yolları (ARINC / 1553B):</strong>
+                <p class="text-[11px] text-neutral-400 mt-0.5">Havacılık standartlarında veri yolu protokollerinin yazılımsal ve sayısal işaret (DSP) analizi.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -330,11 +245,189 @@ const upcomingProjects = [
     </div>
   </section>
 
-  <!-- 01 // ÖZGEÇMİŞ & MÜHENDİSLİK KÜNYESİ (CV SECTION) -->
+  <!-- 01 // YAPAY ZEKA VE AJAN SİSTEMLERİ -->
+  <section id="yazilim-ai" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-white/[0.06] pb-6">
+      <div>
+        <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">01 // YAPAY ZEKA VE AJAN SİSTEMLERİ</div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Deterministik LLM Ajanları &amp; Karar Motorları</h2>
+      </div>
+      <p class="text-xs text-neutral-400 max-w-md font-mono">
+        LLM'leri kestirilemez birer sohbet robotu olmaktan çıkarıp, görev-kritik sistem standartlarında deterministik birer mühendislik aracına dönüştüren mimariler.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {aiProjects.map((p) => (
+        <div class="hardware-card group">
+          <div class="hardware-card-inner flex flex-col justify-between space-y-6">
+            <div class="specular-line"></div>
+
+            <div class="space-y-4">
+              <div class="flex items-center justify-between text-[10px] font-mono border-b border-white/[0.06] pb-3">
+                <span class="text-[#00e5ff] font-bold">{p.tag}</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-[#00e5ff]"></span>
+              </div>
+
+              <h3 class="text-base font-bold text-white group-hover:text-[#00e5ff] transition-colors leading-snug">
+                {p.title}
+              </h3>
+
+              <p class="text-xs text-neutral-400 leading-relaxed">
+                {p.desc}
+              </p>
+            </div>
+
+            <div class="space-y-4 pt-4 border-t border-white/[0.05]">
+              <!-- Metrics / Highlights -->
+              <div class="grid grid-cols-3 gap-2 text-center font-mono">
+                {p.metrics.map((m) => (
+                  <div class="p-1.5 rounded bg-white/[0.03] border border-white/5 text-[9px] text-[#00e676] font-semibold">
+                    {m}
+                  </div>
+                ))}
+              </div>
+
+              <!-- Tech Badges -->
+              <div class="flex flex-wrap gap-1.5 pt-1">
+                {p.tech.map((t) => (
+                  <span class="px-2 py-0.5 rounded bg-black/40 border border-white/10 text-[10px] font-mono text-neutral-300">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- 02 // GÖMÜLÜ SİSTEMLER VE DÜŞÜK SEVİYE YAZILIM -->
+  <section id="gomulu-sistem" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-white/[0.06] pb-6">
+      <div>
+        <div class="mono-telemetry text-[11px] text-[#00e676] font-semibold mb-2">02 // GÖMÜLÜ SİSTEMLER VE TERSİNE MÜHENDİSLİK</div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Linux Çekirdeği, C/C++ &amp; Donanım Analizi</h2>
+      </div>
+      <p class="text-xs text-neutral-400 max-w-md font-mono">
+        Kısıtlı bellek koşullarında çalışan donanımlar, tersine mühendislik ikili analizi ve radyo frekans işaret işleme (DSP).
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {systemsProjects.map((p) => (
+        <div class="hardware-card group">
+          <div class="hardware-card-inner flex flex-col justify-between space-y-6">
+            <div class="specular-line"></div>
+
+            <div class="space-y-4">
+              <div class="flex items-center justify-between text-[10px] font-mono border-b border-white/[0.06] pb-3">
+                <span class="text-[#00e676] font-bold">{p.tag}</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-[#00e676]"></span>
+              </div>
+
+              <h3 class="text-base font-bold text-white group-hover:text-[#00e676] transition-colors leading-snug">
+                {p.title}
+              </h3>
+
+              <p class="text-xs text-neutral-400 leading-relaxed">
+                {p.desc}
+              </p>
+            </div>
+
+            <div class="space-y-4 pt-4 border-t border-white/[0.05]">
+              <!-- Metrics / Highlights -->
+              <div class="grid grid-cols-3 gap-2 text-center font-mono">
+                {p.metrics.map((m) => (
+                  <div class="p-1.5 rounded bg-white/[0.03] border border-white/5 text-[9px] text-cyan-300 font-semibold">
+                    {m}
+                  </div>
+                ))}
+              </div>
+
+              <!-- Tech Badges -->
+              <div class="flex flex-wrap gap-1.5 pt-1">
+                {p.tech.map((t) => (
+                  <span class="px-2 py-0.5 rounded bg-black/40 border border-white/10 text-[10px] font-mono text-neutral-300">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- 03 // CANLI SİMÜLASYON VE AVİYONİK LABORATUVARI VİTRİNİ -->
+  <section class="max-w-6xl mx-auto px-6 mb-32">
+    <div class="hardware-card">
+      <div class="hardware-card-inner p-8 lg:p-10 space-y-8">
+        <div class="specular-line"></div>
+
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+          <div class="space-y-4 max-w-2xl">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#00e5ff]/30 bg-[#00e5ff]/10 text-[#00e5ff] font-mono text-[10px] font-bold">
+              <span class="w-1.5 h-1.5 rounded-full bg-[#00e5ff] animate-ping"></span>
+              <span>AYRI SEKMEDE CANLI ÇALIŞAN DENEY MERKEZİ</span>
+            </div>
+
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-tight">
+              Canlı Aviyonik &amp; Donanım Simülasyon Laboratuvarı
+            </h2>
+
+            <p class="text-neutral-300 text-sm leading-relaxed">
+              Tek bir sayfada yoğunlaşmak yerine tüm ağır test araçlarını bağımsız bir laboratuvar güvertesine taşıdık. 
+              Doğrudan tarayıcıda çalışan <strong>60 FPS PFD kokpit göstergesi</strong>, <strong>32-Bit ARINC 429 analizörü</strong>, 
+              <strong>ARK-04 VTOL aerodinamik geçiş simülatörü</strong>, <strong>Hermes QRH acil durum motoru</strong> ve 
+              <strong>10 Canlı ATA Uçak Sistemi</strong> simülasyonunu keşfedin.
+            </p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 font-mono text-xs">
+              <div class="p-2.5 rounded-lg bg-black/50 border border-white/10">
+                <div class="text-[10px] text-neutral-500">KOKPİT</div>
+                <div class="font-bold text-white mt-0.5">60 FPS PFD</div>
+              </div>
+              <div class="p-2.5 rounded-lg bg-black/50 border border-white/10">
+                <div class="text-[10px] text-neutral-500">VERİ YOLU</div>
+                <div class="font-bold text-[#00e5ff] mt-0.5">ARINC 429</div>
+              </div>
+              <div class="p-2.5 rounded-lg bg-black/50 border border-white/10">
+                <div class="text-[10px] text-neutral-500">AERODİNAMİK</div>
+                <div class="font-bold text-amber-400 mt-0.5">VTOL Tilt Sim</div>
+              </div>
+              <div class="p-2.5 rounded-lg bg-black/50 border border-white/10">
+                <div class="text-[10px] text-neutral-500">EMNİYET</div>
+                <div class="font-bold text-[#00e676] mt-0.5">QRH Copilot</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Direct Link to /lab -->
+          <div class="flex flex-col items-center justify-center space-y-4 lg:min-w-[280px]">
+            <a
+              href="/lab"
+              class="w-full group relative inline-flex items-center justify-center gap-3 px-6 py-4 rounded-2xl border border-[#00e5ff]/50 bg-[#00e5ff]/15 hover:bg-[#00e5ff]/25 active:scale-[0.98] transition-all text-sm font-bold text-white shadow-[0_0_30px_rgba(0,229,255,0.25)] font-mono text-center"
+            >
+              <span>Canlı Laboratuvara Git</span>
+              <span class="text-[#00e5ff] group-hover:translate-x-1 transition-transform">→</span>
+            </a>
+            <p class="text-[10px] font-mono text-neutral-500 text-center">
+              10 ATA Simülatörü • İstemci Taraflı Sıfır Gecikme
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 // ÖZGEÇMİŞ & MÜHENDİSLİK KÜNYESİ (CV SECTION) -->
   <section id="ozgecmis" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-white/[0.06] pb-6">
       <div>
-        <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">01 // ÖZGEÇMİŞ &amp; MÜHENDİSLİK KÜNYESİ</div>
+        <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">04 // ÖZGEÇMİŞ &amp; MÜHENDİSLİK KÜNYESİ</div>
         <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Curriculum Vitae</h2>
       </div>
       <div class="flex items-center gap-3">
@@ -359,13 +452,13 @@ const upcomingProjects = [
     <!-- CV Bento Matrix -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       
-      <!-- Card 1: Eğitim & Akademik -->
+      <!-- Card 1: Eğitim & Standartlar -->
       <div class="hardware-card">
         <div class="hardware-card-inner space-y-4">
           <div class="specular-line"></div>
           
           <div class="flex items-center justify-between border-b border-white/[0.06] pb-3 text-xs font-mono">
-            <span class="text-[#00e5ff] font-bold">[ 01. EĞİTİM &amp; STANDARTLAR ]</span>
+            <span class="text-[#00e5ff] font-bold">[ 01. EĞİTİM &amp; MÜFREDAT ]</span>
             <span class="text-neutral-500">2022 - 2026</span>
           </div>
 
@@ -401,16 +494,16 @@ const upcomingProjects = [
 
           <div class="space-y-4 text-xs">
             <div>
-              <h4 class="text-white font-bold text-sm">Savunma &amp; Havacılık Sanayii</h4>
+              <h4 class="text-white font-bold text-sm">Savunma Sanayii &amp; İleri Yazılım</h4>
               <p class="text-neutral-400 text-[11px] mt-1 leading-relaxed">
-                TUSAŞ, Baykar, Aselsan, Turkish Technic, TEI ve Roketsan gibi sektör liderlerinde değer üretmek üzere odaklanılan alanlar:
+                TUSAŞ, Baykar, Aselsan, Turkish Technic, TEI, Roketsan ve yüksek ölçekli yapay zeka girişimlerinde değer üretmek üzere odaklanılan alanlar:
               </p>
             </div>
 
             <ul class="space-y-2 pt-2 border-t border-white/[0.05] text-[11px] text-neutral-400">
               <li class="flex items-start gap-2">
                 <span class="text-[#00e676] font-bold">▹</span>
-                <span><strong class="text-neutral-200">Aviyonik Sistem Tasarımı:</strong> ARINC 429 / 1553B haberleşmesi, uçuş bilgisayarları ve seyrüsefer.</span>
+                <span><strong class="text-neutral-200">Deterministik AI Ajanları:</strong> Kural ve emniyet kapılarıyla sınırlandırılmış otonom yazılım boru hatları.</span>
               </li>
               <li class="flex items-start gap-2">
                 <span class="text-[#00e676] font-bold">▹</span>
@@ -418,7 +511,7 @@ const upcomingProjects = [
               </li>
               <li class="flex items-start gap-2">
                 <span class="text-[#00e676] font-bold">▹</span>
-                <span><strong class="text-neutral-200">Uçak Bakım Elektroniği (B2):</strong> Hat ve üs bakımında arıza teşhisi, bara testleri ve emniyet analizleri.</span>
+                <span><strong class="text-neutral-200">Aviyonik Yazılım &amp; Protokoller:</strong> ARINC 429, MIL-STD-1553B ve görev bilgisayarı seyrüseferi.</span>
               </li>
             </ul>
           </div>
@@ -468,263 +561,6 @@ const upcomingProjects = [
     </div>
   </section>
 
-  <!-- 02 // İLERİ AVİYONİK VE DONANIM ARAÇLARI (INTERACTIVE LAB TOOLS) -->
-  <section id="aviyonik-araclar" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-white/[0.06] pb-6">
-      <div>
-        <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">02 // İLERİ AVİYONİK VE DONANIM ARAÇLARI</div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Canlı Donanım &amp; Protokol Laboratuvarı</h2>
-      </div>
-      <p class="text-xs text-neutral-400 max-w-md font-mono">
-        Sektör standartlarında gerçek zamanlı çalışan üç interaktif aviyonik analiz aracı. Veri yollarını, aerodinamik geçişleri ve emniyet algoritmalarını doğrudan tarayıcıda deneyimleyin.
-      </p>
-    </div>
-
-    <div class="space-y-8">
-      <!-- Tool 1: ARINC 429 Decoder -->
-      <div id="arinc-tool">
-        <Arinc429Decoder />
-      </div>
-
-      <!-- Tool 2: VTOL Aerodynamic Transition Simulator -->
-      <div>
-        <VtolTransitionSim />
-      </div>
-
-      <!-- Tool 3: Avionics QRH Emergency Copilot -->
-      <div id="qrh-tool">
-        <AvionicsQRHAgent />
-      </div>
-    </div>
-  </section>
-
-  <!-- 03 // THE 9-SYSTEM SYNOPTIC MATRIX (LABORATORIES) -->
-  <section id="laboratuvarlar" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-white/[0.06] pb-6">
-      <div>
-        <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">03 // CANLI ETKİLEŞİMLİ SİSTEMLER</div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">The 9-System Synoptic Matrix</h2>
-      </div>
-      <p class="text-xs text-neutral-400 max-w-md font-mono">
-        Her kart doğrudan çalışan bir web simülatörüdür. Gerçek aviyonik veri yolları, bara izolasyonları ve arıza enjeksiyon algoritmaları barındırır.
-      </p>
-    </div>
-
-    <!-- Live Synoptic Control Panel (Interactive Demo Component) -->
-    <div class="hardware-card mb-10">
-      <div class="hardware-card-inner space-y-6">
-        <div class="specular-line"></div>
-        
-        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.08] pb-4">
-          <div class="flex items-center gap-3">
-            <span class="w-2.5 h-2.5 rounded-full bg-[#00e676] shadow-[0_0_8px_#00e676]"></span>
-            <span class="font-mono text-xs font-bold text-white">ATA 24: ELEKTRİK GÜÇ BARA ŞEBEKESİ (CANLI SYNOPTIC)</span>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <button
-              id="trip-idg-btn"
-              class="px-3 py-1 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-mono font-medium transition-colors"
-            >
-              [TRIP IDG 1 (ARIZA ENJEKTE ET)]
-            </button>
-            <button
-              id="reset-bus-btn"
-              class="px-3 py-1 rounded bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10 text-xs font-mono transition-colors"
-            >
-              [RESET BARA]
-            </button>
-          </div>
-        </div>
-
-        <!-- Dynamic Synoptic Diagram -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
-          <!-- IDG 1 & AC BUS 1 -->
-          <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-3" id="panel-ac1">
-            <div class="flex items-center justify-between">
-              <span class="text-neutral-400">SOL MOTOR JENERATÖRÜ (IDG 1)</span>
-              <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-[#00e676]" id="idg1-status">ONLINE</span>
-            </div>
-            <div class="text-xl font-bold text-white tracking-wider" id="idg1-volts">115V AC • 400 Hz</div>
-            <div class="text-[11px] text-neutral-500 border-t border-white/5 pt-2">
-              AC BUS 1: <span class="text-[#00e676]" id="ac1-source">IDG 1 Doğrudan Besliyor</span>
-            </div>
-          </div>
-
-          <!-- Bus Tie Contactor (BTC) Central Logic -->
-          <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-3 text-center flex flex-col justify-center" id="panel-btc">
-            <div class="text-neutral-400 text-[11px]">BUS TIE CONTACTOR (BTC)</div>
-            <div class="text-sm font-bold text-neutral-300" id="btc-status">AÇIK (NORMAL İZOLE)</div>
-            <div class="text-[10px] text-neutral-500">Break-Before-Make Koruması Aktif</div>
-          </div>
-
-          <!-- APU / IDG 2 & AC BUS 2 -->
-          <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-3" id="panel-ac2">
-            <div class="flex items-center justify-between">
-              <span class="text-neutral-400">SAĞ MOTOR JENERATÖRÜ (IDG 2)</span>
-              <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-[#00e676]">ONLINE</span>
-            </div>
-            <div class="text-xl font-bold text-white tracking-wider">115V AC • 400 Hz</div>
-            <div class="text-[11px] text-neutral-500 border-t border-white/5 pt-2">
-              AC BUS 2: <span class="text-[#00e676]">IDG 2 Doğrudan Besliyor</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between text-xs text-neutral-400 pt-2 font-mono">
-          <span id="fault-log" class="text-neutral-400">DURUM: Tüm baralar nominal ve dengeli besleniyor.</span>
-          <a
-            href="https://muhammetarbag.github.io/aircraft-electrical-power-lab/"
-            target="_blank"
-            class="text-[#00e5ff] hover:underline flex items-center gap-1 font-semibold"
-          >
-            Tam Laboratuvarı Aç ↗
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Category Filter Buttons -->
-    <div class="flex flex-wrap items-center gap-2 mb-8 font-mono text-xs">
-      <span class="text-neutral-500 text-[11px] mr-2">FİLTRE:</span>
-      <button
-        class="filter-btn active px-3 py-1.5 rounded-full border border-[#00e5ff]/40 bg-[#00e5ff]/10 text-white font-semibold transition-all"
-        data-filter="all"
-      >
-        TÜMÜ (10)
-      </button>
-      <button
-        class="filter-btn px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-all"
-        data-filter="avionics"
-      >
-        ✈️ AVİYONİK (3)
-      </button>
-      <button
-        class="filter-btn px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-all"
-        data-filter="power"
-      >
-        ⚡ GÜÇ &amp; SİSTEMLER (3)
-      </button>
-      <button
-        class="filter-btn px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-all"
-        data-filter="aero"
-      >
-        🌬️ AERODİNAMİK &amp; MOTOR (3)
-      </button>
-      <button
-        class="filter-btn px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-all"
-        data-filter="vtol"
-      >
-        🛸 İHA / CAD (1)
-      </button>
-    </div>
-
-    <!-- The 9 Labs Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="labs-grid">
-      {laboratories.map((lab) => (
-        <a
-          href={lab.url}
-          target={lab.url.startsWith("http") ? "_blank" : "_self"}
-          rel="noopener noreferrer"
-          class="hardware-card group lab-card"
-          data-category={lab.category}
-        >
-          <div class="hardware-card-inner flex flex-col justify-between space-y-4">
-            <div class="specular-line"></div>
-            
-            <div class="space-y-3">
-              <div class="flex items-center justify-between text-[10px] mono-telemetry">
-                <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-neutral-300 font-semibold">
-                  {lab.ata}
-                </span>
-                <span class={`text-${lab.statusColor === 'emerald' ? '[#00e676]' : lab.statusColor === 'cyan' ? '[#00e5ff]' : '[#ffab00]'}`}>
-                  ● {lab.badge}
-                </span>
-              </div>
-
-              <div>
-                <p class="text-[11px] font-mono text-[#00e5ff] tracking-wide">{lab.kicker}</p>
-                <h3 class="text-base font-bold text-white group-hover:text-[#00e5ff] transition-colors">
-                  {lab.title}
-                </h3>
-              </div>
-
-              <p class="text-xs text-neutral-400 leading-relaxed">
-                {lab.desc}
-              </p>
-            </div>
-
-            <div class="pt-4 border-t border-white/[0.05] flex items-center justify-between text-xs font-mono text-neutral-400 group-hover:text-white transition-colors">
-              <span>Laboratuvara Git</span>
-              <span class="text-[#00e5ff] group-hover:translate-x-1 transition-transform">→</span>
-            </div>
-          </div>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <!-- 04 // AKTİF AR-GE VE GELECEK PROJELER PIPELINE (UPCOMING R&D PIPELINE) -->
-  <section id="arge-projeler" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-white/[0.06] pb-6">
-      <div>
-        <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">04 // AKTİF AR-GE VE GELECEK PROJELER</div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Upcoming Avionics &amp; Systems Pipeline</h2>
-      </div>
-      <p class="text-xs text-neutral-400 max-w-md font-mono">
-        Tamamlanan sistemlerin ötesinde; şu anda tasarım, şematik ve gömülü prototip aşamasında olan yüksek etkili Ar-Ge projeleri.
-      </p>
-    </div>
-
-    <!-- Live SDR ADS-B Dissector Tool Component -->
-    <div class="mb-10">
-      <AdsbDissector />
-    </div>
-
-    <!-- Upcoming R&D Project Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {upcomingProjects.map((p) => (
-        <div class="hardware-card">
-          <div class="hardware-card-inner space-y-5">
-            <div class="specular-line"></div>
-
-            <div class="flex items-center justify-between text-xs font-mono border-b border-white/[0.06] pb-3">
-              <span class="text-neutral-400 font-semibold">{p.tag}</span>
-              <span class={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                p.statusColor === 'cyan' ? 'bg-cyan-500/10 text-[#00e5ff] border border-cyan-500/20' :
-                p.statusColor === 'amber' ? 'bg-amber-500/10 text-amber-300 border border-amber-500/20' :
-                p.statusColor === 'emerald' ? 'bg-emerald-500/10 text-[#00e676] border border-emerald-500/20' :
-                'bg-purple-500/10 text-purple-300 border border-purple-500/20'
-              }`}>
-                ● {p.status}
-              </span>
-            </div>
-
-            <div class="space-y-2">
-              <h3 class="text-base font-bold text-white">{p.title}</h3>
-              <p class="text-xs text-neutral-400 leading-relaxed">{p.desc}</p>
-            </div>
-
-            <!-- Tech Badges -->
-            <div class="flex flex-wrap gap-1.5 pt-1">
-              {p.tech.map((t) => (
-                <span class="px-2 py-0.5 rounded bg-white/[0.03] border border-white/5 text-[10px] font-mono text-neutral-300">
-                  {t}
-                </span>
-              ))}
-            </div>
-
-            <!-- Highlight Callout -->
-            <div class="pt-3 border-t border-white/[0.05] flex items-center gap-2 text-xs font-mono text-neutral-300">
-              <span class="text-[#00e5ff] font-bold">◈</span>
-              <span class="text-[11px] text-neutral-400">{p.highlight}</span>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  </section>
-
   <!-- 05 // KİLİT VAKA ANALİZLERİ (CASE STUDIES DEEP DIVE) -->
   <section id="vaka-analizi" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
     <div class="mb-12 border-b border-white/[0.06] pb-6">
@@ -737,38 +573,35 @@ const upcomingProjects = [
 
     <div class="space-y-8">
       
-      <!-- Case Study 1: ATA 24 Power Grid -->
+      <!-- Case Study 1: Deterministic AI and Mission Safety -->
       <div class="hardware-card">
         <div class="hardware-card-inner p-8 space-y-6">
           <div class="specular-line"></div>
           
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.08] pb-4">
-            <span class="text-xs font-mono text-[#00e5ff] font-bold">VAKA 01 // ATA 24 AIRCRAFT ELECTRICAL POWER DISTRIBUTION</span>
-            <span class="text-[10px] mono-telemetry text-neutral-400">STANDART: DO-178C LEVEL B &amp; ATA iSpec 2200</span>
+            <span class="text-xs font-mono text-[#00e5ff] font-bold">VAKA 01 // HERMES &amp; AVENOX: DETERMINISTIK AJAN EMNİYET MİMARİSİ</span>
+            <span class="text-[10px] mono-telemetry text-neutral-400">STANDART: DRAFT-GATE &amp; OPERATOR RECEIPT</span>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="space-y-3 lg:col-span-1">
               <h3 class="text-lg font-bold text-white">Operasyonel Problem &amp; Kısıt</h3>
               <p class="text-xs text-neutral-400 leading-relaxed">
-                Uçak AC jeneratörleri bağımsız frekanslarda çalıştığı için <strong>asla paralel bağlanamaz</strong>. 
-                Sol motor jeneratörü devreden çıktığında 15ms içinde `Bus Tie Contactor (BTC)` kapanmalı, sağ jeneratör barayı devralırken mutfak/kabin gibi hayati olmayan yükler otomatik olarak atılmalıdır (Load Shedding).
+                LLM tabanlı otonom ajanların kontrolsüz çalışması durumunda dosya sistemini bozması, yanlış API mutasyonları yapması veya bağlam penceresini (context window) gereksiz yere şişirerek maliyet patlamasına yol açması.
               </p>
             </div>
 
             <div class="space-y-3 lg:col-span-1">
-              <h3 class="text-lg font-bold text-white">Mimari Ödünleşim (Trade-off)</h3>
+              <h3 class="text-lg font-bold text-white">Grunt vs. Judgment Mimarisi</h3>
               <p class="text-xs text-neutral-400 leading-relaxed">
-                Ağır SPICE benzeri analog simülatörler web tarayıcısını dondurduğu için elendi. Bunun yerine 
-                <strong>Durum Tabanlı Kirchhoff Matris Çözücüsü</strong> sıfırdan yazıldı. Sonuç: 0.4ms deterministik tick süresi ve 60 FPS akıcı telemetri grafikleri.
+                Veri toplama adımları LLM token döngüsünden tamamen çıkarılarak <strong>deterministik kabuk betiklerine</strong> (Grunt) devredildi. Toplanan ham veri önceden filtrelenerek yüksek akıl yürütme modeline yalnızca karar için gerekli asgari bilgi sağlandı.
               </p>
             </div>
 
             <div class="space-y-3 lg:col-span-1">
-              <h3 class="text-lg font-bold text-white">The Hard Problem (Kritik Savaş Hikayesi)</h3>
+              <h3 class="text-lg font-bold text-white">Elde Edilen Somut Çıktı</h3>
               <p class="text-xs text-neutral-400 leading-relaxed">
-                Fiziksel rölelerdeki kontaktör sıçraması (contact bounce) simülasyonda mikrosaniyelik çift besleme çakışmasına (bus clashing) yol açıyordu. 
-                Donanımsal <strong>"Break-Before-Make"</strong> kuralı matematiksel bir bariyer state-machine olarak modellenerek risk mutlak sıfıra indirildi.
+                Token harcamasında <strong>%70 tasarruf</strong> sağlandı; tüm dış mutasyonlar Draft-Gate güvenlik kapısıyla operatör makbuzuna bağlanarak geri alınamaz hatalar sıfıra indirildi.
               </p>
             </div>
           </div>
@@ -781,7 +614,7 @@ const upcomingProjects = [
           <div class="specular-line"></div>
           
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.08] pb-4">
-            <span class="text-xs font-mono text-[#00e5ff] font-bold">VAKA 02 // MHATv: KISITLI SMART TV DONANIMINDA DİNAMİK EKLENTİ YÜRÜTME</span>
+            <span class="text-xs font-mono text-[#00e676] font-bold">VAKA 02 // MHATv: KISITLI SMART TV DONANIMINDA DİNAMİK EKLENTİ YÜRÜTME</span>
             <span class="text-[10px] mono-telemetry text-neutral-400">ORTAM: SAMSUNG TIZEN OS &amp; GÖMÜLÜ LINUX</span>
           </div>
 
@@ -810,35 +643,36 @@ const upcomingProjects = [
         </div>
       </div>
 
-      <!-- Case Study 3: ARK-04 Stealth VTOL Aerodynamics -->
+      <!-- Case Study 3: ATA 24 Power Grid -->
       <div class="hardware-card">
         <div class="hardware-card-inner p-8 space-y-6">
           <div class="specular-line"></div>
           
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.08] pb-4">
-            <span class="text-xs font-mono text-[#00e5ff] font-bold">VAKA 03 // ARK-04: TİLT-ROTOR VTOL DİNAMİK GEÇİŞ KORİDORU &amp; STALL MARJINI</span>
-            <span class="text-[10px] mono-telemetry text-neutral-400">DİSİPLİN: AERODİNAMİK DÖNÜŞÜM &amp; ÇİFT IMU YEDEKLEMESİ</span>
+            <span class="text-xs font-mono text-[#00e5ff] font-bold">VAKA 03 // ATA 24 AIRCRAFT ELECTRICAL POWER DISTRIBUTION</span>
+            <span class="text-[10px] mono-telemetry text-neutral-400">STANDART: DO-178C LEVEL B &amp; ATA iSpec 2200</span>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="space-y-3 lg:col-span-1">
-              <h3 class="text-lg font-bold text-white">Geçiş Fazı İrtifa Çöküşü</h3>
+              <h3 class="text-lg font-bold text-white">Operasyonel Problem &amp; Kısıt</h3>
               <p class="text-xs text-neutral-400 leading-relaxed">
-                Motorlar dikeyden yataya yatarken rotor düşey kaldırma kuvveti $\cos(\theta)$ ile hızla azalır. Kanat hızı henüz stall süratinin altındayken uçağın irtifa kaybetmemesi kritik bir tasarım bariyeridir.
+                Uçak AC jeneratörleri bağımsız frekanslarda çalıştığı için asla paralel bağlanamaz. 
+                Sol jeneratör devreden çıktığında 15ms içinde Bus Tie kapanmalı, yük atma (Load Shedding) otomatik devreye girmelidir.
               </p>
             </div>
 
             <div class="space-y-3 lg:col-span-1">
-              <h3 class="text-lg font-bold text-white">Eş Zamanlı İtki Dağılımı</h3>
+              <h3 class="text-lg font-bold text-white">Mimari Ödünleşim (Trade-off)</h3>
               <p class="text-xs text-neutral-400 leading-relaxed">
-                Tilt açısına bağlı non-lineer mikser fonksiyonu yazıldı. Kanat taşıması ($L = \frac{1}{2}\rho V^2 S C_L$) yeterli seviyeye ulaşana kadar rotor itkisi orantılı olarak artırılarak net düşey kuvvet sabit tutuldu.
+                Ağır SPICE analog simülatörleri yerine <strong>Durum Tabanlı Kirchhoff Matris Çözücüsü</strong> sıfırdan yazıldı. Sonuç: 0.4ms deterministik tick süresi ve 60 FPS akıcı telemetri grafikleri.
               </p>
             </div>
 
             <div class="space-y-3 lg:col-span-1">
-              <h3 class="text-lg font-bold text-white">Aviyonik &amp; CAN Bus Entegrasyonu</h3>
+              <h3 class="text-lg font-bold text-white">The Hard Problem (Savaş Hikayesi)</h3>
               <p class="text-xs text-neutral-400 leading-relaxed">
-                Çift IMU verisi Kalman filtresi ile harmanlanarak titreşim gürültüsü süzüldü; servo motorlar opto-izole CAN Bus üzerinden 400 Hz yenileme hızıyla sürüldü.
+                Röle kontak sıçramalarının yol açtığı bus clashing tehlikesi, matematiksel bir <strong>"Break-Before-Make"</strong> bariyer durum makinesiyle mutlak olarak izole edildi.
               </p>
             </div>
           </div>
@@ -861,14 +695,13 @@ const upcomingProjects = [
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 font-mono text-xs">
       <!-- Radar 1 -->
       <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-4">
-        <div class="text-[#00e5ff] font-bold text-sm tracking-wider">[ 01. AVİYONİK &amp; RF ]</div>
+        <div class="text-[#00e5ff] font-bold text-sm tracking-wider">[ 01. YAZILIM &amp; AI ]</div>
         <ul class="space-y-2 text-neutral-400">
-          <li>• ATA 100 / iSpec 2200</li>
-          <li>• ARINC 429 &amp; 1553B Veri Yolları</li>
-          <li>• ILS / VOR / DME Navigasyon</li>
-          <li>• Mode-S &amp; ADS-B 1090 MHz SDR</li>
-          <li>• DO-178C / DO-254 Temelleri</li>
-          <li>• Uçak Elektrik Güç Dağıtımı</li>
+          <li>• Deterministik LLM Ajanları</li>
+          <li>• Python, Asyncio &amp; Pydantic</li>
+          <li>• TypeScript, Astro &amp; Node</li>
+          <li>• Context Engineering &amp; Eval</li>
+          <li>• Dağıtık Sistemler &amp; Cloudflare</li>
         </ul>
       </div>
 
@@ -879,22 +712,20 @@ const upcomingProjects = [
           <li>• Linux Mimarisi &amp; Çekirdek</li>
           <li>• Düşük Seviye C / Shell</li>
           <li>• Tersine Mühendislik (UART/RE)</li>
-          <li>• IPC &amp; Bellek Haritalama</li>
-          <li>• Gömülü Sistemler (FreeRTOS)</li>
-          <li>• ARM / MIPS İkili Analizi</li>
+          <li>• POSIX IPC &amp; Bellek Haritalama</li>
+          <li>• FreeRTOS &amp; Gömülü Sistemler</li>
         </ul>
       </div>
 
       <!-- Radar 3 -->
       <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-4">
-        <div class="text-amber-400 font-bold text-sm tracking-wider">[ 03. YAZILIM &amp; AI ]</div>
+        <div class="text-amber-400 font-bold text-sm tracking-wider">[ 03. AVİYONİK &amp; RF ]</div>
         <ul class="space-y-2 text-neutral-400">
-          <li>• Python &amp; Asyncio</li>
-          <li>• TypeScript &amp; Astro</li>
-          <li>• Deterministik LLM Ajanları</li>
-          <li>• WebGL / Canvas2D Simülasyon</li>
-          <li>• Cloudflare Edge Dağıtımı</li>
-          <li>• GitOps &amp; Sürekli Entegrasyon</li>
+          <li>• ARINC 429 &amp; 1553B Veri Yolları</li>
+          <li>• Mode-S &amp; ADS-B 1090 MHz SDR</li>
+          <li>• DO-178C / DO-254 Emniyet</li>
+          <li>• ILS / VOR / DME Navigasyon</li>
+          <li>• Uçak Güç Dağıtımı (ATA 24)</li>
         </ul>
       </div>
 
@@ -902,84 +733,16 @@ const upcomingProjects = [
       <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-4">
         <div class="text-purple-400 font-bold text-sm tracking-wider">[ 04. DONANIM &amp; CAD ]</div>
         <ul class="space-y-2 text-neutral-400">
-          <li>• Dijital Osiloskop &amp; Multimetre</li>
           <li>• Mantık Analizörü (Logic Analyzer)</li>
-          <li>• OpenSCAD &amp; 3D Modelleme</li>
-          <li>• PCB Şematik &amp; Pinout (KiCad)</li>
-          <li>• VTOL Gövde &amp; Ağırlık/Denge</li>
-          <li>• LiPo Batarya Yönetimi (BMS)</li>
+          <li>• Dijital Osiloskop &amp; Multimetre</li>
+          <li>• KiCad Şematik &amp; PCB</li>
+          <li>• OpenSCAD 3D Modelleme</li>
+          <li>• LiPo Batarya &amp; Güç Yönetimi</li>
         </ul>
       </div>
     </div>
   </section>
 
-  <!-- Interactive Floating Flight Terminal -->
+  <!-- Interactive Floating Command Console -->
   <CommandPalette />
-
-  <!-- Client-side Interactive Scripts -->
-  <script>
-    // 1. ATA 24 Synoptic Fault Injection
-    const tripBtn = document.getElementById('trip-idg-btn');
-    const resetBtn = document.getElementById('reset-bus-btn');
-    const idg1Status = document.getElementById('idg1-status');
-    const idg1Volts = document.getElementById('idg1-volts');
-    const ac1Source = document.getElementById('ac1-source');
-    const btcStatus = document.getElementById('btc-status');
-    const faultLog = document.getElementById('fault-log');
-
-    if (tripBtn && resetBtn) {
-      tripBtn.addEventListener('click', () => {
-        if (idg1Status && idg1Volts && ac1Source && btcStatus && faultLog) {
-          idg1Status.innerText = 'TRIPPED (OFF)';
-          idg1Status.className = 'text-[10px] px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 font-bold';
-          idg1Volts.innerText = '0V AC (KAYIP)';
-          ac1Source.innerText = 'BTC Üzerinden IDG 2 Besliyor';
-          ac1Source.className = 'text-amber-400 font-bold';
-          btcStatus.innerText = 'KAPALI (TRANSFER YAPILDI)';
-          btcStatus.className = 'text-sm font-bold text-amber-400';
-          faultLog.innerHTML = '<span class="text-amber-400 font-bold">UYARI:</span> IDG 1 düştü! 15ms içinde Bus Tie kapandı, yük atma (Load Shed) devreye alındı.';
-        }
-      });
-
-      resetBtn.addEventListener('click', () => {
-        if (idg1Status && idg1Volts && ac1Source && btcStatus && faultLog) {
-          idg1Status.innerText = 'ONLINE';
-          idg1Status.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-[#00e676] font-bold';
-          idg1Volts.innerText = '115V AC • 400 Hz';
-          ac1Source.innerText = 'IDG 1 Doğrudan Besliyor';
-          ac1Source.className = 'text-[#00e676] font-bold';
-          btcStatus.innerText = 'AÇIK (NORMAL İZOLE)';
-          btcStatus.className = 'text-sm font-bold text-neutral-300';
-          faultLog.innerText = 'DURUM: Tüm baralar nominal ve dengeli besleniyor.';
-        }
-      });
-    }
-
-    // 2. Laboratories Category Filter
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const labCards = document.querySelectorAll('.lab-card');
-
-    filterBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const filter = btn.getAttribute('data-filter');
-
-        filterBtns.forEach((b) => {
-          b.classList.remove('active', 'border-[#00e5ff]/40', 'bg-[#00e5ff]/10', 'text-white', 'font-semibold');
-          b.classList.add('border-white/10', 'bg-white/5', 'text-neutral-400');
-        });
-
-        btn.classList.add('active', 'border-[#00e5ff]/40', 'bg-[#00e5ff]/10', 'text-white', 'font-semibold');
-        btn.classList.remove('border-white/10', 'bg-white/5', 'text-neutral-400');
-
-        labCards.forEach((card) => {
-          const cat = card.getAttribute('data-category');
-          if (filter === 'all' || cat === filter) {
-            (card as HTMLElement).style.display = 'block';
-          } else {
-            (card as HTMLElement).style.display = 'none';
-          }
-        });
-      });
-    });
-  </script>
 </Layout>

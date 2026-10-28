@@ -48,7 +48,7 @@
         ARBAG.DEV AVIONICS KONSOLU v2.4 // SİSTEM KONTROLÜ AKTİF
       </div>
       <div class="text-neutral-500">
-        Kullanılabilir komutlar: <span class="text-white">status</span>, <span class="text-white">arinc</span>, <span class="text-white">vtol</span>, <span class="text-white">qrh</span>, <span class="text-white">labs</span>, <span class="text-white">cv</span>, <span class="text-white">clear</span>, <span class="text-white">exit</span>
+        Kullanılabilir komutlar: <span class="text-white">ai</span>, <span class="text-white">embedded</span>, <span class="text-white">lab</span>, <span class="text-white">status</span>, <span class="text-white">cv</span>, <span class="text-white">clear</span>, <span class="text-white">exit</span>
       </div>
     </div>
 
@@ -124,15 +124,40 @@
           case 'help':
             resp.innerHTML = `
               <strong>KULLANILABİLİR KOMUTLAR:</strong><br/>
-              • <span class="text-white">status</span> : 9 Uçak laboratuvarı ve telemetri durumunu listeler.<br/>
-              • <span class="text-white">arinc</span>  : ARINC 429 32-bit veri yolu ayrıştırıcısına kaydırır.<br/>
-              • <span class="text-white">vtol</span>   : ARK-04 VTOL aerodinamik simülatörüne gider.<br/>
-              • <span class="text-white">qrh</span>    : Kokpit acil durum teşhis motorunu açar.<br/>
-              • <span class="text-white">labs</span>   : The 9-System laboratuvar matrisine gider.<br/>
-              • <span class="text-white">cv</span>     : Metin formatındaki mühendislik CV'sini açar.<br/>
-              • <span class="text-white">clear</span>  : Konsol ekranını temizler.<br/>
-              • <span class="text-white">exit</span>   : Terminali kapatır.
+              • <span class="text-white">ai</span>       : Yapay Zeka ve Ajan Mimarileri bölümüne gider.<br/>
+              • <span class="text-white">embedded</span> : Gömülü Sistemler ve Tersine Mühendislik bölümüne gider.<br/>
+              • <span class="text-white">lab</span>      : Canlı Aviyonik &amp; Donanım Laboratuvarını (/lab) açar.<br/>
+              • <span class="text-white">status</span>   : Sistem telemetrisi ve baraların durumunu listeler.<br/>
+              • <span class="text-white">cv</span>       : Düz metin mühendislik özgeçmişini açar.<br/>
+              • <span class="text-white">clear</span>    : Konsol ekranını temizler.<br/>
+              • <span class="text-white">exit</span>     : Terminali kapatır.
             `;
+            break;
+
+          case 'ai':
+            resp.innerText = 'Yapay Zeka ve Ajan Sistemlerine yönlendiriliyor...';
+            closeTerminal();
+            if (window.location.pathname !== '/') {
+              window.location.href = '/#yazilim-ai';
+            } else {
+              document.getElementById('yazilim-ai')?.scrollIntoView({ behavior: 'smooth' });
+            }
+            break;
+
+          case 'embedded':
+            resp.innerText = 'Gömülü Sistemler ve Düşük Seviye Yazılıma yönlendiriliyor...';
+            closeTerminal();
+            if (window.location.pathname !== '/') {
+              window.location.href = '/#gomulu-sistem';
+            } else {
+              document.getElementById('gomulu-sistem')?.scrollIntoView({ behavior: 'smooth' });
+            }
+            break;
+
+          case 'lab':
+            resp.innerText = 'Canlı Aviyonik & Donanım Laboratuvarı açılıyor...';
+            closeTerminal();
+            window.location.href = '/lab';
             break;
 
           case 'status':

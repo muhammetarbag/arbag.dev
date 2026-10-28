@@ -1,0 +1,452 @@
+---
+import Layout from '../layouts/Layout.astro';
+import FlightDisplayHUD from '../components/FlightDisplayHUD.astro';
+import Arinc429Decoder from '../components/Arinc429Decoder.astro';
+import VtolTransitionSim from '../components/VtolTransitionSim.astro';
+import AvionicsQRHAgent from '../components/AvionicsQRHAgent.astro';
+import AdsbDissector from '../components/AdsbDissector.astro';
+import CommandPalette from '../components/CommandPalette.astro';
+
+const laboratories = [
+  {
+    ata: "ATA 21 / 36",
+    category: "avionics",
+    title: "Bleed Air & Cabin Pressurization",
+    kicker: "Pnömatik & Kabin Basıncı",
+    desc: "Motor kompresör kademelerinden pack ve outflow valve'a uzanan pnömatik döngü; ani dekompresyon teşhisi.",
+    url: "https://muhammetarbag.github.io/bleed-air-pressurization-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "ATA 22 / AEE 303",
+    category: "avionics",
+    title: "Autoflight Systems Virtual Lab",
+    kicker: "Otopilot & Uçuş Yönlendirici",
+    desc: "Uçuş kontrol bilgisayarı PID döngüleri, pitch/roll komuta kanalları, irtifa tutma ve yaklaşma modu mimarisi.",
+    url: "https://muhammetarbag.github.io/autoflight-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "ATA 24",
+    category: "power",
+    title: "Aircraft Electrical Power Lab",
+    kicker: "Uçak Elektrik Güç Dağıtımı",
+    desc: "115V AC 400Hz ve 28V DC bara topolojisi, IDG/APU jeneratör yönetimi, otomatik Bus Tie transferi ve 10 arıza senaryosu.",
+    url: "https://muhammetarbag.github.io/aircraft-electrical-power-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "ATA 27 / AERO",
+    category: "aero",
+    title: "Rüzgâr Tüneli & Aerodinamik Lab",
+    kicker: "Kanat Profili & Akışkanlar",
+    desc: "NACA kanat kesitleri üzerinde hücum açısı (AoA), kaldırma/sürükleme (L/D) oranları ve perdövites (stall) dinamiği.",
+    url: "https://muhammetarbag.github.io/ruzgar-lab/",
+    badge: "EĞİTİM MODÜLÜ",
+    status: "NORMAL",
+    statusColor: "cyan"
+  },
+  {
+    ata: "ATA 28 / 47",
+    category: "power",
+    title: "Aircraft Fuel System Lab",
+    kicker: "Uçak Yakıt & Inerting Sistemleri",
+    desc: "Kanat ve merkez tanklar, crossfeed vana yönetimi, yakıt transfer pompaları ve kanat yük dengesi (W&B).",
+    url: "https://muhammetarbag.github.io/aircraft-fuel-system-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "ATA 29",
+    category: "power",
+    title: "Hydraulic Power Lab",
+    kicker: "Uçak Hidrolik Güç Sistemi",
+    desc: "3000 PSI Yeşil, Mavi ve Sarı rezervuar hatları, motor pompaları (EDP) ve çift yönlü Power Transfer Unit (PTU) mantığı.",
+    url: "https://muhammetarbag.github.io/hydraulic-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "ATA 34 / AEE 301",
+    category: "avionics",
+    title: "Radio Navigation & ILS Lab",
+    kicker: "Radyo Navigasyon & ILS Yaklaşma",
+    desc: "VHF Localizer ve UHF Glideslope DDM (modülasyon farkı) ayrıştırımı, rüzgâr sapması ve Runway 35R aletli iniş sistemi.",
+    url: "https://muhammetarbag.github.io/radio-navigation-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "ATA 72",
+    category: "aero",
+    title: "Turbofan Engine Virtual Lab",
+    kicker: "İki Kademeli Turbofan Motoru",
+    desc: "Fan, kompresör, yanma odası ve türbin gaz akışı termodinamiği; interaktif N1/N2 ve EGT telemetri göstergeleri.",
+    url: "https://muhammetarbag.github.io/turbofan-lab/",
+    badge: "EĞİTİM MODÜLÜ",
+    status: "NORMAL",
+    statusColor: "cyan"
+  },
+  {
+    ata: "ATA 85",
+    category: "aero",
+    title: "Dört Zamanlı Motor Lab (Motorlab)",
+    kicker: "Pistonlu İçten Yanmalı Motor",
+    desc: "Dört zamanlı benzinli motorun emme, sıkıştırma, yanma ve egzoz çevrimi; hareketli kesit ve P-V diyagramı.",
+    url: "https://muhammetarbag.github.io/motorlab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "PROTOTİP // VTOL",
+    category: "vtol",
+    title: "ARK04 Stealth VTOL Drone",
+    kicker: "3D Gövde & Aviyonik Entegrasyonu",
+    desc: "Dört kaldırma motoru ve itki geçiş koridoru hesapları, 3D CAD yüzey modellemesi, gövde içi aviyonik yerleşimi.",
+    url: "#vtol-spec",
+    badge: "3D CAD PROTOTİP",
+    status: "TASARIM",
+    statusColor: "amber"
+  }
+];
+---
+
+<Layout
+  title="Canlı Aviyonik & Donanım Laboratuvarı — Muhammet Hüseyin Arbağ"
+  description="ARINC 429, VTOL geçiş simülatörü, kokpit QRH acil durum motoru, ADS-B alıcısı ve 10 interaktif ATA uçak laboratuvarı."
+>
+  <div class="max-w-6xl mx-auto px-6 mb-24">
+    
+    <!-- Breadcrumb & Back Link -->
+    <div class="mb-8">
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 text-xs font-mono text-neutral-400 hover:text-white transition-colors py-1 px-3 rounded-full bg-white/[0.03] border border-white/10"
+      >
+        <span>←</span>
+        <span>Ana Sayfa (Yazılım &amp; Yapay Zeka Portfolyosu)</span>
+      </a>
+    </div>
+
+    <!-- Lab Hero Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16 border-b border-white/[0.08] pb-8">
+      <div class="space-y-3">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#00e5ff]/30 bg-[#00e5ff]/10 text-[#00e5ff] font-mono text-[10px] font-bold">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#00e5ff] animate-ping"></span>
+          <span>CANLI LABORATUVAR // DONANIM &amp; SİMÜLASYON MERKEZİ</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white">
+          Avionics &amp; Systems Lab Deck
+        </h1>
+        <p class="text-neutral-400 text-sm sm:text-base max-w-2xl leading-relaxed">
+          Havacılık elektrik-elektroniği, sayısal veri yolları (ARINC 429 / 1553B), RF gözetleme ve uçuş kontrol algoritmaları için geliştirilmiş deterministik web laboratuvarları.
+        </p>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="flex items-center gap-4 font-mono text-xs text-neutral-400">
+        <div class="p-3 rounded-xl bg-white/[0.02] border border-white/10">
+          <div class="text-[10px] text-neutral-500">CANLI ARAÇLAR</div>
+          <div class="text-base font-bold text-white">5 İnteraktif Konsol</div>
+        </div>
+        <div class="p-3 rounded-xl bg-white/[0.02] border border-white/10">
+          <div class="text-[10px] text-neutral-500">ATA SİMÜLATÖRLERİ</div>
+          <div class="text-base font-bold text-[#00e676]">10 Modül Aktif</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PFD HUD + ARINC 429 Section -->
+    <div class="space-y-12 mb-20">
+      
+      <!-- Primary Flight Display 60 FPS Canvas -->
+      <div class="hardware-card">
+        <div class="hardware-card-inner space-y-4">
+          <div class="specular-line"></div>
+          
+          <div class="flex items-center justify-between border-b border-white/[0.06] pb-3 text-xs font-mono">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-[#00e676] animate-pulse"></span>
+              <span class="text-white font-bold tracking-wider">PRIMARY FLIGHT DISPLAY (PFD) // 60 FPS JİROSKOP &amp; ILS YAKLAŞMA</span>
+            </div>
+            <span class="text-[#00e676] text-[10px]">CANLI CANVAS ENGINE</span>
+          </div>
+
+          <FlightDisplayHUD />
+
+          <p class="text-[11px] font-mono text-neutral-400">
+            Fare imlecini gösterge üzerinde hareket ettirerek yapay ufkun pitch merdivenini ve roll kanat göstergelerini canlı test edebilirsiniz.
+          </p>
+        </div>
+      </div>
+
+      <!-- ARINC 429 Word Dissector -->
+      <div id="arinc-tool">
+        <Arinc429Decoder />
+      </div>
+
+      <!-- ARK-04 VTOL Dynamic Transition Simulator -->
+      <div id="vtol-spec">
+        <VtolTransitionSim />
+      </div>
+
+      <!-- Cockpit QRH Fault Isolation Engine -->
+      <div id="qrh-tool">
+        <AvionicsQRHAgent />
+      </div>
+
+      <!-- Open-SDR ADS-B 1090 MHz Frame Dissector -->
+      <div id="adsb-tool">
+        <AdsbDissector />
+      </div>
+
+    </div>
+
+    <!-- The 9-System Synoptic Matrix -->
+    <section id="laboratuvarlar" class="space-y-8 scroll-mt-24 mb-20">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/[0.06] pb-6">
+        <div>
+          <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">02 // THE 9-SYSTEM MATRIX</div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">ATA Uçak Sistem Simülatörleri</h2>
+        </div>
+        <p class="text-xs text-neutral-400 max-w-md font-mono">
+          Gerçek aviyonik veri yolları, bara izolasyonları ve arıza enjeksiyon algoritmaları barındıran tam teşekküllü web laboratuvarları.
+        </p>
+      </div>
+
+      <!-- Live Synoptic Control Panel (Interactive Demo Component) -->
+      <div class="hardware-card mb-8">
+        <div class="hardware-card-inner space-y-6">
+          <div class="specular-line"></div>
+          
+          <div class="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.08] pb-4">
+            <div class="flex items-center gap-3">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#00e676] shadow-[0_0_8px_#00e676]"></span>
+              <span class="font-mono text-xs font-bold text-white">ATA 24: ELEKTRİK GÜÇ BARA ŞEBEKESİ (CANLI SYNOPTIC)</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button
+                id="trip-idg-btn"
+                class="px-3 py-1 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-mono font-medium transition-colors"
+              >
+                [TRIP IDG 1 (ARIZA ENJEKTE ET)]
+              </button>
+              <button
+                id="reset-bus-btn"
+                class="px-3 py-1 rounded bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10 text-xs font-mono transition-colors"
+              >
+                [RESET BARA]
+              </button>
+            </div>
+          </div>
+
+          <!-- Dynamic Synoptic Diagram -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
+            <!-- IDG 1 & AC BUS 1 -->
+            <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-3" id="panel-ac1">
+              <div class="flex items-center justify-between">
+                <span class="text-neutral-400">SOL MOTOR JENERATÖRÜ (IDG 1)</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-[#00e676]" id="idg1-status">ONLINE</span>
+              </div>
+              <div class="text-xl font-bold text-white tracking-wider" id="idg1-volts">115V AC • 400 Hz</div>
+              <div class="text-[11px] text-neutral-500 border-t border-white/5 pt-2">
+                AC BUS 1: <span class="text-[#00e676]" id="ac1-source">IDG 1 Doğrudan Besliyor</span>
+              </div>
+            </div>
+
+            <!-- Bus Tie Contactor (BTC) Central Logic -->
+            <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-3 text-center flex flex-col justify-center" id="panel-btc">
+              <div class="text-neutral-400 text-[11px]">BUS TIE CONTACTOR (BTC)</div>
+              <div class="text-sm font-bold text-neutral-300" id="btc-status">AÇIK (NORMAL İZOLE)</div>
+              <div class="text-[10px] text-neutral-500">Break-Before-Make Koruması Aktif</div>
+            </div>
+
+            <!-- APU / IDG 2 & AC BUS 2 -->
+            <div class="p-4 rounded-xl bg-black/40 border border-white/10 space-y-3" id="panel-ac2">
+              <div class="flex items-center justify-between">
+                <span class="text-neutral-400">SAĞ MOTOR JENERATÖRÜ (IDG 2)</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-[#00e676]">ONLINE</span>
+              </div>
+              <div class="text-xl font-bold text-white tracking-wider">115V AC • 400 Hz</div>
+              <div class="text-[11px] text-neutral-500 border-t border-white/5 pt-2">
+                AC BUS 2: <span class="text-[#00e676]">IDG 2 Doğrudan Besliyor</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-neutral-400 pt-2 font-mono">
+            <span id="fault-log" class="text-neutral-400">DURUM: Tüm baralar nominal ve dengeli besleniyor.</span>
+            <a
+              href="https://muhammetarbag.github.io/aircraft-electrical-power-lab/"
+              target="_blank"
+              class="text-[#00e5ff] hover:underline flex items-center gap-1 font-semibold"
+            >
+              Tam Laboratuvarı Aç ↗
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Filter Buttons -->
+      <div class="flex flex-wrap items-center gap-2 mb-8 font-mono text-xs">
+        <span class="text-neutral-500 text-[11px] mr-2">FİLTRE:</span>
+        <button
+          class="filter-btn active px-3 py-1.5 rounded-full border border-[#00e5ff]/40 bg-[#00e5ff]/10 text-white font-semibold transition-all"
+          data-filter="all"
+        >
+          TÜMÜ (10)
+        </button>
+        <button
+          class="filter-btn px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-all"
+          data-filter="avionics"
+        >
+          ✈️ AVİYONİK (3)
+        </button>
+        <button
+          class="filter-btn px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-all"
+          data-filter="power"
+        >
+          ⚡ GÜÇ &amp; SİSTEMLER (3)
+        </button>
+        <button
+          class="filter-btn px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-all"
+          data-filter="aero"
+        >
+          🌬️ AERODİNAMİK &amp; MOTOR (3)
+        </button>
+        <button
+          class="filter-btn px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-all"
+          data-filter="vtol"
+        >
+          🛸 İHA / CAD (1)
+        </button>
+      </div>
+
+      <!-- The 9 Labs Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="labs-grid">
+        {laboratories.map((lab) => (
+          <a
+            href={lab.url}
+            target={lab.url.startsWith("http") ? "_blank" : "_self"}
+            rel="noopener noreferrer"
+            class="hardware-card group lab-card"
+            data-category={lab.category}
+          >
+            <div class="hardware-card-inner flex flex-col justify-between space-y-4">
+              <div class="specular-line"></div>
+              
+              <div class="space-y-3">
+                <div class="flex items-center justify-between text-[10px] mono-telemetry">
+                  <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-neutral-300 font-semibold">
+                    {lab.ata}
+                  </span>
+                  <span class={`text-${lab.statusColor === 'emerald' ? '[#00e676]' : lab.statusColor === 'cyan' ? '[#00e5ff]' : '[#ffab00]'}`}>
+                    ● {lab.badge}
+                  </span>
+                </div>
+
+                <div>
+                  <p class="text-[11px] font-mono text-[#00e5ff] tracking-wide">{lab.kicker}</p>
+                  <h3 class="text-base font-bold text-white group-hover:text-[#00e5ff] transition-colors">
+                    {lab.title}
+                  </h3>
+                </div>
+
+                <p class="text-xs text-neutral-400 leading-relaxed">
+                  {lab.desc}
+                </p>
+              </div>
+
+              <div class="pt-4 border-t border-white/[0.05] flex items-center justify-between text-xs font-mono text-neutral-400 group-hover:text-white transition-colors">
+                <span>Laboratuvara Git</span>
+                <span class="text-[#00e5ff] group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Command Palette Floating Terminal -->
+  <CommandPalette />
+
+  <!-- Client-side Interactive Scripts -->
+  <script>
+    // 1. ATA 24 Synoptic Fault Injection
+    const tripBtn = document.getElementById('trip-idg-btn');
+    const resetBtn = document.getElementById('reset-bus-btn');
+    const idg1Status = document.getElementById('idg1-status');
+    const idg1Volts = document.getElementById('idg1-volts');
+    const ac1Source = document.getElementById('ac1-source');
+    const btcStatus = document.getElementById('btc-status');
+    const faultLog = document.getElementById('fault-log');
+
+    if (tripBtn && resetBtn) {
+      tripBtn.addEventListener('click', () => {
+        if (idg1Status && idg1Volts && ac1Source && btcStatus && faultLog) {
+          idg1Status.innerText = 'TRIPPED (OFF)';
+          idg1Status.className = 'text-[10px] px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 font-bold';
+          idg1Volts.innerText = '0V AC (KAYIP)';
+          ac1Source.innerText = 'BTC Üzerinden IDG 2 Besliyor';
+          ac1Source.className = 'text-amber-400 font-bold';
+          btcStatus.innerText = 'KAPALI (TRANSFER YAPILDI)';
+          btcStatus.className = 'text-sm font-bold text-amber-400';
+          faultLog.innerHTML = '<span class="text-amber-400 font-bold">UYARI:</span> IDG 1 düştü! 15ms içinde Bus Tie kapandı, yük atma (Load Shed) devreye alındı.';
+        }
+      });
+
+      resetBtn.addEventListener('click', () => {
+        if (idg1Status && idg1Volts && ac1Source && btcStatus && faultLog) {
+          idg1Status.innerText = 'ONLINE';
+          idg1Status.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-[#00e676] font-bold';
+          idg1Volts.innerText = '115V AC • 400 Hz';
+          ac1Source.innerText = 'IDG 1 Doğrudan Besliyor';
+          ac1Source.className = 'text-[#00e676] font-bold';
+          btcStatus.innerText = 'AÇIK (NORMAL İZOLE)';
+          btcStatus.className = 'text-sm font-bold text-neutral-300';
+          faultLog.innerText = 'DURUM: Tüm baralar nominal ve dengeli besleniyor.';
+        }
+      });
+    }
+
+    // 2. Laboratories Category Filter
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const labCards = document.querySelectorAll('.lab-card');
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter');
+
+        filterBtns.forEach((b) => {
+          b.classList.remove('active', 'border-[#00e5ff]/40', 'bg-[#00e5ff]/10', 'text-white', 'font-semibold');
+          b.classList.add('border-white/10', 'bg-white/5', 'text-neutral-400');
+        });
+
+        btn.classList.add('active', 'border-[#00e5ff]/40', 'bg-[#00e5ff]/10', 'text-white', 'font-semibold');
+        btn.classList.remove('border-white/10', 'bg-white/5', 'text-neutral-400');
+
+        labCards.forEach((card) => {
+          const cat = card.getAttribute('data-category');
+          if (filter === 'all' || cat === filter) {
+            (card as HTMLElement).style.display = 'block';
+          } else {
+            (card as HTMLElement).style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
+</Layout>
