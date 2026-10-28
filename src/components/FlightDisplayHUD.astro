@@ -1,0 +1,185 @@
+---
+// FlightDisplayHUD.astro — Interactive Canvas Primary Flight Display (PFD)
+---
+
+<div class="relative w-full h-full min-h-[190px] rounded-xl bg-[#07080b] border border-white/10 flex flex-col justify-between p-3 overflow-hidden select-none" id="pfd-container">
+  <!-- PFD Top Annunciator Banner -->
+  <div class="flex items-center justify-between text-[10px] font-mono border-b border-white/[0.08] pb-1.5 z-10 bg-[#07080b]/80 backdrop-blur-sm">
+    <div class="flex items-center gap-1.5">
+      <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-[#00e676] font-bold text-[9px]">CAT III DUAL</span>
+      <span class="text-neutral-500">|</span>
+      <span class="text-[#00e5ff] font-semibold text-[9px]">AP 1 ENGAGED</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-neutral-400 text-[9px]">LOC | GS</span>
+      <span class="w-1.5 h-1.5 rounded-full bg-[#00e676] animate-pulse"></span>
+    </div>
+  </div>
+
+  <!-- Real-time Canvas Renderer -->
+  <div class="relative flex-1 flex items-center justify-center my-1">
+    <canvas id="pfd-canvas" class="w-full h-full max-h-[140px] block" width="340" height="140"></canvas>
+    
+    <!-- Altimeter & Airspeed Numerical Badges -->
+    <div class="absolute left-1 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-[#090b10] border border-[#00e5ff]/40 text-[#00e5ff] font-mono text-[10px] font-bold shadow-lg">
+      <span id="speed-val">142</span> <span class="text-[8px] text-neutral-400">KTS</span>
+    </div>
+    
+    <div class="absolute right-1 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-[#090b10] border border-[#00e676]/40 text-[#00e676] font-mono text-[10px] font-bold shadow-lg">
+      <span id="alt-val">02480</span> <span class="text-[8px] text-neutral-400">FT</span>
+    </div>
+  </div>
+
+  <!-- PFD Bottom Telemetry Footer -->
+  <div class="flex items-center justify-between text-[9px] font-mono text-neutral-400 border-t border-white/[0.06] pt-1.5 z-10 bg-[#07080b]/80">
+    <span class="text-neutral-300">QNH: <strong class="text-white">1013 hPa</strong></span>
+    <span class="text-[#00e5ff]">RWY 35R • ILS 109.50</span>
+    <span>HDG: <strong class="text-white" id="hdg-val">352°</strong></span>
+  </div>
+</div>
+
+<script>
+  // 60 FPS Lightweight Canvas Horizon & Pitch Ladder
+  const canvas = document.getElementById('pfd-canvas') as HTMLCanvasElement;
+  const container = document.getElementById('pfd-container');
+  const speedEl = document.getElementById('speed-val');
+  const altEl = document.getElementById('alt-val');
+
+  if (canvas && container) {
+    const ctx = canvas.getContext('2d');
+    let pitch = 0;   // degrees (-15 to +15)
+    let roll = 0;    // degrees (-25 to +25)
+    let targetPitch = 0;
+    let targetRoll = 0;
+    let animFrame: number;
+    let time = 0;
+
+    // Track mouse over container for subtle haptic response
+    container.addEventListener('mousemove', (e) => {
+      const rect = container.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      targetRoll = x * 22;
+      targetPitch = -y * 14;
+    });
+
+    container.addEventListener('mouseleave', () => {
+      targetRoll = 0;
+      targetPitch = 0;
+    });
+
+    function draw() {
+      if (!ctx) return;
+      time += 0.03;
+
+      // Smooth interpolation + gentle atmospheric flight breathing
+      const naturalBreathingPitch = Math.sin(time * 0.8) * 1.5;
+      const naturalBreathingRoll = Math.cos(time * 0.6) * 1.2;
+      
+      pitch += (targetPitch + naturalBreathingPitch - pitch) * 0.08;
+      roll += (targetRoll + naturalBreathingRoll - roll) * 0.08;
+
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      ctx.clearRect(0, 0, w, h);
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate((roll * Math.PI) / 180);
+
+      // Pitch translation (pixels per degree)
+      const pitchOffset = pitch * 2.8;
+
+      // Horizon Sky / Ground Division
+      ctx.fillStyle = '#0a1a2f'; // Sky (Deep Aviation Blue)
+      ctx.fillRect(-w, -h * 2 + pitchOffset, w * 2, h * 2);
+
+      ctx.fillStyle = '#17120e'; // Earth (Dark Carbon Brown)
+      ctx.fillRect(-w, pitchOffset, w * 2, h * 2);
+
+      // Horizon Line
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(-w, pitchOffset);
+      ctx.lineTo(w, pitchOffset);
+      ctx.stroke();
+
+      // Pitch Ladder Lines (+10, +5, -5, -10)
+      const pitchIntervals = [-10, -5, 5, 10];
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.font = '8px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+
+      pitchIntervals.forEach((deg) => {
+        const y = pitchOffset - deg * 2.8;
+        const lineLen = Math.abs(deg) === 10 ? 32 : 18;
+        
+        ctx.beginPath();
+        ctx.moveTo(-lineLen, y);
+        ctx.lineTo(lineLen, y);
+        ctx.stroke();
+
+        if (Math.abs(deg) === 10) {
+          ctx.fillText(String(Math.abs(deg)), lineLen + 8, y + 3);
+          ctx.fillText(String(Math.abs(deg)), -lineLen - 8, y + 3);
+        }
+      });
+
+      ctx.restore();
+
+      // Fixed Central Aircraft Reference Symbol (Yellow)
+      ctx.strokeStyle = '#ffcc00';
+      ctx.lineWidth = 2.5;
+      ctx.fillStyle = '#ffcc00';
+
+      // Left Wing Bar
+      ctx.beginPath();
+      ctx.moveTo(cx - 36, cy);
+      ctx.lineTo(cx - 14, cy);
+      ctx.lineTo(cx - 14, cy + 5);
+      ctx.stroke();
+
+      // Right Wing Bar
+      ctx.beginPath();
+      ctx.moveTo(cx + 36, cy);
+      ctx.lineTo(cx + 14, cy);
+      ctx.lineTo(cx + 14, cy + 5);
+      ctx.stroke();
+
+      // Center Dot
+      ctx.beginPath();
+      ctx.arc(cx, cy, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Magenta Flight Director Crossbars
+      const fdY = cy + (pitch - targetPitch) * 1.5;
+      const fdX = cx + (roll - targetRoll) * 1.2;
+      ctx.strokeStyle = '#ff00aa';
+      ctx.lineWidth = 1.5;
+      
+      ctx.beginPath();
+      ctx.moveTo(cx - 24, fdY);
+      ctx.lineTo(cx + 24, fdY);
+      ctx.moveTo(fdX, cy - 20);
+      ctx.lineTo(fdX, cy + 20);
+      ctx.stroke();
+
+      // Update speed & alt subtly with breathing
+      if (speedEl && altEl) {
+        const liveSpeed = 142 + Math.round(pitch * 0.4);
+        const liveAlt = 2480 + Math.round(pitch * 3.5);
+        speedEl.innerText = String(liveSpeed);
+        altEl.innerText = String(liveAlt).padStart(5, '0');
+      }
+
+      animFrame = requestAnimationFrame(draw);
+    }
+
+    draw();
+  }
+</script>

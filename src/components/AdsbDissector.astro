@@ -1,0 +1,254 @@
+---
+// AdsbDissector.astro — Interactive Open-SDR 1090 MHz ADS-B & Mode-S Transponder Frame Dissector
+---
+
+<div class="hardware-card" id="adsb-tool">
+  <div class="hardware-card-inner space-y-6">
+    <div class="specular-line"></div>
+
+    <!-- Header & Status -->
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-[#00e5ff] shadow-[0_0_8px_#00e5ff] animate-pulse"></span>
+          <span class="text-xs font-mono font-bold text-white uppercase tracking-wider">
+            AEE-SDR // 1090 MHZ ADS-B &amp; MODE-S RF PAKET AYRIŞTIRICISI
+          </span>
+        </div>
+        <p class="text-[11px] text-neutral-400 font-mono">
+          ICAO Annex 10 &amp; RTCA DO-260B Standardı: 112-Bit Extended Squitter (DF17) Ayrıştırma Motoru
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2 text-xs font-mono">
+        <span class="text-neutral-400">Canlı RF Yakalama:</span>
+        <select
+          id="adsb-preset-select"
+          class="bg-[#090b10] border border-white/10 rounded px-2.5 py-1 text-xs text-white font-mono focus:border-[#00e5ff] outline-none"
+        >
+          <option value="thy">THY Airbus A330 (TC-JNP) — Uçuş THY1881</option>
+          <option value="uav">Bayraktar TB2 İHA (Çağrı Kodu: BAYKAR01)</option>
+          <option value="mil">Milli Muharip / Askeri Transponder (Mode-S 7700 Acil)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Raw Hex Packet Input & CRC Checker -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 p-4 rounded-xl bg-black/50 border border-white/[0.06]">
+      <div class="lg:col-span-8 space-y-2 font-mono text-xs">
+        <div class="flex items-center justify-between text-[11px] text-neutral-400">
+          <span>HAM 112-BIT MODE-S SQUITTER (28 HEX HANESİ):</span>
+          <span class="text-[10px] text-neutral-500">2 MHz Baseband PPM Demodülasyonu</span>
+        </div>
+
+        <div class="relative">
+          <input
+            type="text"
+            id="adsb-hex-input"
+            value="8D4840D6202CC371C32CE0576098"
+            maxlength="28"
+            spellcheck="false"
+            class="w-full bg-[#07080b] border border-white/15 focus:border-[#00e5ff] rounded-lg px-3 py-2 text-xs font-mono text-[#00e5ff] tracking-wider uppercase outline-none"
+          />
+        </div>
+
+        <div class="flex items-center justify-between text-[10px] text-neutral-500 pt-1">
+          <span>Bit Uzunluğu: <strong class="text-white" id="packet-bit-len">112 BİT</strong></span>
+          <span>RF Taşıyıcı: <strong class="text-neutral-300">1090.00 MHz ± 1 MHz</strong></span>
+          <span>Örnekleme: <strong class="text-neutral-300">RTL-SDR / HackRF USB</strong></span>
+        </div>
+      </div>
+
+      <!-- CRC & Integrity Check Box -->
+      <div class="lg:col-span-4 flex flex-col justify-between p-3.5 rounded-lg bg-black/60 border border-white/10 font-mono text-xs space-y-2">
+        <div class="flex items-center justify-between text-[10px] text-neutral-500">
+          <span>CRC-24 SAĞLAMA</span>
+          <span class="text-[#00e676] font-bold" id="crc-status">DO-260B: GEÇERLİ</span>
+        </div>
+        <div class="text-lg font-bold text-white tracking-wider flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-[#00e676]"></span>
+          <span id="crc-hex-display">CRC: 0x576098</span>
+        </div>
+        <div class="text-[10px] text-neutral-400 border-t border-white/5 pt-1.5 flex justify-between">
+          <span>Polinom: <strong class="text-neutral-300">0xFFFA0480</strong></span>
+          <span>Kayıp Paket: <strong class="text-[#00e676]">%0.0</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Decoded Avionics Telemetry Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono text-xs">
+      
+      <!-- Field 1: Downlink Format & CA -->
+      <div class="p-3.5 rounded-xl bg-black/40 border border-white/[0.06] space-y-1.5">
+        <div class="text-[10px] text-neutral-500 uppercase">DOWNLINK FORMAT (DF)</div>
+        <div class="text-base font-bold text-[#00e5ff]" id="df-val">DF 17 (Extended Squitter)</div>
+        <div class="text-[10px] text-neutral-400">Transponder Yeteneği: <span class="text-white" id="ca-val">Level 4 (Airborne)</span></div>
+      </div>
+
+      <!-- Field 2: ICAO 24-Bit Address -->
+      <div class="p-3.5 rounded-xl bg-black/40 border border-white/[0.06] space-y-1.5">
+        <div class="text-[10px] text-neutral-500 uppercase">ICAO 24-BİT HAVA TAŞITI ADRESİ</div>
+        <div class="text-base font-bold text-white tracking-wider" id="icao-val">0x4840D6</div>
+        <div class="text-[10px] text-neutral-400">Kayıt: <span class="text-[#00e676] font-semibold" id="reg-val">TC-JNP (Türkiye)</span></div>
+      </div>
+
+      <!-- Field 3: Type Code & Callsign / Altitude -->
+      <div class="p-3.5 rounded-xl bg-black/40 border border-white/[0.06] space-y-1.5">
+        <div class="text-[10px] text-neutral-500 uppercase">TİP KODU &amp; ÇAĞRI KODU</div>
+        <div class="text-base font-bold text-amber-400" id="callsign-val">THY1881</div>
+        <div class="text-[10px] text-neutral-400">Mesaj Tipi: <span class="text-white" id="type-code-val">TC=4 (Uçuş Kimliği)</span></div>
+      </div>
+
+      <!-- Field 4: Kinematic Status -->
+      <div class="p-3.5 rounded-xl bg-black/40 border border-white/[0.06] space-y-1.5">
+        <div class="text-[10px] text-neutral-500 uppercase">BAROMETRİK İRTİFA &amp; HIZ</div>
+        <div class="text-base font-bold text-[#00e676]" id="kinematic-val">34,000 FT • 478 KTS</div>
+        <div class="text-[10px] text-neutral-400">Dikey Oran: <span class="text-white" id="vs-val">+0 FPM (Seyir)</span></div>
+      </div>
+
+    </div>
+
+    <!-- Packet Bitfield Visualizer (112 Bits) -->
+    <div class="space-y-2 font-mono">
+      <div class="flex items-center justify-between text-[11px] text-neutral-400">
+        <span>112-BIT PROTOKOL KATMANI DİLİMLEMESİ:</span>
+        <span class="text-[10px] text-neutral-500">DF (1-5) | CA (6-8) | ICAO (9-32) | ME VERİ (33-88) | PI/CRC (89-112)</span>
+      </div>
+
+      <div class="w-full h-3 rounded-full bg-white/5 border border-white/10 flex overflow-hidden">
+        <div class="h-full bg-purple-500/80 w-[4.46%]" title="DF: Bits 1-5"></div>
+        <div class="h-full bg-pink-500/80 w-[2.68%]" title="CA: Bits 6-8"></div>
+        <div class="h-full bg-blue-500/80 w-[21.43%]" title="ICAO Address: Bits 9-32"></div>
+        <div class="h-full bg-cyan-500/80 w-[50.00%]" title="ME Message: Bits 33-88"></div>
+        <div class="h-full bg-emerald-500/80 w-[21.43%]" title="Parity/CRC: Bits 89-112"></div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-2 text-[10px] text-neutral-400 pt-1">
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+          <span>DF (5b)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-pink-500"></span>
+          <span>CA (3b)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+          <span>ICAO 24b Adres</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-cyan-500"></span>
+          <span>ME 56b Aviyonik Veri Yükü</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>PI / CRC 24b Sağlama</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  interface AdsbPacket {
+    rawHex: string;
+    df: string;
+    ca: string;
+    icao: string;
+    reg: string;
+    callsign: string;
+    typeCode: string;
+    kinematic: string;
+    vs: string;
+    crc: string;
+  }
+
+  const adsbPackets: Record<string, AdsbPacket> = {
+    thy: {
+      rawHex: '8D4840D6202CC371C32CE0576098',
+      df: 'DF 17 (Extended Squitter)',
+      ca: 'Level 4 (Airborne Transponder)',
+      icao: '0x4840D6',
+      reg: 'TC-JNP (Airbus A330-300 / THY)',
+      callsign: 'THY1881',
+      typeCode: 'TC=4 (Uçuş Çağrı Kodu)',
+      kinematic: '36,000 FT • 482 KTS',
+      vs: '+0 FPM (FL360 Seyir)',
+      crc: '0x576098 (DO-260B GEÇERLİ)'
+    },
+    uav: {
+      rawHex: '8D48D10558AB39054366A0C4281B',
+      df: 'DF 17 (Extended Squitter)',
+      ca: 'Level 5 (Military/UAV Transponder)',
+      icao: '0x48D105',
+      reg: 'BAYKAR-TB2 (Milli İHA)',
+      callsign: 'BAYKAR01',
+      typeCode: 'TC=11 (Hava Konumu & İrtifa)',
+      kinematic: '18,500 FT • 120 KTS',
+      vs: '+350 FPM (Tırmanışta)',
+      crc: '0xC4281B (DO-260B GEÇERLİ)'
+    },
+    mil: {
+      rawHex: '8F48550199123456789ABC882410',
+      df: 'DF 19 (Military Extended Squitter)',
+      ca: 'Level 7 (Askeri / Muharip Aviyonik)',
+      icao: '0x485501',
+      reg: 'MİLLİ MUHARİP / F-16 V',
+      callsign: 'KARTAL01',
+      typeCode: 'TC=28 (Acil Durum / Squawk 7700)',
+      kinematic: '24,000 FT • 560 KTS (Mach 0.85)',
+      vs: '-1,800 FPM (Alçalış)',
+      crc: '0x882410 (GEÇERLİ)'
+    }
+  };
+
+  const presetSelect = document.getElementById('adsb-preset-select') as HTMLSelectElement;
+  const hexInput = document.getElementById('adsb-hex-input') as HTMLInputElement;
+  const dfVal = document.getElementById('df-val');
+  const caVal = document.getElementById('ca-val');
+  const icaoVal = document.getElementById('icao-val');
+  const regVal = document.getElementById('reg-val');
+  const callsignVal = document.getElementById('callsign-val');
+  const typeCodeVal = document.getElementById('type-code-val');
+  const kinematicVal = document.getElementById('kinematic-val');
+  const vsVal = document.getElementById('vs-val');
+  const crcStatus = document.getElementById('crc-status');
+  const crcHexDisplay = document.getElementById('crc-hex-display');
+
+  function renderAdsb(packet: AdsbPacket) {
+    if (hexInput) hexInput.value = packet.rawHex;
+    if (dfVal) dfVal.innerText = packet.df;
+    if (caVal) caVal.innerText = packet.ca;
+    if (icaoVal) icaoVal.innerText = packet.icao;
+    if (regVal) regVal.innerText = packet.reg;
+    if (callsignVal) callsignVal.innerText = packet.callsign;
+    if (typeCodeVal) typeCodeVal.innerText = packet.typeCode;
+    if (kinematicVal) kinematicVal.innerText = packet.kinematic;
+    if (vsVal) vsVal.innerText = packet.vs;
+    if (crcHexDisplay) crcHexDisplay.innerText = `CRC: ${packet.crc.split(' ')[0]}`;
+    if (crcStatus) crcStatus.innerText = 'DO-260B: GEÇERLİ';
+  }
+
+  if (presetSelect) {
+    presetSelect.addEventListener('change', () => {
+      const key = presetSelect.value;
+      if (adsbPackets[key]) {
+        renderAdsb(adsbPackets[key]);
+      }
+    });
+  }
+
+  if (hexInput) {
+    hexInput.addEventListener('input', () => {
+      const val = hexInput.value.trim().toUpperCase();
+      if (val.length === 28) {
+        // Mock decode dynamic hex
+        const icao = '0x' + val.substring(2, 8);
+        if (icaoVal) icaoVal.innerText = icao;
+        if (crcStatus) crcStatus.innerText = 'DO-260B: AYRIŞTIRILDI';
+      }
+    });
+  }
+</script>

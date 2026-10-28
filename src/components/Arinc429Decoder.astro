@@ -1,0 +1,284 @@
+---
+// Arinc429Decoder.astro — Interactive ARINC 429 Digital Avionics Bus Analyzer & Word Dissector
+---
+
+<div class="hardware-card">
+  <div class="hardware-card-inner space-y-6">
+    <div class="specular-line"></div>
+    
+    <!-- Header & Spec Tag -->
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-[#00e5ff] shadow-[0_0_8px_#00e5ff]"></span>
+          <span class="text-xs font-mono font-bold text-white uppercase tracking-wider">
+            ARINC 429 DİJİTAL AVİYONİK VERİ YOLU AYRIŞTIRICISI
+          </span>
+        </div>
+        <p class="text-[11px] text-neutral-400 font-mono">
+          32-Bit Aviyonik Sözcük Mimarisi: 100 kbps Yüksek Hızlı Bipolar RZ Sinyal Ayrıştırması
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2 text-xs font-mono">
+        <span class="text-neutral-400">Önayar:</span>
+        <select
+          id="arinc-preset"
+          class="bg-[#090b10] border border-white/10 rounded px-2.5 py-1 text-xs text-white font-mono focus:border-[#00e5ff] outline-none"
+        >
+          <option value="alt">Etiket 203: Barometrik İrtifa (Feet)</option>
+          <option value="tas">Etiket 210: Gerçek Hava Hızı (KTS)</option>
+          <option value="hdg">Etiket 320: Manyetik Baş (Derece)</option>
+          <option value="vs">Etiket 241: Kabin Düşey Hızı (fpm)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Live Value Slider & Decoded Engineering Value -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 rounded-xl bg-black/40 border border-white/[0.06]">
+      <div class="space-y-2 md:col-span-2">
+        <div class="flex items-center justify-between font-mono text-xs">
+          <span class="text-neutral-400" id="slider-label">İrtifa Girdisi:</span>
+          <span class="text-white font-bold" id="slider-val-display">28,500 FT</span>
+        </div>
+        <input
+          type="range"
+          id="arinc-slider"
+          min="0"
+          max="45000"
+          step="100"
+          value="28500"
+          class="w-full accent-[#00e5ff] cursor-pointer"
+        />
+        <div class="flex justify-between text-[10px] font-mono text-neutral-600">
+          <span id="slider-min">0 FT</span>
+          <span>FL280 (Seyir)</span>
+          <span id="slider-max">45,000 FT</span>
+        </div>
+      </div>
+
+      <!-- Hex & Parity Status Box -->
+      <div class="flex flex-col justify-between p-3 rounded-lg bg-black/60 border border-white/10 font-mono text-xs space-y-2">
+        <div class="flex items-center justify-between text-[10px] text-neutral-500">
+          <span>HEX KELİMESİ</span>
+          <span class="text-[#00e676] font-bold" id="parity-status">ODD PARITY: OK</span>
+        </div>
+        <div class="text-xl font-bold text-[#00e5ff] tracking-wider" id="hex-display">
+          0x6A34B283
+        </div>
+        <div class="text-[10px] text-neutral-400 flex justify-between border-t border-white/5 pt-1.5">
+          <span>SSM: <strong class="text-white" id="ssm-status">NORM OP (00)</strong></span>
+          <span>SDI: <strong class="text-white">SYS 1 (01)</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 32-Bit Bitfield Interactive Grid -->
+    <div class="space-y-3 font-mono">
+      <div class="flex items-center justify-between text-[11px] text-neutral-400">
+        <span>32-BIT VERİ YOLU HARİTASI (LSB ➡️ MSB)</span>
+        <span class="text-[10px] text-neutral-500">Etiket (1-8) | SDI (9-10) | Veri Alanı (11-29) | SSM (30-31) | P (32)</span>
+      </div>
+
+      <!-- Bit Cells Visualizer (32 bits) -->
+      <div class="grid grid-cols-16 sm:grid-cols-32 gap-1 p-2 rounded-lg bg-[#07080b] border border-white/10" id="bit-grid">
+        <!-- Generated dynamically in script -->
+      </div>
+
+      <!-- Bit Legend -->
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-[10px] font-mono pt-2 text-neutral-400">
+        <div class="flex items-center gap-1.5">
+          <span class="w-2.5 h-2.5 rounded-sm bg-purple-500/30 border border-purple-500/50"></span>
+          <span>1-8: Etiket (Label)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2.5 h-2.5 rounded-sm bg-amber-500/30 border border-amber-500/50"></span>
+          <span>9-10: SDI</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2.5 h-2.5 rounded-sm bg-cyan-500/30 border border-cyan-500/50"></span>
+          <span>11-29: BNR Veri</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2.5 h-2.5 rounded-sm bg-blue-500/30 border border-blue-500/50"></span>
+          <span>30-31: SSM Durumu</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2.5 h-2.5 rounded-sm bg-emerald-500/30 border border-emerald-500/50"></span>
+          <span>32: Teklik Parite (P)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ARINC 429 Real-time Word Calculator & Bit Generator
+  const presetSelect = document.getElementById('arinc-preset') as HTMLSelectElement;
+  const slider = document.getElementById('arinc-slider') as HTMLInputElement;
+  const sliderLabel = document.getElementById('slider-label');
+  const sliderValDisplay = document.getElementById('slider-val-display');
+  const sliderMin = document.getElementById('slider-min');
+  const sliderMax = document.getElementById('slider-max');
+  const hexDisplay = document.getElementById('hex-display');
+  const parityStatus = document.getElementById('parity-status');
+  const ssmStatus = document.getElementById('ssm-status');
+  const bitGrid = document.getElementById('bit-grid');
+
+  interface PresetConfig {
+    labelOctal: number;
+    name: string;
+    unit: string;
+    min: number;
+    max: number;
+    step: number;
+    defaultVal: number;
+    scale: number; // units per LSB
+  }
+
+  const presets: Record<string, PresetConfig> = {
+    alt: {
+      labelOctal: 0o203,
+      name: "Barometrik İrtifa:",
+      unit: "FT",
+      min: 0,
+      max: 45000,
+      step: 100,
+      defaultVal: 28500,
+      scale: 1.0,
+    },
+    tas: {
+      labelOctal: 0o210,
+      name: "Gerçek Hava Hızı:",
+      unit: "KTS",
+      min: 0,
+      max: 600,
+      step: 5,
+      defaultVal: 340,
+      scale: 0.125,
+    },
+    hdg: {
+      labelOctal: 0o320,
+      name: "Manyetik Baş:",
+      unit: "DEG",
+      min: 0,
+      max: 359,
+      step: 1,
+      defaultVal: 275,
+      scale: 180 / 32768,
+    },
+    vs: {
+      labelOctal: 0o241,
+      name: "Kabin Düşey Hızı:",
+      unit: "FPM",
+      min: -4000,
+      max: 4000,
+      step: 50,
+      defaultVal: -750,
+      scale: 1.0,
+    }
+  };
+
+  function computeArincWord(config: PresetConfig, value: number): number[] {
+    // 32-bit array representing bits 1 through 32
+    const bits = new Array(32).fill(0);
+
+    // Bits 1-8: Label (reverse octal bits as per ARINC 429 LSB first transmission)
+    const label = config.labelOctal;
+    for (let i = 0; i < 8; i++) {
+      bits[i] = (label >> (7 - i)) & 1;
+    }
+
+    // Bits 9-10: SDI (e.g., 01 for primary computer)
+    bits[8] = 1;
+    bits[9] = 0;
+
+    // Bits 11-29: 19-bit Data Field (BNR two's complement integer)
+    let rawData = Math.round(Math.abs(value) / config.scale) & 0x7FFFF;
+    if (value < 0) {
+      // 19-bit two's complement
+      rawData = ((~rawData) + 1) & 0x7FFFF;
+    }
+
+    for (let i = 0; i < 19; i++) {
+      bits[10 + i] = (rawData >> i) & 1;
+    }
+
+    // Bits 30-31: SSM (00 = Normal Operation, 11 = Failure)
+    bits[29] = 0;
+    bits[30] = 0;
+
+    // Bit 32: Odd Parity Calculation (total count of 1s in bits 1-32 must be odd)
+    let onesCount = 0;
+    for (let i = 0; i < 31; i++) {
+      if (bits[i] === 1) onesCount++;
+    }
+    bits[31] = (onesCount % 2 === 0) ? 1 : 0; // if even, set parity to 1 to make odd
+
+    return bits;
+  }
+
+  function update() {
+    if (!presetSelect || !slider || !sliderLabel || !sliderValDisplay || !hexDisplay || !bitGrid) return;
+    
+    const currentPreset = presets[presetSelect.value] || presets.alt;
+    const val = Number(slider.value);
+
+    sliderLabel.innerText = currentPreset.name;
+    sliderValDisplay.innerText = `${val.toLocaleString()} ${currentPreset.unit}`;
+
+    const bits = computeArincWord(currentPreset, val);
+
+    // Convert bits to 32-bit uint hex
+    let hexVal = 0;
+    for (let i = 0; i < 32; i++) {
+      if (bits[i] === 1) {
+        hexVal |= (1 << i);
+      }
+    }
+    const hexStr = '0x' + (hexVal >>> 0).toString(16).toUpperCase().padStart(8, '0');
+    hexDisplay.innerText = hexStr;
+
+    // Render Bit Grid (32 squares)
+    bitGrid.innerHTML = '';
+    bits.forEach((b, idx) => {
+      const bitNum = idx + 1;
+      const cell = document.createElement('div');
+      
+      let colorClass = 'bg-cyan-500/20 text-[#00e5ff] border-cyan-500/40'; // Data default
+      if (bitNum <= 8) {
+        colorClass = 'bg-purple-500/20 text-purple-300 border-purple-500/40'; // Label
+      } else if (bitNum <= 10) {
+        colorClass = 'bg-amber-500/20 text-amber-300 border-amber-500/40'; // SDI
+      } else if (bitNum <= 29) {
+        colorClass = b === 1 ? 'bg-cyan-500/40 text-white font-bold border-[#00e5ff]' : 'bg-white/[0.03] text-neutral-500 border-white/5';
+      } else if (bitNum <= 31) {
+        colorClass = 'bg-blue-500/20 text-blue-300 border-blue-500/40'; // SSM
+      } else {
+        colorClass = 'bg-emerald-500/30 text-[#00e676] font-bold border-[#00e676]'; // Parity
+      }
+
+      cell.className = `flex flex-col items-center justify-center p-1 rounded border text-[9px] font-mono select-none ${colorClass}`;
+      cell.innerHTML = `<span>${b}</span><span class="text-[7px] text-neutral-600">${bitNum}</span>`;
+      bitGrid.appendChild(cell);
+    });
+  }
+
+  if (presetSelect && slider) {
+    presetSelect.addEventListener('change', () => {
+      const p = presets[presetSelect.value];
+      if (p && sliderMin && sliderMax) {
+        slider.min = String(p.min);
+        slider.max = String(p.max);
+        slider.step = String(p.step);
+        slider.value = String(p.defaultVal);
+        sliderMin.innerText = `${p.min} ${p.unit}`;
+        sliderMax.innerText = `${p.max} ${p.unit}`;
+        update();
+      }
+    });
+
+    slider.addEventListener('input', update);
+    update();
+  }
+</script>

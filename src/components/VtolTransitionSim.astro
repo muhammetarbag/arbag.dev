@@ -1,0 +1,244 @@
+---
+// VtolTransitionSim.astro — ARK-04 Stealth VTOL Drone Aerodynamic Transition Corridor Calculator
+---
+
+<div class="hardware-card" id="vtol-spec">
+  <div class="hardware-card-inner space-y-6">
+    <div class="specular-line"></div>
+    
+    <!-- Header & Badge -->
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_#f59e0b]"></span>
+          <span class="text-xs font-mono font-bold text-white uppercase tracking-wider">
+            ARK-04 STEALTH VTOL // DİNAMİK GEÇİŞ KORİDORU &amp; AVİYONİK SİMÜLATÖRÜ
+          </span>
+        </div>
+        <p class="text-[11px] text-neutral-400 font-mono">
+          Tilt-Wing / Tilt-Rotor Aerodinamik Geçiş Hesabı: Dikey Kalkış (Hover) ➡️ İleri Düz Uçuş (Cruise)
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] font-mono text-neutral-300">
+          MTOW: 18.5 KG
+        </span>
+        <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-mono font-bold">
+          3D CAD &amp; DİNAMİK PROTOTİP
+        </span>
+      </div>
+    </div>
+
+    <!-- Interactive Tilt Control & Physics Readouts -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Left Column: Controls & Thrust Vector Visualizer (Col 7) -->
+      <div class="lg:col-span-7 space-y-4">
+        <div class="p-4 rounded-xl bg-black/40 border border-white/[0.06] space-y-3">
+          <div class="flex items-center justify-between font-mono text-xs">
+            <span class="text-neutral-400">Motor Tilt Açısı (θ):</span>
+            <span class="text-amber-400 font-bold text-sm" id="tilt-angle-display">0° (TAM DİKEY HOVER)</span>
+          </div>
+
+          <input
+            type="range"
+            id="tilt-slider"
+            min="0"
+            max="90"
+            step="1"
+            value="0"
+            class="w-full accent-amber-400 cursor-pointer"
+          />
+
+          <div class="flex justify-between text-[10px] font-mono text-neutral-500">
+            <span>0° (Dikey Hover)</span>
+            <span>45° (Geçiş Koridoru)</span>
+            <span>90° (Düz Seyir / Cruise)</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Aircraft Silhouette & Vector Canvas -->
+        <div class="relative h-48 rounded-xl bg-[#07080b] border border-white/10 flex items-center justify-center overflow-hidden p-4">
+          <!-- Background Grid -->
+          <div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:16px_16px]"></div>
+
+          <!-- Dynamic SVG Drone with Rotatable Thrust Vectors -->
+          <svg viewBox="0 0 400 160" class="w-full h-full max-h-40 z-10">
+            <!-- Fuselage (ARK-04 Stealth Wireframe) -->
+            <path d="M 120 80 L 180 65 L 260 65 L 290 80 L 260 95 L 180 95 Z" fill="#0d1117" stroke="#00e5ff" stroke-width="1.5" />
+            <path d="M 180 65 L 210 30 L 230 30 L 220 65" fill="#0d1117" stroke="#ffffff30" stroke-width="1" />
+            <path d="M 180 95 L 210 130 L 230 130 L 220 95" fill="#0d1117" stroke="#ffffff30" stroke-width="1" />
+            
+            <!-- Center of Gravity (CG) -->
+            <circle cx="210" cy="80" r="3" fill="#ffab00" />
+            <text x="210" y="93" fill="#ffab00" font-size="8" font-family="monospace" text-anchor="middle">CG (18.5 kg)</text>
+
+            <!-- Front Tilt Rotor Left -->
+            <g id="rotor-front" transform="translate(160, 45) rotate(0)">
+              <rect x="-10" y="-3" width="20" height="6" rx="2" fill="#ffab00" />
+              <!-- Thrust Vector Arrow -->
+              <line x1="0" y1="0" x2="0" y2="-30" stroke="#00e676" stroke-width="2" marker-end="url(#arrow)" />
+            </g>
+
+            <!-- Rear Tilt Rotor Right -->
+            <g id="rotor-rear" transform="translate(260, 45) rotate(0)">
+              <rect x="-10" y="-3" width="20" height="6" rx="2" fill="#ffab00" />
+              <line x1="0" y1="0" x2="0" y2="-30" stroke="#00e676" stroke-width="2" />
+            </g>
+
+            <!-- Aerodynamic Wing Lift Arrow (Grows with speed) -->
+            <line id="wing-lift-arrow" x1="210" y1="65" x2="210" y2="65" stroke="#00e5ff" stroke-width="3" stroke-dasharray="3,2" />
+            <text id="wing-lift-text" x="220" y="55" fill="#00e5ff" font-size="9" font-family="monospace" opacity="0">+0 N KANAT TAŞIMA</text>
+          </svg>
+
+          <!-- Regime Status Pill -->
+          <div class="absolute bottom-2 left-3 px-2 py-0.5 rounded bg-black/80 border border-white/10 font-mono text-[10px]">
+            UÇUŞ REJİMİ: <span class="font-bold text-[#00e676]" id="regime-status">TAM HOVER (DİKEY KALKIŞ)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Flight Telemetry & Aerodynamic Equations (Col 5) -->
+      <div class="lg:col-span-5 space-y-3 font-mono text-xs">
+        <div class="p-4 rounded-xl bg-black/40 border border-white/[0.06] space-y-3">
+          <div class="text-[10px] text-neutral-400 border-b border-white/5 pb-1.5 flex justify-between">
+            <span>AERODİNAMİK KUVVET DAĞILIMI</span>
+            <span class="text-[#00e5ff]">DENKLEM L = ½ρV²S·CL</span>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex justify-between items-center">
+              <span class="text-neutral-400">İleri Hava Hızı:</span>
+              <span class="text-white font-bold" id="airspeed-val">0 KTS (0 KM/S)</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-neutral-400">Rotor Düşey İtki (Tv):</span>
+              <span class="text-[#00e676] font-bold" id="rotor-lift-val">181.5 N (%100)</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-neutral-400">Kanat Dinamik Taşıması:</span>
+              <span class="text-[#00e5ff] font-bold" id="wing-lift-val">0.0 N (%0)</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-neutral-400">İleri İtki (Thrust):</span>
+              <span class="text-amber-400 font-bold" id="forward-thrust-val">0.0 N</span>
+            </div>
+            <div class="flex justify-between items-center border-t border-white/5 pt-2">
+              <span class="text-neutral-300">Net Dikey Denge:</span>
+              <span class="text-[#00e676] font-bold" id="balance-status">181.5 N / 181.5 N (DENGEDE)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-[#090b10] border border-white/10 text-[11px] text-neutral-400 space-y-1.5 leading-relaxed">
+          <div class="text-white font-bold text-xs flex items-center gap-1.5">
+            <span class="text-[#00e5ff]">◈</span>
+            <span>ARK-04 Aviyonik &amp; Güç Mimarisi</span>
+          </div>
+          <p>
+            • <strong>Güç Dağıtımı:</strong> 12S LiPo (44.4V) 16,000 mAh batarya bloğu, bağımsız opto-izole ESC veri hatları.
+          </p>
+          <p>
+            • <strong>Uçuş Bilgisayarı:</strong> Çift IMU yedekli STM32H7 işlemci, CAN Bus telemetri ve GPS/RTK cm-hassasiyetli konumlandırma.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const tiltSlider = document.getElementById('tilt-slider') as HTMLInputElement;
+  const tiltDisplay = document.getElementById('tilt-angle-display');
+  const rotorFront = document.getElementById('rotor-front');
+  const rotorRear = document.getElementById('rotor-rear');
+  const wingLiftArrow = document.getElementById('wing-lift-arrow');
+  const wingLiftText = document.getElementById('wing-lift-text');
+  const regimeStatus = document.getElementById('regime-status');
+  const airspeedVal = document.getElementById('airspeed-val');
+  const rotorLiftVal = document.getElementById('rotor-lift-val');
+  const wingLiftVal = document.getElementById('wing-lift-val');
+  const forwardThrustVal = document.getElementById('forward-thrust-val');
+  const balanceStatus = document.getElementById('balance-status');
+
+  const MTOW_WEIGHT_N = 18.5 * 9.81; // 181.5 N
+
+  function updateVtol() {
+    if (!tiltSlider || !tiltDisplay) return;
+    const theta = Number(tiltSlider.value); // 0 to 90 degrees
+    const rad = (theta * Math.PI) / 180;
+
+    // Display Text
+    if (theta === 0) {
+      tiltDisplay.innerText = "0° (TAM DİKEY HOVER)";
+    } else if (theta === 90) {
+      tiltDisplay.innerText = "90° (DÜZ SEYİR / LEVEL CRUISE)";
+    } else {
+      tiltDisplay.innerText = `${theta}° (GEÇİŞ KORİDORU / TRANSITION)`;
+    }
+
+    // Rotate SVG Rotor Groups
+    // In SVG, 0 deg is vertical up, 90 deg rotates clockwise to face forward
+    if (rotorFront) rotorFront.setAttribute('transform', `translate(160, 45) rotate(${theta})`);
+    if (rotorRear) rotorRear.setAttribute('transform', `translate(260, 45) rotate(${theta})`);
+
+    // Speed increases as tilt increases (0 to 65 KTS)
+    const speedKts = Math.round(Math.sin(rad) * 65);
+    const speedKmh = Math.round(speedKts * 1.852);
+
+    // Rotor Vertical & Horizontal Components
+    const maxRotorThrust = MTOW_WEIGHT_N; // 181.5 N
+    const rotorVerticalLift = maxRotorThrust * Math.cos(rad);
+    const forwardThrust = maxRotorThrust * Math.sin(rad);
+
+    // Aerodynamic Wing Lift (proportional to V^2, reaches MTOW at 52 kts)
+    const wingLiftRatio = Math.min(1.0, Math.pow(speedKts / 52, 2));
+    const wingLift = wingLiftRatio * MTOW_WEIGHT_N;
+
+    const totalLift = rotorVerticalLift + wingLift;
+
+    if (airspeedVal) airspeedVal.innerText = `${speedKts} KTS (${speedKmh} KM/S)`;
+    if (rotorLiftVal) rotorLiftVal.innerText = `${rotorVerticalLift.toFixed(1)} N (%${Math.round((rotorVerticalLift / MTOW_WEIGHT_N) * 100)})`;
+    if (wingLiftVal) wingLiftVal.innerText = `${wingLift.toFixed(1)} N (%${Math.round((wingLift / MTOW_WEIGHT_N) * 100)})`;
+    if (forwardThrustVal) forwardThrustVal.innerText = `${forwardThrust.toFixed(1)} N`;
+
+    if (balanceStatus) {
+      const margin = totalLift - MTOW_WEIGHT_N;
+      if (margin >= -5) {
+        balanceStatus.innerHTML = `<span class="text-[#00e676] font-bold">${totalLift.toFixed(1)} N / 181.5 N (POZİTİF TAŞIMA)</span>`;
+      } else {
+        balanceStatus.innerHTML = `<span class="text-amber-400 font-bold">${totalLift.toFixed(1)} N / 181.5 N (DİKKAT: İRTİFA KAYBI RİSKİ)</span>`;
+      }
+    }
+
+    // Regimes
+    if (regimeStatus) {
+      if (theta < 10) {
+        regimeStatus.innerText = "DİKEY HOVER (ROTOR KONTROLÜ)";
+        regimeStatus.className = "font-bold text-[#00e676]";
+      } else if (theta >= 10 && theta <= 75) {
+        regimeStatus.innerText = "GEÇİŞ KORİDORU (EŞ ZAMANLI KARIŞIM)";
+        regimeStatus.className = "font-bold text-[#00e5ff]";
+      } else {
+        regimeStatus.innerText = "SABİT KANAT SEYİR (AERODİNAMİK TAŞIMA)";
+        regimeStatus.className = "font-bold text-emerald-400";
+      }
+    }
+
+    // Wing Lift Arrow in SVG
+    if (wingLiftArrow && wingLiftText) {
+      const arrowHeight = Math.round(wingLiftRatio * 35);
+      wingLiftArrow.setAttribute('y2', String(65 - arrowHeight));
+      wingLiftText.setAttribute('y', String(60 - arrowHeight));
+      wingLiftText.setAttribute('opacity', wingLiftRatio > 0.05 ? '1' : '0');
+      wingLiftText.textContent = `+${Math.round(wingLift)} N KANAT`;
+    }
+  }
+
+  if (tiltSlider) {
+    tiltSlider.addEventListener('input', updateVtol);
+    updateVtol();
+  }
+</script>

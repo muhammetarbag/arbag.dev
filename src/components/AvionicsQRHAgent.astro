@@ -1,0 +1,263 @@
+---
+// AvionicsQRHAgent.astro — Interactive Cockpit QRH (Quick Reference Handbook) & Diagnostic Agent
+---
+
+<div class="hardware-card">
+  <div class="hardware-card-inner space-y-6">
+    <div class="specular-line"></div>
+    
+    <!-- Header -->
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444] animate-pulse"></span>
+          <span class="text-xs font-mono font-bold text-white uppercase tracking-wider">
+            HERMES-AVIONICS // KOKPİT ACİL DURUM VE ARIZA TEŞHİS MOTORU
+          </span>
+        </div>
+        <p class="text-[11px] text-neutral-400 font-mono">
+          Deterministik QRH &amp; FIM (Fault Isolation Manual) Akıllı Çözümleyici: DO-178C Emniyet Mantığı
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2 text-xs font-mono">
+        <span class="text-neutral-400">Arıza Senaryosu:</span>
+        <select
+          id="qrh-scenario-select"
+          class="bg-[#090b10] border border-white/10 rounded px-2.5 py-1 text-xs text-white font-mono focus:border-red-400 outline-none"
+        >
+          <option value="dual-gen">ATA 24 // Çift Jeneratör Kaybı (Dual IDG Trip)</option>
+          <option value="decomp">ATA 21 // Ani Kabin Basınç Kaybı (Cabin Alt &gt; 10k ft)</option>
+          <option value="hyd-over">ATA 29 // Yeşil Hidrolik Aşırı Basınç (&gt; 3600 PSI)</option>
+          <option value="ils-lost">ATA 34 // GlideSlope Sinyal Bütünlüğü Kaybı (ILS Fault)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Master Warning Box & Dynamic Diagnosis Matrix -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- Annunciator Box & Telemetry Warning (Col 4) -->
+      <div class="lg:col-span-4 p-4 rounded-xl bg-black/60 border border-red-500/30 space-y-4 font-mono text-xs">
+        <div class="flex items-center justify-between border-b border-white/10 pb-2">
+          <span class="px-2 py-0.5 rounded bg-red-500/20 text-red-400 font-bold tracking-wider" id="master-annunciator">
+            ⚠ MASTER WARNING
+          </span>
+          <span class="text-[10px] text-neutral-400 font-bold" id="qrh-code">ATA 24-20-00</span>
+        </div>
+
+        <div class="space-y-1.5">
+          <div class="text-[10px] text-neutral-500 uppercase">Teşhis Edilen Arıza:</div>
+          <h4 class="text-white font-bold text-sm leading-snug" id="fault-title">
+            IDG 1 + IDG 2 DUAL AC GENERATOR DROP
+          </h4>
+          <p class="text-[11px] text-red-300/80 leading-relaxed pt-1" id="fault-desc">
+            Her iki ana motor jeneratörü devreden çıktı. Ana AC baralar enerjisiz. Yalnızca bataryalar ve RAT (Ram Air Turbine) acil hattı aktif.
+          </p>
+        </div>
+
+        <div class="p-2.5 rounded bg-[#090b10] border border-white/5 space-y-1 text-[10px]">
+          <div class="flex justify-between text-neutral-400">
+            <span>Kritik Eylem Süresi:</span>
+            <span class="text-red-400 font-bold" id="critical-time">&lt; 30 Saniye</span>
+          </div>
+          <div class="flex justify-between text-neutral-400">
+            <span>Sistem Otomatik Tepkisi:</span>
+            <span class="text-[#00e676]" id="auto-action">RAT Açıldı • Yük Atma Devrede</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step-by-Step Interactive Checklist & Action Protocol (Col 8) -->
+      <div class="lg:col-span-8 p-4 rounded-xl bg-black/40 border border-white/[0.06] space-y-4 font-mono text-xs">
+        <div class="flex items-center justify-between border-b border-white/5 pb-2 text-[11px]">
+          <span class="text-[#00e5ff] font-bold">QRH ADIM ADIM İZOLASYON PROSEDÜRÜ (CHECKLIST)</span>
+          <span class="text-neutral-500 text-[10px]" id="step-counter">0 / 4 ADIM TAMAMLANDI</span>
+        </div>
+
+        <!-- Checklist Items Container -->
+        <div class="space-y-2.5" id="checklist-container">
+          <!-- Dynamically filled by JS -->
+        </div>
+
+        <!-- Recovery Status Bar -->
+        <div class="flex items-center justify-between border-t border-white/5 pt-3 text-[11px]">
+          <div class="flex items-center gap-2">
+            <span class="text-neutral-400">Emniyetli Durum:</span>
+            <span class="font-bold text-neutral-400" id="recovery-status">PROSEDÜR BEKLENİYOR</span>
+          </div>
+          <a
+            id="lab-shortcut-link"
+            href="https://muhammetarbag.github.io/aircraft-electrical-power-lab/"
+            target="_blank"
+            class="text-[#00e5ff] hover:underline font-semibold flex items-center gap-1 text-[11px]"
+          >
+            İlgili Laboratuvarda Simüle Et ↗
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  interface QrhScenario {
+    code: string;
+    warningLevel: string;
+    title: string;
+    desc: string;
+    criticalTime: string;
+    autoAction: string;
+    labUrl: string;
+    steps: { action: string; note: string }[];
+  }
+
+  const scenarios: Record<string, QrhScenario> = {
+    'dual-gen': {
+      code: 'ATA 24-20-00',
+      warningLevel: 'MASTER WARNING',
+      title: 'IDG 1 + IDG 2 DUAL AC GENERATOR DROP',
+      desc: 'Her iki ana motor jeneratörü devreden çıktı. Ana AC baralar enerjisiz. Yalnızca bataryalar ve RAT (Ram Air Turbine) acil hattı aktif.',
+      criticalTime: '< 30 Saniye',
+      autoAction: 'RAT Açıldı • Yük Atma Devrede',
+      labUrl: 'https://muhammetarbag.github.io/aircraft-electrical-power-lab/',
+      steps: [
+        { action: 'EMER ELEC PWR MAN ON Bas', note: 'Statik invertör üzerinden kritik aviyonik barasını doğrula.' },
+        { action: 'APU MASTER & START Seç', note: 'APU jeneratörünü devreye sokup AC BUS beslemesini geri kazan.' },
+        { action: 'IDG 1 & 2 RESET Dene (1 kez)', note: 'Frekans aşımı yoksa jeneratör kontaktörlerini yeniden bağla.' },
+        { action: 'İniş için En Yakın Meydana Divert Kararı Al', note: 'Tek yedekli konfigürasyonda uçuşu sürdürme.' }
+      ]
+    },
+    'decomp': {
+      code: 'ATA 21-31-00',
+      warningLevel: 'MASTER WARNING',
+      title: 'KABİN İRTİFASI > 10,000 FT (ANİ DEKOMPRESYON)',
+      desc: 'Kabin basınçlandırma farkı (Delta P) düştü. Kabin irtifası emniyet tavanını aştı. Hipoksi riski mevcut.',
+      criticalTime: '< 15 Saniye (TUC)',
+      autoAction: 'Yolcu Oksijen Maskeleri Düştü',
+      labUrl: 'https://muhammetarbag.github.io/bleed-air-pressurization-lab/',
+      steps: [
+        { action: 'OKSİJEN MASKELERİNİ TAK (%100)', note: 'Mürettebat içi interkom iletişimini kur.' },
+        { action: 'ACİL ALÇALIŞI BAŞLAT (FL100 / MEA)', note: 'Hız frenlerini (Speedbrakes) aç, maksimum tazyikli alçalış.' },
+        { action: 'OUTFLOW VALVE -> FULL CLOSED MANUEL', note: 'Kabin basınç kaçağını sınırlandırmak için vanayı kapat.' },
+        { action: 'ATC: MAYDAY ÇAĞRISI VE TRANSPONDER 7700', note: 'Hava trafik kontrolüne acil alçalış irtifasını bildir.' }
+      ]
+    },
+    'hyd-over': {
+      code: 'ATA 29-10-00',
+      warningLevel: 'MASTER CAUTION',
+      title: 'YEŞİL HİDROLİK SİSTEM AŞIRI BASINÇ (> 3600 PSI)',
+      desc: 'Motor tahrikli hidrolik pompada (EDP) regülatör arızası tespit edildi. Hat patlama ve sızıntı riski.',
+      criticalTime: '< 60 Saniye',
+      autoAction: 'PTU Güç Transferi Kilitlendi',
+      labUrl: 'https://muhammetarbag.github.io/hydraulic-lab/',
+      steps: [
+        { action: 'ENG 1 PUMP SWITCH -> OFF', note: 'Sol motor hidrolik pompasını devreden çıkar.' },
+        { action: 'Sistem Basıncını Gözlemle (Sarı & Mavi)', note: 'PTU üzerinden basınç dengesini doğrula.' },
+        { action: 'Flap & Slat Seçimlerini Kademeli Yap', note: 'Alternatif hidrolik hatlarına ani aşırı yük bindirme.' }
+      ]
+    },
+    'ils-lost': {
+      code: 'ATA 34-12-00',
+      warningLevel: 'MASTER CAUTION',
+      title: 'ILS GLIDESLOPE ALICI SAPMASI (NO AUTOLAND)',
+      desc: 'Runway 35R ILS süzülüş hattı (Glideslope) sinyali DDM tolerans sınırını aştı. Otopilot kuplajı düştü.',
+      criticalTime: '< 10 Saniye (Karar İrtifası)',
+      autoAction: 'Otopilot Autoland Modu Düştü',
+      labUrl: 'https://muhammetarbag.github.io/radio-navigation-lab/',
+      steps: [
+        { action: 'AUTOPILOT DISCONNECT & MANUEL KONTROL', note: 'Uçağı PFD yapay ufuk ve hız göstergelerine göre düzle.' },
+        { action: 'Pası Geç (GO-AROUND) İnisiyatifi Al', note: 'TOGA bas, flapları topla, pozitif tırmanışta iniş takımlarını al.' },
+        { action: 'Yedek NAV Alıcısına (NAV 2) Geçiş Yap', note: '109.50 MHz frekansını yedek alıcıdan doğrula.' }
+      ]
+    }
+  };
+
+  const select = document.getElementById('qrh-scenario-select') as HTMLSelectElement;
+  const qrhCode = document.getElementById('qrh-code');
+  const masterAnnunciator = document.getElementById('master-annunciator');
+  const faultTitle = document.getElementById('fault-title');
+  const faultDesc = document.getElementById('fault-desc');
+  const criticalTime = document.getElementById('critical-time');
+  const autoAction = document.getElementById('auto-action');
+  const checklistContainer = document.getElementById('checklist-container');
+  const stepCounter = document.getElementById('step-counter');
+  const recoveryStatus = document.getElementById('recovery-status');
+  const labShortcutLink = document.getElementById('lab-shortcut-link') as HTMLAnchorElement;
+
+  function renderScenario() {
+    if (!select || !checklistContainer) return;
+    const key = select.value;
+    const sc = scenarios[key] || scenarios['dual-gen'];
+
+    if (qrhCode) qrhCode.innerText = sc.code;
+    if (faultTitle) faultTitle.innerText = sc.title;
+    if (faultDesc) faultDesc.innerText = sc.desc;
+    if (criticalTime) criticalTime.innerText = sc.criticalTime;
+    if (autoAction) autoAction.innerText = sc.autoAction;
+    if (labShortcutLink) labShortcutLink.href = sc.labUrl;
+
+    if (masterAnnunciator) {
+      if (sc.warningLevel.includes('WARNING')) {
+        masterAnnunciator.className = 'px-2 py-0.5 rounded bg-red-500/20 text-red-400 font-bold tracking-wider animate-pulse';
+        masterAnnunciator.innerText = '⚠ MASTER WARNING';
+      } else {
+        masterAnnunciator.className = 'px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold tracking-wider';
+        masterAnnunciator.innerText = '● MASTER CAUTION';
+      }
+    }
+
+    // Render Steps
+    checklistContainer.innerHTML = '';
+    const totalSteps = sc.steps.length;
+    let completedSteps = 0;
+
+    sc.steps.forEach((st, idx) => {
+      const stepRow = document.createElement('label');
+      stepRow.className = 'flex items-start gap-3 p-2.5 rounded-lg bg-black/50 border border-white/5 hover:border-white/10 cursor-pointer select-none transition-all';
+      
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.className = 'mt-0.5 accent-[#00e676] cursor-pointer';
+
+      cb.addEventListener('change', () => {
+        if (cb.checked) {
+          completedSteps++;
+          stepRow.classList.add('opacity-50', 'bg-emerald-950/20', 'border-emerald-500/30');
+        } else {
+          completedSteps--;
+          stepRow.classList.remove('opacity-50', 'bg-emerald-950/20', 'border-emerald-500/30');
+        }
+
+        if (stepCounter) stepCounter.innerText = `${completedSteps} / ${totalSteps} ADIM TAMAMLANDI`;
+        if (recoveryStatus) {
+          if (completedSteps === totalSteps) {
+            recoveryStatus.innerHTML = '<span class="text-[#00e676] font-bold">EMNİYET GERİ KAZANILDI (SİSTEM STABİL)</span>';
+          } else {
+            recoveryStatus.innerHTML = '<span class="text-amber-400 font-bold">PROSEDÜR DEVAM EDİYOR</span>';
+          }
+        }
+      });
+
+      const textCol = document.createElement('div');
+      textCol.className = 'space-y-0.5';
+      textCol.innerHTML = `
+        <div class="text-white font-bold text-xs">${idx + 1}. ${st.action}</div>
+        <div class="text-[10px] text-neutral-400 font-mono">${st.note}</div>
+      `;
+
+      stepRow.appendChild(cb);
+      stepRow.appendChild(textCol);
+      checklistContainer.appendChild(stepRow);
+    });
+
+    if (stepCounter) stepCounter.innerText = `0 / ${totalSteps} ADIM TAMAMLANDI`;
+    if (recoveryStatus) recoveryStatus.innerHTML = '<span class="text-neutral-400 font-bold">PROSEDÜR BEKLENİYOR</span>';
+  }
+
+  if (select) {
+    select.addEventListener('change', renderScenario);
+    renderScenario();
+  }
+</script>

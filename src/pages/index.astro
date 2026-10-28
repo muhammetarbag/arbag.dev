@@ -1,9 +1,16 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import FlightDisplayHUD from '../components/FlightDisplayHUD.astro';
+import Arinc429Decoder from '../components/Arinc429Decoder.astro';
+import VtolTransitionSim from '../components/VtolTransitionSim.astro';
+import AvionicsQRHAgent from '../components/AvionicsQRHAgent.astro';
+import AdsbDissector from '../components/AdsbDissector.astro';
+import CommandPalette from '../components/CommandPalette.astro';
 
 const laboratories = [
   {
     ata: "ATA 21 / 36",
+    category: "avionics",
     title: "Bleed Air & Cabin Pressurization",
     kicker: "Pnömatik & Kabin Basıncı",
     desc: "Motor kompresör kademelerinden pack ve outflow valve'a uzanan pnömatik döngü; ani dekompresyon teşhisi.",
@@ -14,6 +21,7 @@ const laboratories = [
   },
   {
     ata: "ATA 22 / AEE 303",
+    category: "avionics",
     title: "Autoflight Systems Virtual Lab",
     kicker: "Otopilot & Uçuş Yönlendirici",
     desc: "Uçuş kontrol bilgisayarı PID döngüleri, pitch/roll komuta kanalları, irtifa tutma ve yaklaşma modu mimarisi.",
@@ -24,6 +32,7 @@ const laboratories = [
   },
   {
     ata: "ATA 24",
+    category: "power",
     title: "Aircraft Electrical Power Lab",
     kicker: "Uçak Elektrik Güç Dağıtımı",
     desc: "115V AC 400Hz ve 28V DC bara topolojisi, IDG/APU jeneratör yönetimi, otomatik Bus Tie transferi ve 10 arıza senaryosu.",
@@ -34,6 +43,7 @@ const laboratories = [
   },
   {
     ata: "ATA 27 / AERO",
+    category: "aero",
     title: "Rüzgâr Tüneli & Aerodinamik Lab",
     kicker: "Kanat Profili & Akışkanlar",
     desc: "NACA kanat kesitleri üzerinde hücum açısı (AoA), kaldırma/sürükleme (L/D) oranları ve perdövites (stall) dinamiği.",
@@ -44,6 +54,7 @@ const laboratories = [
   },
   {
     ata: "ATA 28 / 47",
+    category: "power",
     title: "Aircraft Fuel System Lab",
     kicker: "Uçak Yakıt & Inerting Sistemleri",
     desc: "Kanat ve merkez tanklar, crossfeed vana yönetimi, yakıt transfer pompaları ve kanat yük dengesi (W&B).",
@@ -54,6 +65,7 @@ const laboratories = [
   },
   {
     ata: "ATA 29",
+    category: "power",
     title: "Hydraulic Power Lab",
     kicker: "Uçak Hidrolik Güç Sistemi",
     desc: "3000 PSI Yeşil, Mavi ve Sarı rezervuar hatları, motor pompaları (EDP) ve çift yönlü Power Transfer Unit (PTU) mantığı.",
@@ -64,6 +76,7 @@ const laboratories = [
   },
   {
     ata: "ATA 34 / AEE 301",
+    category: "avionics",
     title: "Radio Navigation & ILS Lab",
     kicker: "Radyo Navigasyon & ILS Yaklaşma",
     desc: "VHF Localizer ve UHF Glideslope DDM (modülasyon farkı) ayrıştırımı, rüzgâr sapması ve Runway 35R aletli iniş sistemi.",
@@ -74,6 +87,7 @@ const laboratories = [
   },
   {
     ata: "ATA 72",
+    category: "aero",
     title: "Turbofan Engine Virtual Lab",
     kicker: "İki Kademeli Turbofan Motoru",
     desc: "Fan, kompresör, yanma odası ve türbin gaz akışı termodinamiği; interaktif N1/N2 ve EGT telemetri göstergeleri.",
@@ -84,6 +98,7 @@ const laboratories = [
   },
   {
     ata: "ATA 85",
+    category: "aero",
     title: "Dört Zamanlı Motor Lab (Motorlab)",
     kicker: "Pistonlu İçten Yanmalı Motor",
     desc: "Dört zamanlı benzinli motorun emme, sıkıştırma, yanma ve egzoz çevrimi; hareketli kesit ve P-V diyagramı.",
@@ -94,6 +109,7 @@ const laboratories = [
   },
   {
     ata: "PROTOTİP // VTOL",
+    category: "vtol",
     title: "ARK04 Stealth VTOL Drone",
     kicker: "3D Gövde & Aviyonik Entegrasyonu",
     desc: "Dört kaldırma motoru ve itki geçiş koridoru hesapları, 3D CAD yüzey modellemesi, gövde içi aviyonik yerleşimi.",
@@ -103,10 +119,49 @@ const laboratories = [
     statusColor: "amber"
   }
 ];
+
+const upcomingProjects = [
+  {
+    tag: "RF & SDR // CANLI PROTOKOL",
+    title: "AEE-SDR: Open-Source 1090 MHz Mode-S & ADS-B Yer İstasyonu",
+    desc: "RTL-SDR ve HackRF tabanlı, 1090 MHz Extended Squitter (DF17/18) ICAO yayınlarını doğrudan RF demodülasyonu ile çözen açık kaynaklı hava gözetleme hattı.",
+    tech: ["RTL-SDR", "Python DSP", "CRC-24 DO-260B", "PPM Demodülatör", "Leaflet Radar"],
+    status: "DONANIM TESTİNDE",
+    statusColor: "cyan",
+    highlight: "2 MHz I/Q örnekleme ile sıfır gecikmeli irtifa ve vektör tespiti."
+  },
+  {
+    tag: "ASKERİ AVİYONİK // SAVUNMA",
+    title: "MIL-STD-1553B Çift Yedekli Veri Yolu Terminali & Emülatörü",
+    desc: "Milli Muharip Uçak (KAAN), HÜRJET ve ATAK platformlarının omurgası olan 1553B veri yolunun Bus Controller (BC) ve Remote Terminal (RT) FPGA mantık emülasyonu.",
+    tech: ["FPGA (Verilog)", "Manchester II", "Dual-Redundant Bus A/B", "STM32H7", "Lojik Analizör"],
+    status: "ŞEMATİK & FPGA",
+    statusColor: "amber",
+    highlight: "< 2 µs bara yedekleme geçiş süresi ve elektriksel trafo izolasyonu."
+  },
+  {
+    tag: "GERÇEK ZAMANLI İŞLETİM // RTOS",
+    title: "AeroKernel: DO-178C Emniyet Seviyeli İHA Uçuş Mikroçekirdeği",
+    desc: "ARM Cortex-M7/M4 işlemcilerde koşan, statik bellek tahsisli, ARINC 653 ilkeli bölümlendirilmiş deterministik mikroçekirdek mimarisi.",
+    tech: ["C99 / ASM", "STM32H7 Dual-Core", "Rate Monotonic Scheduling", "MPU İzolasyonu", "DO-178C"],
+    status: "ÇEKİRDEK KODLAMA",
+    statusColor: "emerald",
+    highlight: "Kritik 100 Hz uçuş döngüleri için deterministik WCET garantisi."
+  },
+  {
+    tag: "GÖMÜLÜ LINUX // TERSİNE MÜHENDİSLİK",
+    title: "Hermes-Edge: Tizen OS & ARM Donanım Tersine Mühendislik Laboratuvarı",
+    desc: "Eski nesil akıllı ekranlar ve özel aviyonik terminaller için firmware çıkarma, UART/eMMC donanım tap'leme ve düşük seviye ikili yama araç takımı.",
+    tech: ["Ghidra / Rizin", "UART / JTAG", "ARM Assembly", "Squashfs Unpack", "C++ Media Core"],
+    status: "AÇIK KAYNAK ARAÇ KİTİ",
+    statusColor: "purple",
+    highlight: "512 MB kısıtlı RAM donanımlarda sıfır sızıntılı C++ medya boru hattı."
+  }
+];
 ---
 
 <Layout>
-  <!-- HERO SECTION (Asymmetrical 12-Column Bento Grid with Profile) -->
+  <!-- HERO SECTION (Asymmetrical 12-Column Bento Grid with Profile & PFD HUD) -->
   <section class="max-w-6xl mx-auto px-6 mb-24">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
       
@@ -197,11 +252,19 @@ const laboratories = [
             </a>
 
             <a
+              href="#aviyonik-araclar"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium text-[#00e5ff] hover:text-white border border-[#00e5ff]/30 bg-[#00e5ff]/5 hover:bg-[#00e5ff]/10 transition-colors font-mono"
+            >
+              <span>Aviyonik Araçları</span>
+              <span class="text-xs">⚡</span>
+            </a>
+
+            <a
               href="#laboratuvarlar"
               class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium text-neutral-400 hover:text-white border border-white/5 hover:border-white/10 transition-colors"
             >
               <span>The 9-System Matrix</span>
-              <span class="text-neutral-600 font-mono">/ 09</span>
+              <span class="text-neutral-600 font-mono">/ 10</span>
             </a>
           </div>
         </div>
@@ -213,42 +276,18 @@ const laboratories = [
           <div class="specular-line"></div>
           
           <div class="flex items-center justify-between border-b border-white/[0.05] pb-2 text-[10px] mono-telemetry text-neutral-500">
-            <span>PFD INSTRUMENT // FLIGHT DISPLAY</span>
-            <span class="text-[#00e676]">ACTIVE</span>
+            <span>PFD INSTRUMENT // CANLI KOKPİT GÖSTERGESİ (60 FPS CANVAS)</span>
+            <span class="text-[#00e676]">GYRO AKTİF</span>
           </div>
 
-          <!-- Interactive Cockpit HUD Canvas / Visual -->
-          <div class="my-4 relative h-36 bg-[#07080b] rounded-lg border border-white/10 flex items-center justify-center overflow-hidden">
-            <!-- Artificial Horizon Crosshair Grid -->
-            <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
-              <div class="w-full h-[1px] bg-[#00e5ff]/50"></div>
-              <div class="absolute w-[1px] h-full bg-[#00e5ff]/50"></div>
-              <div class="w-20 h-20 rounded-full border border-[#00e5ff]/40"></div>
-            </div>
-
-            <!-- Pitch & Roll Indicator -->
-            <div class="text-center font-mono space-y-1 relative z-10">
-              <div class="text-xs text-[#00e676] font-semibold tracking-wider">[ ILS CAT III APPR ]</div>
-              <div class="text-[10px] text-neutral-400">LOC: 0.00° DDM | GS: -3.00°</div>
-              <div class="text-[11px] text-[#00e5ff] font-bold">RWY 35R • 109.50 MHz</div>
-            </div>
-
-            <!-- Altimeter & Airspeed Tapes -->
-            <div class="absolute left-2 top-2 bottom-2 w-8 border-r border-white/10 flex flex-col justify-between text-[9px] font-mono text-neutral-500 py-1">
-              <span>180</span>
-              <span class="text-white font-bold bg-[#00e5ff]/20 px-0.5 rounded">145</span>
-              <span>120</span>
-            </div>
-            <div class="absolute right-2 top-2 bottom-2 w-10 border-l border-white/10 flex flex-col justify-between text-[9px] font-mono text-neutral-500 py-1 text-right">
-              <span>FL320</span>
-              <span class="text-[#00e676] font-bold bg-[#00e676]/20 px-0.5 rounded">FL015</span>
-              <span>0800</span>
-            </div>
+          <!-- Interactive Primary Flight Display Component -->
+          <div class="my-3">
+            <FlightDisplayHUD />
           </div>
 
-          <div class="flex items-center justify-between text-[10px] mono-telemetry text-neutral-400">
-            <span>BARO: 1013 hPa / QNH</span>
-            <span>HDG: 352° MAG</span>
+          <div class="flex items-center justify-between text-[10px] mono-telemetry text-neutral-400 pt-1">
+            <span>FARE İLE PİTCH &amp; ROLL DÖNGÜSÜNÜ TEST ET</span>
+            <span class="text-[#00e5ff]">CANVAS RENDERER</span>
           </div>
         </div>
       </div>
@@ -273,12 +312,16 @@ const laboratories = [
               <span class="text-[#00e676] font-semibold">&lt; 15 ms (Bus Tie Contactor)</span>
             </div>
             <div class="flex items-center justify-between">
-              <span class="text-neutral-400">Aviyonik Simülatörleri:</span>
-              <span class="text-[#00e5ff] font-semibold">9 Canlı ATA Uçak Laboratuvarı</span>
+              <span class="text-neutral-400">Aviyonik Veri Yolu:</span>
+              <span class="text-[#00e5ff] font-semibold">ARINC 429 &amp; MIL-STD-1553B</span>
             </div>
             <div class="flex items-center justify-between">
               <span class="text-neutral-400">Mühendislik Kuralı:</span>
               <span class="text-neutral-300">DO-178C Level B &amp; Fail-Safe Redundancy</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-neutral-400">Uçak Simülatörleri:</span>
+              <span class="text-amber-400 font-semibold">10 Canlı ATA Laboratuvarı</span>
             </div>
           </div>
         </div>
@@ -287,11 +330,11 @@ const laboratories = [
     </div>
   </section>
 
-  <!-- ÖZGEÇMİŞ & MÜHENDİSLİK KÜNYESİ (CV SECTION) -->
+  <!-- 01 // ÖZGEÇMİŞ & MÜHENDİSLİK KÜNYESİ (CV SECTION) -->
   <section id="ozgecmis" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-white/[0.06] pb-6">
       <div>
-        <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">02 // ÖZGEÇMİŞ &amp; MÜHENDİSLİK KÜNYESİ</div>
+        <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">01 // ÖZGEÇMİŞ &amp; MÜHENDİSLİK KÜNYESİ</div>
         <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Curriculum Vitae</h2>
       </div>
       <div class="flex items-center gap-3">
@@ -367,7 +410,7 @@ const laboratories = [
             <ul class="space-y-2 pt-2 border-t border-white/[0.05] text-[11px] text-neutral-400">
               <li class="flex items-start gap-2">
                 <span class="text-[#00e676] font-bold">▹</span>
-                <span><strong class="text-neutral-200">Aviyonik Sistem Tasarımı:</strong> ARINC 429 haberleşmesi, uçuş bilgisayarları ve seyrüsefer algoritmaları.</span>
+                <span><strong class="text-neutral-200">Aviyonik Sistem Tasarımı:</strong> ARINC 429 / 1553B haberleşmesi, uçuş bilgisayarları ve seyrüsefer.</span>
               </li>
               <li class="flex items-start gap-2">
                 <span class="text-[#00e676] font-bold">▹</span>
@@ -425,7 +468,37 @@ const laboratories = [
     </div>
   </section>
 
-  <!-- INTERACTIVE AMİRAL GEMİSİ: THE 9-SYSTEM SYNOPTIC MATRIX -->
+  <!-- 02 // İLERİ AVİYONİK VE DONANIM ARAÇLARI (INTERACTIVE LAB TOOLS) -->
+  <section id="aviyonik-araclar" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-white/[0.06] pb-6">
+      <div>
+        <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">02 // İLERİ AVİYONİK VE DONANIM ARAÇLARI</div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Canlı Donanım &amp; Protokol Laboratuvarı</h2>
+      </div>
+      <p class="text-xs text-neutral-400 max-w-md font-mono">
+        Sektör standartlarında gerçek zamanlı çalışan üç interaktif aviyonik analiz aracı. Veri yollarını, aerodinamik geçişleri ve emniyet algoritmalarını doğrudan tarayıcıda deneyimleyin.
+      </p>
+    </div>
+
+    <div class="space-y-8">
+      <!-- Tool 1: ARINC 429 Decoder -->
+      <div id="arinc-tool">
+        <Arinc429Decoder />
+      </div>
+
+      <!-- Tool 2: VTOL Aerodynamic Transition Simulator -->
+      <div>
+        <VtolTransitionSim />
+      </div>
+
+      <!-- Tool 3: Avionics QRH Emergency Copilot -->
+      <div id="qrh-tool">
+        <AvionicsQRHAgent />
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 // THE 9-SYSTEM SYNOPTIC MATRIX (LABORATORIES) -->
   <section id="laboratuvarlar" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-white/[0.06] pb-6">
       <div>
@@ -445,7 +518,7 @@ const laboratories = [
         <div class="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.08] pb-4">
           <div class="flex items-center gap-3">
             <span class="w-2.5 h-2.5 rounded-full bg-[#00e676] shadow-[0_0_8px_#00e676]"></span>
-            <span class="font-mono text-xs font-bold text-white">ATA 24: ELEKTRIK GÜÇ BARA ŞEBEKESİ (CANLI SYNOPTIC)</span>
+            <span class="font-mono text-xs font-bold text-white">ATA 24: ELEKTRİK GÜÇ BARA ŞEBEKESİ (CANLI SYNOPTIC)</span>
           </div>
 
           <div class="flex items-center gap-2">
@@ -511,14 +584,50 @@ const laboratories = [
       </div>
     </div>
 
+    <!-- Category Filter Buttons -->
+    <div class="flex flex-wrap items-center gap-2 mb-8 font-mono text-xs">
+      <span class="text-neutral-500 text-[11px] mr-2">FİLTRE:</span>
+      <button
+        class="filter-btn active px-3 py-1.5 rounded-full border border-[#00e5ff]/40 bg-[#00e5ff]/10 text-white font-semibold transition-all"
+        data-filter="all"
+      >
+        TÜMÜ (10)
+      </button>
+      <button
+        class="filter-btn px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-all"
+        data-filter="avionics"
+      >
+        ✈️ AVİYONİK (3)
+      </button>
+      <button
+        class="filter-btn px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-all"
+        data-filter="power"
+      >
+        ⚡ GÜÇ &amp; SİSTEMLER (3)
+      </button>
+      <button
+        class="filter-btn px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-all"
+        data-filter="aero"
+      >
+        🌬️ AERODİNAMİK &amp; MOTOR (3)
+      </button>
+      <button
+        class="filter-btn px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-all"
+        data-filter="vtol"
+      >
+        🛸 İHA / CAD (1)
+      </button>
+    </div>
+
     <!-- The 9 Labs Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="labs-grid">
       {laboratories.map((lab) => (
         <a
           href={lab.url}
           target={lab.url.startsWith("http") ? "_blank" : "_self"}
           rel="noopener noreferrer"
-          class="hardware-card group"
+          class="hardware-card group lab-card"
+          data-category={lab.category}
         >
           <div class="hardware-card-inner flex flex-col justify-between space-y-4">
             <div class="specular-line"></div>
@@ -555,11 +664,72 @@ const laboratories = [
     </div>
   </section>
 
-  <!-- KİLİT VAKA ANALİZLERİ (CASE STUDIES DEEP DIVE) -->
+  <!-- 04 // AKTİF AR-GE VE GELECEK PROJELER PIPELINE (UPCOMING R&D PIPELINE) -->
+  <section id="arge-projeler" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-white/[0.06] pb-6">
+      <div>
+        <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">04 // AKTİF AR-GE VE GELECEK PROJELER</div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Upcoming Avionics &amp; Systems Pipeline</h2>
+      </div>
+      <p class="text-xs text-neutral-400 max-w-md font-mono">
+        Tamamlanan sistemlerin ötesinde; şu anda tasarım, şematik ve gömülü prototip aşamasında olan yüksek etkili Ar-Ge projeleri.
+      </p>
+    </div>
+
+    <!-- Live SDR ADS-B Dissector Tool Component -->
+    <div class="mb-10">
+      <AdsbDissector />
+    </div>
+
+    <!-- Upcoming R&D Project Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {upcomingProjects.map((p) => (
+        <div class="hardware-card">
+          <div class="hardware-card-inner space-y-5">
+            <div class="specular-line"></div>
+
+            <div class="flex items-center justify-between text-xs font-mono border-b border-white/[0.06] pb-3">
+              <span class="text-neutral-400 font-semibold">{p.tag}</span>
+              <span class={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                p.statusColor === 'cyan' ? 'bg-cyan-500/10 text-[#00e5ff] border border-cyan-500/20' :
+                p.statusColor === 'amber' ? 'bg-amber-500/10 text-amber-300 border border-amber-500/20' :
+                p.statusColor === 'emerald' ? 'bg-emerald-500/10 text-[#00e676] border border-emerald-500/20' :
+                'bg-purple-500/10 text-purple-300 border border-purple-500/20'
+              }`}>
+                ● {p.status}
+              </span>
+            </div>
+
+            <div class="space-y-2">
+              <h3 class="text-base font-bold text-white">{p.title}</h3>
+              <p class="text-xs text-neutral-400 leading-relaxed">{p.desc}</p>
+            </div>
+
+            <!-- Tech Badges -->
+            <div class="flex flex-wrap gap-1.5 pt-1">
+              {p.tech.map((t) => (
+                <span class="px-2 py-0.5 rounded bg-white/[0.03] border border-white/5 text-[10px] font-mono text-neutral-300">
+                  {t}
+                </span>
+              ))}
+            </div>
+
+            <!-- Highlight Callout -->
+            <div class="pt-3 border-t border-white/[0.05] flex items-center gap-2 text-xs font-mono text-neutral-300">
+              <span class="text-[#00e5ff] font-bold">◈</span>
+              <span class="text-[11px] text-neutral-400">{p.highlight}</span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- 05 // KİLİT VAKA ANALİZLERİ (CASE STUDIES DEEP DIVE) -->
   <section id="vaka-analizi" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
     <div class="mb-12 border-b border-white/[0.06] pb-6">
-      <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">03 // MÜHENDİSLİK VAKA ANALİZLERİ</div>
-      <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Kritik Kısıtlar & Çözüm Mimarisi</h2>
+      <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">05 // MÜHENDİSLİK VAKA ANALİZLERİ</div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Kritik Kısıtlar &amp; Çözüm Mimarisi</h2>
       <p class="text-xs text-neutral-400 max-w-xl font-mono mt-2">
         Sadece "ne yapıldı" değil; hangi operasyonel kısıtlar altında, hangi ödünleşimler (trade-offs) verilerek ve hangi kritik hatalar aşılarak inşa edildi?
       </p>
@@ -574,12 +744,12 @@ const laboratories = [
           
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.08] pb-4">
             <span class="text-xs font-mono text-[#00e5ff] font-bold">VAKA 01 // ATA 24 AIRCRAFT ELECTRICAL POWER DISTRIBUTION</span>
-            <span class="text-[10px] mono-telemetry text-neutral-400">STANDART: DO-178C LEVEL B & ATA iSpec 2200</span>
+            <span class="text-[10px] mono-telemetry text-neutral-400">STANDART: DO-178C LEVEL B &amp; ATA iSpec 2200</span>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="space-y-3 lg:col-span-1">
-              <h3 class="text-lg font-bold text-white">Operasyonel Problem & Kısıt</h3>
+              <h3 class="text-lg font-bold text-white">Operasyonel Problem &amp; Kısıt</h3>
               <p class="text-xs text-neutral-400 leading-relaxed">
                 Uçak AC jeneratörleri bağımsız frekanslarda çalıştığı için <strong>asla paralel bağlanamaz</strong>. 
                 Sol motor jeneratörü devreden çıktığında 15ms içinde `Bus Tie Contactor (BTC)` kapanmalı, sağ jeneratör barayı devralırken mutfak/kabin gibi hayati olmayan yükler otomatik olarak atılmalıdır (Load Shedding).
@@ -612,7 +782,7 @@ const laboratories = [
           
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.08] pb-4">
             <span class="text-xs font-mono text-[#00e5ff] font-bold">VAKA 02 // MHATv: KISITLI SMART TV DONANIMINDA DİNAMİK EKLENTİ YÜRÜTME</span>
-            <span class="text-[10px] mono-telemetry text-neutral-400">ORTAM: SAMSUNG TIZEN OS & GÖMÜLÜ LINUX</span>
+            <span class="text-[10px] mono-telemetry text-neutral-400">ORTAM: SAMSUNG TIZEN OS &amp; GÖMÜLÜ LINUX</span>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -624,7 +794,7 @@ const laboratories = [
             </div>
 
             <div class="space-y-3 lg:col-span-1">
-              <h3 class="text-lg font-bold text-white">Dinamik Eklenti & İzolasyon</h3>
+              <h3 class="text-lg font-bold text-white">Dinamik Eklenti &amp; İzolasyon</h3>
               <p class="text-xs text-neutral-400 leading-relaxed">
                 CloudStream benzeri, JavaScript eklentilerini çalışma zamanında izole eden ve video buffer'larını yerel C++ medya oynatıcı borusuna yönlendiren mikro-çekirdek geliştirildi.
               </p>
@@ -640,14 +810,49 @@ const laboratories = [
         </div>
       </div>
 
+      <!-- Case Study 3: ARK-04 Stealth VTOL Aerodynamics -->
+      <div class="hardware-card">
+        <div class="hardware-card-inner p-8 space-y-6">
+          <div class="specular-line"></div>
+          
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.08] pb-4">
+            <span class="text-xs font-mono text-[#00e5ff] font-bold">VAKA 03 // ARK-04: TİLT-ROTOR VTOL DİNAMİK GEÇİŞ KORİDORU &amp; STALL MARJINI</span>
+            <span class="text-[10px] mono-telemetry text-neutral-400">DİSİPLİN: AERODİNAMİK DÖNÜŞÜM &amp; ÇİFT IMU YEDEKLEMESİ</span>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="space-y-3 lg:col-span-1">
+              <h3 class="text-lg font-bold text-white">Geçiş Fazı İrtifa Çöküşü</h3>
+              <p class="text-xs text-neutral-400 leading-relaxed">
+                Motorlar dikeyden yataya yatarken rotor düşey kaldırma kuvveti $\cos(\theta)$ ile hızla azalır. Kanat hızı henüz stall süratinin altındayken uçağın irtifa kaybetmemesi kritik bir tasarım bariyeridir.
+              </p>
+            </div>
+
+            <div class="space-y-3 lg:col-span-1">
+              <h3 class="text-lg font-bold text-white">Eş Zamanlı İtki Dağılımı</h3>
+              <p class="text-xs text-neutral-400 leading-relaxed">
+                Tilt açısına bağlı non-lineer mikser fonksiyonu yazıldı. Kanat taşıması ($L = \frac{1}{2}\rho V^2 S C_L$) yeterli seviyeye ulaşana kadar rotor itkisi orantılı olarak artırılarak net düşey kuvvet sabit tutuldu.
+              </p>
+            </div>
+
+            <div class="space-y-3 lg:col-span-1">
+              <h3 class="text-lg font-bold text-white">Aviyonik &amp; CAN Bus Entegrasyonu</h3>
+              <p class="text-xs text-neutral-400 leading-relaxed">
+                Çift IMU verisi Kalman filtresi ile harmanlanarak titreşim gürültüsü süzüldü; servo motorlar opto-izole CAN Bus üzerinden 400 Hz yenileme hızıyla sürüldü.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
-  <!-- TEKNİK RADAR & MÜHENDİSLİK EKOSİSTEMİ -->
+  <!-- 06 // TEKNİK RADAR & MÜHENDİSLİK EKOSİSTEMİ -->
   <section id="ekosistem" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
     <div class="mb-12 border-b border-white/[0.06] pb-6">
-      <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">04 // MÜHENDİSLİK RADARI</div>
-      <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Yetkinlikler & Saha Donanımı</h2>
+      <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">06 // MÜHENDİSLİK RADARI</div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Yetkinlikler &amp; Saha Donanımı</h2>
       <p class="text-xs text-neutral-400 max-w-xl font-mono mt-2">
         Logo çöplüğü yerine operasyonel alanlara göre sınıflandırılmış mühendislik yığını.
       </p>
@@ -656,11 +861,12 @@ const laboratories = [
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 font-mono text-xs">
       <!-- Radar 1 -->
       <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-4">
-        <div class="text-[#00e5ff] font-bold text-sm tracking-wider">[ 01. AVİYONİK & RF ]</div>
+        <div class="text-[#00e5ff] font-bold text-sm tracking-wider">[ 01. AVİYONİK &amp; RF ]</div>
         <ul class="space-y-2 text-neutral-400">
           <li>• ATA 100 / iSpec 2200</li>
-          <li>• ARINC 429 Veri Yolları</li>
+          <li>• ARINC 429 &amp; 1553B Veri Yolları</li>
           <li>• ILS / VOR / DME Navigasyon</li>
+          <li>• Mode-S &amp; ADS-B 1090 MHz SDR</li>
           <li>• DO-178C / DO-254 Temelleri</li>
           <li>• Uçak Elektrik Güç Dağıtımı</li>
         </ul>
@@ -668,44 +874,51 @@ const laboratories = [
 
       <!-- Radar 2 -->
       <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-4">
-        <div class="text-[#00e676] font-bold text-sm tracking-wider">[ 02. SİSTEM & LINUX ]</div>
+        <div class="text-[#00e676] font-bold text-sm tracking-wider">[ 02. SİSTEM &amp; LINUX ]</div>
         <ul class="space-y-2 text-neutral-400">
-          <li>• Linux Mimarisi & Çekirdek</li>
+          <li>• Linux Mimarisi &amp; Çekirdek</li>
           <li>• Düşük Seviye C / Shell</li>
           <li>• Tersine Mühendislik (UART/RE)</li>
-          <li>• IPC & Bellek Haritalama</li>
+          <li>• IPC &amp; Bellek Haritalama</li>
           <li>• Gömülü Sistemler (FreeRTOS)</li>
+          <li>• ARM / MIPS İkili Analizi</li>
         </ul>
       </div>
 
       <!-- Radar 3 -->
       <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-4">
-        <div class="text-amber-400 font-bold text-sm tracking-wider">[ 03. YAZILIM & AI ]</div>
+        <div class="text-amber-400 font-bold text-sm tracking-wider">[ 03. YAZILIM &amp; AI ]</div>
         <ul class="space-y-2 text-neutral-400">
-          <li>• Python & Asyncio</li>
-          <li>• TypeScript & Astro</li>
+          <li>• Python &amp; Asyncio</li>
+          <li>• TypeScript &amp; Astro</li>
           <li>• Deterministik LLM Ajanları</li>
           <li>• WebGL / Canvas2D Simülasyon</li>
           <li>• Cloudflare Edge Dağıtımı</li>
+          <li>• GitOps &amp; Sürekli Entegrasyon</li>
         </ul>
       </div>
 
       <!-- Radar 4 -->
       <div class="p-6 rounded-2xl bg-white/[0.02] border border-white/[0.08] space-y-4">
-        <div class="text-purple-400 font-bold text-sm tracking-wider">[ 04. DONANIM & CAD ]</div>
+        <div class="text-purple-400 font-bold text-sm tracking-wider">[ 04. DONANIM &amp; CAD ]</div>
         <ul class="space-y-2 text-neutral-400">
-          <li>• Dijital Osiloskop & Multimetre</li>
+          <li>• Dijital Osiloskop &amp; Multimetre</li>
           <li>• Mantık Analizörü (Logic Analyzer)</li>
-          <li>• OpenSCAD & 3D Modelleme</li>
-          <li>• PCB Şematik & Pinout (KiCad)</li>
-          <li>• VTOL Gövde & Ağırlık/Denge</li>
+          <li>• OpenSCAD &amp; 3D Modelleme</li>
+          <li>• PCB Şematik &amp; Pinout (KiCad)</li>
+          <li>• VTOL Gövde &amp; Ağırlık/Denge</li>
+          <li>• LiPo Batarya Yönetimi (BMS)</li>
         </ul>
       </div>
     </div>
   </section>
 
-  <!-- Interactive Fault Injection Script for ATA 24 Synoptic -->
+  <!-- Interactive Floating Flight Terminal -->
+  <CommandPalette />
+
+  <!-- Client-side Interactive Scripts -->
   <script>
+    // 1. ATA 24 Synoptic Fault Injection
     const tripBtn = document.getElementById('trip-idg-btn');
     const resetBtn = document.getElementById('reset-bus-btn');
     const idg1Status = document.getElementById('idg1-status');
@@ -741,5 +954,32 @@ const laboratories = [
         }
       });
     }
+
+    // 2. Laboratories Category Filter
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const labCards = document.querySelectorAll('.lab-card');
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter');
+
+        filterBtns.forEach((b) => {
+          b.classList.remove('active', 'border-[#00e5ff]/40', 'bg-[#00e5ff]/10', 'text-white', 'font-semibold');
+          b.classList.add('border-white/10', 'bg-white/5', 'text-neutral-400');
+        });
+
+        btn.classList.add('active', 'border-[#00e5ff]/40', 'bg-[#00e5ff]/10', 'text-white', 'font-semibold');
+        btn.classList.remove('border-white/10', 'bg-white/5', 'text-neutral-400');
+
+        labCards.forEach((card) => {
+          const cat = card.getAttribute('data-category');
+          if (filter === 'all' || cat === filter) {
+            (card as HTMLElement).style.display = 'block';
+          } else {
+            (card as HTMLElement).style.display = 'none';
+          }
+        });
+      });
+    });
   </script>
 </Layout>
