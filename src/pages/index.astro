@@ -3,51 +3,11 @@ import Layout from '../layouts/Layout.astro';
 
 const laboratories = [
   {
-    ata: "ATA 24",
-    title: "Aircraft Electrical Power Lab",
-    kicker: "Uçak Elektrik Güç Dağıtımı",
-    desc: "115V AC 400Hz ve 28V DC bara topolojisi, IDG/APU jeneratör yönetimi, otomatik Bus Tie transferi ve 10 arıza senaryosu.",
-    url: "https://muhammetarbag.github.io/aircraft-electrical-power-lab/",
-    badge: "CANLI SİMÜLATÖR",
-    status: "NORMAL",
-    statusColor: "emerald"
-  },
-  {
-    ata: "AEE 301 / ATA 34",
-    title: "Radio Navigation & ILS Lab",
-    kicker: "Radyo Navigasyon & ILS Yaklaşma",
-    desc: "VHF Localizer ve UHF Glideslope DDM (modülasyon farkı) ayrıştırımı, rüzgâr sapması ve Runway 35R aletli iniş sistemi.",
-    url: "https://muhammetarbag.github.io/radio-navigation-lab/",
-    badge: "CANLI SİMÜLATÖR",
-    status: "NORMAL",
-    statusColor: "emerald"
-  },
-  {
     ata: "ATA 21 / 36",
     title: "Bleed Air & Cabin Pressurization",
     kicker: "Pnömatik & Kabin Basıncı",
     desc: "Motor kompresör kademelerinden pack ve outflow valve'a uzanan pnömatik döngü; ani dekompresyon teşhisi.",
     url: "https://muhammetarbag.github.io/bleed-air-pressurization-lab/",
-    badge: "CANLI SİMÜLATÖR",
-    status: "NORMAL",
-    statusColor: "emerald"
-  },
-  {
-    ata: "ATA 29",
-    title: "Hydraulic Power Lab",
-    kicker: "Uçak Hidrolik Güç Sistemi",
-    desc: "3000 PSI Yeşil, Mavi ve Sarı rezervuar hatları, motor pompaları (EDP) ve çift yönlü Power Transfer Unit (PTU) mantığı.",
-    url: "https://muhammetarbag.github.io/hydraulic-lab/",
-    badge: "CANLI SİMÜLATÖR",
-    status: "NORMAL",
-    statusColor: "emerald"
-  },
-  {
-    ata: "ATA 28 / 47",
-    title: "Aircraft Fuel System Lab",
-    kicker: "Uçak Yakıt & Inerting Sistemleri",
-    desc: "Kanat ve merkez tanklar, crossfeed vana yönetimi, yakıt transfer pompaları ve kanat yük dengesi (W&B).",
-    url: "https://muhammetarbag.github.io/aircraft-fuel-system-lab/",
     badge: "CANLI SİMÜLATÖR",
     status: "NORMAL",
     statusColor: "emerald"
@@ -63,17 +23,17 @@ const laboratories = [
     statusColor: "emerald"
   },
   {
-    ata: "PROPULSION",
-    title: "Turbofan Engine Virtual Lab",
-    kicker: "İki Kademeli Turbofan Motoru",
-    desc: "Fan, kompresör, yanma odası ve türbin gaz akışı termodinamiği; interaktif N1/N2 ve EGT telemetri göstergeleri.",
-    url: "https://muhammetarbag.github.io/turbofan-lab/",
-    badge: "EĞİTİM MODÜLÜ",
+    ata: "ATA 24",
+    title: "Aircraft Electrical Power Lab",
+    kicker: "Uçak Elektrik Güç Dağıtımı",
+    desc: "115V AC 400Hz ve 28V DC bara topolojisi, IDG/APU jeneratör yönetimi, otomatik Bus Tie transferi ve 10 arıza senaryosu.",
+    url: "https://muhammetarbag.github.io/aircraft-electrical-power-lab/",
+    badge: "CANLI SİMÜLATÖR",
     status: "NORMAL",
-    statusColor: "cyan"
+    statusColor: "emerald"
   },
   {
-    ata: "AERODYNAMICS",
+    ata: "ATA 27 / AERO",
     title: "Rüzgâr Tüneli & Aerodinamik Lab",
     kicker: "Kanat Profili & Akışkanlar",
     desc: "NACA kanat kesitleri üzerinde hücum açısı (AoA), kaldırma/sürükleme (L/D) oranları ve perdövites (stall) dinamiği.",
@@ -83,7 +43,57 @@ const laboratories = [
     statusColor: "cyan"
   },
   {
-    ata: "VTOL PLATFORM",
+    ata: "ATA 28 / 47",
+    title: "Aircraft Fuel System Lab",
+    kicker: "Uçak Yakıt & Inerting Sistemleri",
+    desc: "Kanat ve merkez tanklar, crossfeed vana yönetimi, yakıt transfer pompaları ve kanat yük dengesi (W&B).",
+    url: "https://muhammetarbag.github.io/aircraft-fuel-system-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "ATA 29",
+    title: "Hydraulic Power Lab",
+    kicker: "Uçak Hidrolik Güç Sistemi",
+    desc: "3000 PSI Yeşil, Mavi ve Sarı rezervuar hatları, motor pompaları (EDP) ve çift yönlü Power Transfer Unit (PTU) mantığı.",
+    url: "https://muhammetarbag.github.io/hydraulic-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "ATA 34 / AEE 301",
+    title: "Radio Navigation & ILS Lab",
+    kicker: "Radyo Navigasyon & ILS Yaklaşma",
+    desc: "VHF Localizer ve UHF Glideslope DDM (modülasyon farkı) ayrıştırımı, rüzgâr sapması ve Runway 35R aletli iniş sistemi.",
+    url: "https://muhammetarbag.github.io/radio-navigation-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "ATA 72",
+    title: "Turbofan Engine Virtual Lab",
+    kicker: "İki Kademeli Turbofan Motoru",
+    desc: "Fan, kompresör, yanma odası ve türbin gaz akışı termodinamiği; interaktif N1/N2 ve EGT telemetri göstergeleri.",
+    url: "https://muhammetarbag.github.io/turbofan-lab/",
+    badge: "EĞİTİM MODÜLÜ",
+    status: "NORMAL",
+    statusColor: "cyan"
+  },
+  {
+    ata: "ATA 85",
+    title: "Dört Zamanlı Motor Lab (Motorlab)",
+    kicker: "Pistonlu İçten Yanmalı Motor",
+    desc: "Dört zamanlı benzinli motorun emme, sıkıştırma, yanma ve egzoz çevrimi; hareketli kesit ve P-V diyagramı.",
+    url: "https://muhammetarbag.github.io/motorlab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
+    ata: "PROTOTİP // VTOL",
     title: "ARK04 Stealth VTOL Drone",
     kicker: "3D Gövde & Aviyonik Entegrasyonu",
     desc: "Dört kaldırma motoru ve itki geçiş koridoru hesapları, 3D CAD yüzey modellemesi, gövde içi aviyonik yerleşimi.",
