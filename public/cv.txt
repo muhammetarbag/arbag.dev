@@ -1,60 +1,71 @@
 ================================================================================
 MUHAMMET HÜSEYİN ARBAĞ
 ================================================================================
-Avionics & Systems Engineer | Linux & AI Architecture
+Aviation Electrical & Electronics Student | Avionics Simulation, Linux & AI Agents
 Location: Kayseri, Turkey
 Email: muhammet@arbag.dev
 GitHub: https://github.com/muhammetarbag
-Domain: https://arbag.dev
+Web: https://arbag.dev
 
 --------------------------------------------------------------------------------
-PROFILE & CORE PHILOSOPHY
+PROFILE
 --------------------------------------------------------------------------------
-Undergraduate in Aviation Electrical & Electronics (Erciyes University). Working 
-at the intersection of deterministic physical systems (avionics, ATA standards, 
-RF navigation, power grids) and modern systems software (Linux, reverse 
-engineering, autonomous AI agent pipelines). Believes that code is not judged 
-by how it runs in ideal scenarios, but by how it survives fault injection, 
-bus drops, and memory pressure.
+Third-year student in Aviation Electrical & Electronics (Erciyes University),
+looking for an internship or R&D position. I build browser-based training
+simulators for aircraft systems (ATA chapters), with fault scenarios, guided
+experiments and simplified physical models, and I work on deterministic
+LLM-agent designs and Linux systems. The labs are educational models and do not
+represent a specific aircraft.
 
 --------------------------------------------------------------------------------
 EDUCATION
 --------------------------------------------------------------------------------
-* Erciyes University — Aviation Electrical & Electronics Engineering (3rd Year)
-  Focus: Aircraft Electrical Systems (ATA 24), Radio Navigation & ILS (AEE 301),
-  Automatic Flight Control (ATA 22 / AEE 303), Pneumatics & Bleed Air (ATA 36),
-  Hydraulic Systems (ATA 29), Fuel Systems (ATA 28).
+* Erciyes University, Faculty of Aviation and Space Sciences
+  Aviation Electrical & Electronics (3rd year, in progress)
+  Course topics: Aircraft Electrical Systems (ATA 24), Radio Navigation & ILS
+  (AEE 301), Automatic Flight Control (ATA 22 / AEE 303), Bleed Air &
+  Pressurization (ATA 21/36), Hydraulic Systems (ATA 29), Fuel Systems (ATA 28).
 
 --------------------------------------------------------------------------------
-PRIMARY PROJECTS & ENGINEERING LABS
+PROJECTS (public source on GitHub, live demos in the browser)
 --------------------------------------------------------------------------------
-[1] ATA 24 Aircraft Electrical Power & Micro-Grid Lab
-    - Real-time Kirchhoff matrix solver for 115V AC 400Hz 3-phase and 28V DC bus
-      distribution with generator load-shedding and 15ms bus tie contactor transfer.
-    - URL: https://arbag.dev/aircraft-electrical-power-lab/
+Training labs, 9 in total, TypeScript, each with its own live demo:
 
-[2] AEE 301 Radio Navigation & ILS Virtual Lab
-    - VHF/UHF Localizer and Glideslope difference in depth of modulation (DDM)
-      decoding and runway approach deviation tracking with autopilot coupling.
-    - URL: https://arbag.dev/radio-navigation-lab/
+[1] Aircraft Electrical Power Lab (ATA 24)
+    115V AC / 28V DC bus topology, generator and bus-tie logic with interlocks,
+    load shedding, and guided fault-diagnosis cases.
+    https://muhammetarbag.github.io/aircraft-electrical-power-lab/
 
-[3] ARK04 Stealth VTOL Drone Platform
-    - Aerodynamic 3D surface modeling, avionics bay packaging, power-to-weight 
-      ratio budget, and tilt-wing transition flight dynamics.
+[2] Radio Navigation & ILS Lab (AEE 301)
+    Localizer / glideslope DDM decoding and approach deviation tracking.
+    https://muhammetarbag.github.io/radio-navigation-lab/
 
-[4] MHATv & Tizen TV Reverse Engineering
-    - Dynamic plugin execution runtime for resource-constrained Smart TVs.
-      Memory leak containment, IPC, and custom media streaming protocol bridge.
+[3] Bleed Air & Pressurization Lab (ATA 21/36)
+    Bleed, pack, cabin pressure and outflow valve model with a validation
+    script and a quiz.
+    https://muhammetarbag.github.io/bleed-air-pressurization-lab/
 
-[5] Autonomous Agent Memory & Deterministic Data Collector Architecture
-    - Grunt vs. Judgment token-efficiency pipeline, minimizing LLM consumption 
-      via deterministic shell/API gathering prior to cognitive synthesis.
+[4] Other labs: Autoflight (ATA 22), Hydraulic Power (ATA 29), Fuel System
+    (ATA 28), Turbofan Engine, Four-Stroke Engine, Wind Tunnel.
+    https://github.com/muhammetarbag
+
+Browser tools on https://arbag.dev/lab/ :
+    ARINC 429 word decoder, ADS-B / Mode-S (DF17) frame decoder with CRC-24
+    check, tilt-wing VTOL transition model, rule-based QRH checklist prototype.
+
+Other work:
+    MHATv: plugin-based app for Samsung Tizen TV (private repository).
+    ARK04: VTOL drone design prototype (CAD, packaging, power budget).
+    Grunt vs. Judgment: design for LLM agents that gather data with
+    deterministic scripts before any model call (design notes only; no
+    published benchmark yet).
 
 --------------------------------------------------------------------------------
 TECHNICAL DOMAINS
 --------------------------------------------------------------------------------
-* Avionics & Aerospace : ATA 21/22/24/28/29/34, ARINC 429, ILS/VOR/DME, DO-178C
-* Systems & Core       : Linux Architecture, C/C++, Shell Scripting, Reverse Eng
-* Software & Web       : Python, TypeScript, Astro, Node.js, WebGL/Canvas
-* Hardware & Tools     : Digital Oscilloscope, Logic Analyzer, KiCad, OpenSCAD
+* Avionics & Aerospace : ATA 21/22/24/28/29/34, ARINC 429, ILS/VOR/DME,
+                         DO-178C / DO-254 (studying)
+* Systems & Core       : Linux, C, Shell scripting
+* Software & Web       : Python, TypeScript, Astro, Node.js, Canvas
+* Hardware & Tools     : Digital oscilloscope, logic analyzer, KiCad, OpenSCAD
 ================================================================================
