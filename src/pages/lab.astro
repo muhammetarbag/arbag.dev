@@ -35,7 +35,7 @@ const laboratories = [
     category: "power",
     title: "Aircraft Electrical Power Lab",
     kicker: "Uçak Elektrik Güç Dağıtımı",
-    desc: "115V AC 400Hz ve 28V DC bara topolojisi, IDG/APU jeneratör yönetimi, otomatik Bus Tie transferi ve 10 arıza senaryosu.",
+    desc: "115V AC 400Hz ve 28V DC bara topolojisi, IDG/APU jeneratör yönetimi, otomatik Bus Tie transferi ve 10 teşhis vakası (basitleştirilmiş eğitim modeli).",
     url: "https://muhammetarbag.github.io/aircraft-electrical-power-lab/",
     badge: "CANLI SİMÜLATÖR",
     status: "NORMAL",
@@ -68,7 +68,7 @@ const laboratories = [
     category: "power",
     title: "Hydraulic Power Lab",
     kicker: "Uçak Hidrolik Güç Sistemi",
-    desc: "3000 PSI Yeşil, Mavi ve Sarı rezervuar hatları, motor pompaları (EDP) ve çift yönlü Power Transfer Unit (PTU) mantığı.",
+    desc: "3000 psi hidrolik güç sistemi: ana, elektrikli ve RAT pompaları, akümülatör ve basınç tahliye valfi. Belirli bir uçak mimarisini temsil etmez.",
     url: "https://muhammetarbag.github.io/hydraulic-lab/",
     badge: "CANLI SİMÜLATÖR",
     status: "NORMAL",
@@ -123,7 +123,7 @@ const laboratories = [
 
 <Layout
   title="Canlı Aviyonik & Donanım Laboratuvarı — Muhammet Hüseyin Arbağ"
-  description="ARINC 429, VTOL geçiş simülatörü, kokpit QRH acil durum motoru, ADS-B alıcısı ve 10 interaktif ATA uçak laboratuvarı."
+  description="ARINC 429 çözücü, VTOL geçiş simülatörü, QRH kontrol listesi prototipi, ADS-B çerçeve çözücü ve 9 interaktif ATA uçak laboratuvarı."
 >
   <div class="max-w-6xl mx-auto px-6 mb-24">
     
@@ -134,7 +134,7 @@ const laboratories = [
         class="inline-flex items-center gap-2 text-xs font-mono text-neutral-400 hover:text-white transition-colors py-1 px-3 rounded-full bg-white/[0.03] border border-white/10"
       >
         <span>←</span>
-        <span>Ana Sayfa (Yazılım &amp; Yapay Zeka Portfolyosu)</span>
+        <span>Ana Sayfa</span>
       </a>
     </div>
 
@@ -149,7 +149,7 @@ const laboratories = [
           Avionics &amp; Systems Lab Deck
         </h1>
         <p class="text-neutral-400 text-sm sm:text-base max-w-2xl leading-relaxed">
-          Havacılık elektrik-elektroniği, sayısal veri yolları (ARINC 429 / 1553B), RF gözetleme ve uçuş kontrol algoritmaları için geliştirilmiş deterministik web laboratuvarları.
+          Havacılık elektrik-elektroniği, sayısal veri yolları (ARINC 429), ADS-B çözümleme ve uçuş kontrol algoritmaları için geliştirilmiş, tarayıcıda çalışan eğitim laboratuvarları.
         </p>
       </div>
 
@@ -161,7 +161,7 @@ const laboratories = [
         </div>
         <div class="p-3 rounded-xl bg-white/[0.02] border border-white/10">
           <div class="text-[10px] text-neutral-500">ATA SİMÜLATÖRLERİ</div>
-          <div class="text-base font-bold text-[#00e676]">10 Modül Aktif</div>
+          <div class="text-base font-bold text-[#00e676]">9 Lab + 1 Prototip</div>
         </div>
       </div>
     </div>
@@ -177,7 +177,7 @@ const laboratories = [
           <div class="flex items-center justify-between border-b border-white/[0.06] pb-3 text-xs font-mono">
             <div class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-[#00e676] animate-pulse"></span>
-              <span class="text-white font-bold tracking-wider">PRIMARY FLIGHT DISPLAY (PFD) // 60 FPS JİROSKOP &amp; ILS YAKLAŞMA</span>
+              <span class="text-white font-bold tracking-wider">PRIMARY FLIGHT DISPLAY (PFD) // JİROSKOP &amp; ILS YAKLAŞMA</span>
             </div>
             <span class="text-[#00e676] text-[10px]">CANLI CANVAS ENGINE</span>
           </div>
@@ -196,7 +196,7 @@ const laboratories = [
       </div>
 
       <!-- ARK-04 VTOL Dynamic Transition Simulator -->
-      <div id="vtol-spec">
+      <div>
         <VtolTransitionSim />
       </div>
 
@@ -206,7 +206,7 @@ const laboratories = [
       </div>
 
       <!-- Open-SDR ADS-B 1090 MHz Frame Dissector -->
-      <div id="adsb-tool">
+      <div>
         <AdsbDissector />
       </div>
 
@@ -220,7 +220,7 @@ const laboratories = [
           <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">ATA Uçak Sistem Simülatörleri</h2>
         </div>
         <p class="text-xs text-neutral-400 max-w-md font-mono">
-          Gerçek aviyonik veri yolları, bara izolasyonları ve arıza enjeksiyon algoritmaları barındıran tam teşekküllü web laboratuvarları.
+          Arıza senaryoları, rehberli deneyler ve basitleştirilmiş fizik modelleri içeren, tarayıcıda çalışan eğitim laboratuvarları. Belirli bir uçağı temsil etmez.
         </p>
       </div>
 
@@ -305,7 +305,7 @@ const laboratories = [
           class="filter-btn active px-3 py-1.5 rounded-full border border-[#00e5ff]/40 bg-[#00e5ff]/10 text-white font-semibold transition-all"
           data-filter="all"
         >
-          TÜMÜ (10)
+          TÜMÜ (9 + 1 PROTOTİP)
         </button>
         <button
           class="filter-btn px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-all"
@@ -404,7 +404,7 @@ const laboratories = [
           ac1Source.className = 'text-amber-400 font-bold';
           btcStatus.innerText = 'KAPALI (TRANSFER YAPILDI)';
           btcStatus.className = 'text-sm font-bold text-amber-400';
-          faultLog.innerHTML = '<span class="text-amber-400 font-bold">UYARI:</span> IDG 1 düştü! 15ms içinde Bus Tie kapandı, yük atma (Load Shed) devreye alındı.';
+          faultLog.innerHTML = '<span class="text-amber-400 font-bold">UYARI:</span> IDG 1 düştü! Bus Tie kapandı, yük atma (Load Shed) devreye alındı.';
         }
       });
 
