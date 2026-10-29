@@ -50,7 +50,7 @@
           value="28500"
           class="w-full accent-[#00e5ff] cursor-pointer"
         />
-        <div class="flex justify-between text-[10px] font-mono text-neutral-600">
+        <div class="flex justify-between text-[11px] font-mono text-neutral-600">
           <span id="slider-min">0 FT</span>
           <span>FL280 (Seyir)</span>
           <span id="slider-max">45,000 FT</span>
@@ -59,15 +59,15 @@
 
       <!-- Hex & Parity Status Box -->
       <div class="flex flex-col justify-between p-3 rounded-lg bg-black/60 border border-white/10 font-mono text-xs space-y-2">
-        <div class="flex items-center justify-between text-[10px] text-neutral-400">
+        <div class="flex items-center justify-between text-[11px] text-neutral-400">
           <span>HEX KELİMESİ</span>
           <span class="text-[#00e676] font-bold" id="parity-status">ODD PARITY: OK</span>
         </div>
         <div class="text-xl font-bold text-[#00e5ff] tracking-wider" id="hex-display">
           0x6A34B283
         </div>
-        <div class="text-[10px] text-neutral-400 flex justify-between border-t border-white/5 pt-1.5">
-          <span>SSM: <strong class="text-white" id="ssm-status">NORM OP (00)</strong></span>
+        <div class="text-[11px] text-neutral-400 flex justify-between border-t border-white/5 pt-1.5">
+          <span>SSM: <strong class="text-white" id="ssm-status">NORM OP (11)</strong></span>
           <span>SDI: <strong class="text-white">SYS 1 (01)</strong></span>
         </div>
       </div>
@@ -77,7 +77,7 @@
     <div class="space-y-3 font-mono">
       <div class="flex items-center justify-between text-[11px] text-neutral-400">
         <span>32-BIT VERİ YOLU HARİTASI (LSB ➡️ MSB)</span>
-        <span class="text-[10px] text-neutral-400">Etiket (1-8) | SDI (9-10) | Veri Alanı (11-29) | SSM (30-31) | P (32)</span>
+        <span class="text-[11px] text-neutral-400">Etiket (1-8) | SDI (9-10) | Veri Alanı (11-29) | SSM (30-31) | P (32)</span>
       </div>
 
       <!-- Bit Cells Visualizer (32 bits) -->
@@ -86,7 +86,7 @@
       </div>
 
       <!-- Bit Legend -->
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-[10px] font-mono pt-2 text-neutral-400">
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-[11px] font-mono pt-2 text-neutral-400">
         <div class="flex items-center gap-1.5">
           <span class="w-2.5 h-2.5 rounded-sm bg-purple-500/30 border border-purple-500/50"></span>
           <span>1-8: Etiket (Label)</span>
@@ -204,9 +204,10 @@
       bits[10 + i] = (rawData >> i) & 1;
     }
 
-    // Bits 30-31: SSM (00 = Normal Operation, 11 = Failure)
-    bits[29] = 0;
-    bits[30] = 0;
+    // Bits 30-31: SSM for BNR words (11 = Normal Operation, 00 = Failure Warning,
+    // 01 = No Computed Data, 10 = Functional Test)
+    bits[29] = 1;
+    bits[30] = 1;
 
     // Bit 32: Odd Parity Calculation (total count of 1s in bits 1-32 must be odd)
     let onesCount = 0;
@@ -258,7 +259,7 @@
         colorClass = 'bg-emerald-500/30 text-[#00e676] font-bold border-[#00e676]'; // Parity
       }
 
-      cell.className = `flex flex-col items-center justify-center p-1 rounded border text-[9px] font-mono select-none ${colorClass}`;
+      cell.className = `flex flex-col items-center justify-center p-1 rounded border text-[11px] font-mono select-none ${colorClass}`;
       cell.innerHTML = `<span>${b}</span><span class="text-[7px] text-neutral-600">${bitNum}</span>`;
       bitGrid.appendChild(cell);
     });

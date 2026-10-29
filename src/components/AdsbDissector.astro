@@ -53,9 +53,9 @@
           />
         </div>
 
-        <p id="adsb-msg" class="min-h-[1rem] text-[10px] text-neutral-400" aria-live="polite"></p>
+        <p id="adsb-msg" class="min-h-[1rem] text-[11px] text-neutral-400" aria-live="polite"></p>
 
-        <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[10px] text-neutral-400 pt-1">
+        <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[11px] text-neutral-400 pt-1">
           <span>Bit Uzunluğu: <strong class="text-white" id="packet-bit-len">112 BİT</strong></span>
           <span>Frekans: <strong class="text-neutral-300">1090 MHz (ADS-B)</strong></span>
           <span>Kaynak: <strong class="text-neutral-300">hex girdi</strong></span>
@@ -64,7 +64,7 @@
 
       <!-- CRC & Integrity Check Box -->
       <div class="lg:col-span-4 flex flex-col justify-between p-3.5 rounded-lg bg-black/60 border border-white/10 font-mono text-xs space-y-2">
-        <div class="flex items-center justify-between text-[10px] text-neutral-400">
+        <div class="flex items-center justify-between text-[11px] text-neutral-400">
           <span>CRC-24 SAĞLAMA</span>
           <span class="text-[#00e676] font-bold" id="crc-status">GEÇERLİ</span>
         </div>
@@ -72,7 +72,7 @@
           <span class="w-2 h-2 rounded-full bg-[#00e676]" id="crc-dot" aria-hidden="true"></span>
           <span id="crc-hex-display">CRC: 0x576098</span>
         </div>
-        <div class="text-[10px] text-neutral-400 border-t border-white/5 pt-1.5 flex justify-between gap-2">
+        <div class="text-[11px] text-neutral-400 border-t border-white/5 pt-1.5 flex justify-between gap-2">
           <span>Polinom: <strong class="text-neutral-300">0xFFF409</strong></span>
           <span>Hesaplanan: <strong class="text-neutral-300" id="crc-calc">0x576098</strong></span>
         </div>
@@ -84,30 +84,30 @@
 
       <!-- Field 1: Downlink Format & CA -->
       <div class="p-3.5 rounded-xl bg-black/40 border border-white/[0.06] space-y-1.5">
-        <div class="text-[10px] text-neutral-400 uppercase">DOWNLINK FORMAT (DF)</div>
+        <div class="text-[11px] text-neutral-400 uppercase">DOWNLINK FORMAT (DF)</div>
         <div class="text-base font-bold text-[#00e5ff]" id="df-val">DF 17 (Extended Squitter)</div>
-        <div class="text-[10px] text-neutral-400">Yetenek (CA): <span class="text-white" id="ca-val">—</span></div>
+        <div class="text-[11px] text-neutral-400">Yetenek (CA): <span class="text-white" id="ca-val">—</span></div>
       </div>
 
       <!-- Field 2: ICAO 24-Bit Address -->
       <div class="p-3.5 rounded-xl bg-black/40 border border-white/[0.06] space-y-1.5">
-        <div class="text-[10px] text-neutral-400 uppercase">ICAO 24-BİT HAVA TAŞITI ADRESİ</div>
+        <div class="text-[11px] text-neutral-400 uppercase">ICAO 24-BİT HAVA TAŞITI ADRESİ</div>
         <div class="text-base font-bold text-white tracking-wider" id="icao-val">0x4840D6</div>
-        <div class="text-[10px] text-neutral-400">Not: <span class="text-white" id="reg-val">ülke/tescil çözümü yok</span></div>
+        <div class="text-[11px] text-neutral-400">Not: <span class="text-white" id="reg-val">ülke/tescil çözümü yok</span></div>
       </div>
 
       <!-- Field 3: Type Code & Callsign -->
       <div class="p-3.5 rounded-xl bg-black/40 border border-white/[0.06] space-y-1.5">
-        <div class="text-[10px] text-neutral-400 uppercase">TİP KODU &amp; ÇAĞRI KODU</div>
+        <div class="text-[11px] text-neutral-400 uppercase">TİP KODU &amp; ÇAĞRI KODU</div>
         <div class="text-base font-bold text-amber-400" id="callsign-val">—</div>
-        <div class="text-[10px] text-neutral-400">Mesaj Tipi: <span class="text-white" id="type-code-val">—</span></div>
+        <div class="text-[11px] text-neutral-400">Mesaj Tipi: <span class="text-white" id="type-code-val">—</span></div>
       </div>
 
       <!-- Field 4: Kinematic Status -->
       <div class="p-3.5 rounded-xl bg-black/40 border border-white/[0.06] space-y-1.5">
-        <div class="text-[10px] text-neutral-400 uppercase">BAROMETRİK İRTİFA &amp; HIZ</div>
+        <div class="text-[11px] text-neutral-400 uppercase">BAROMETRİK İRTİFA &amp; HIZ</div>
         <div class="text-base font-bold text-[#00e676]" id="kinematic-val">—</div>
-        <div class="text-[10px] text-neutral-400">Dikey Oran: <span class="text-white" id="vs-val">—</span></div>
+        <div class="text-[11px] text-neutral-400">Dikey Oran: <span class="text-white" id="vs-val">—</span></div>
       </div>
 
     </div>
@@ -116,7 +116,7 @@
     <div class="space-y-2 font-mono">
       <div class="flex flex-wrap items-center justify-between gap-1 text-[11px] text-neutral-400">
         <span>112-BIT PROTOKOL KATMANI DİLİMLEMESİ:</span>
-        <span class="text-[10px] text-neutral-400">DF (1-5) | CA (6-8) | ICAO (9-32) | ME VERİ (33-88) | PI/CRC (89-112)</span>
+        <span class="text-[11px] text-neutral-400">DF (1-5) | CA (6-8) | ICAO (9-32) | ME VERİ (33-88) | PI/CRC (89-112)</span>
       </div>
 
       <div class="w-full h-3 rounded-full bg-white/5 border border-white/10 flex overflow-hidden">
@@ -127,7 +127,7 @@
         <div class="h-full bg-emerald-500/80 w-[21.43%]" title="Parity/CRC: Bits 89-112"></div>
       </div>
 
-      <div class="flex flex-wrap items-center justify-between gap-2 text-[10px] text-neutral-400 pt-1">
+      <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] text-neutral-400 pt-1">
         <div class="flex items-center gap-1.5">
           <span class="w-2 h-2 rounded-full bg-purple-500"></span>
           <span>DF (5b)</span>

@@ -4,14 +4,14 @@
 
 <div class="relative w-full h-full min-h-[190px] rounded-xl bg-[#07080b] border border-white/10 flex flex-col justify-between p-3 overflow-hidden select-none" id="pfd-container">
   <!-- PFD Top Annunciator Banner -->
-  <div class="flex items-center justify-between text-[10px] font-mono border-b border-white/[0.08] pb-1.5 z-10 bg-[#07080b]/80 backdrop-blur-sm">
+  <div class="flex items-center justify-between text-[11px] font-mono border-b border-white/[0.08] pb-1.5 z-10 bg-[#07080b]/80 backdrop-blur-sm">
     <div class="flex items-center gap-1.5">
-      <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-[#00e676] font-bold text-[9px]">CAT III DUAL</span>
+      <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-[#00e676] font-bold text-[11px]">CAT III DUAL</span>
       <span class="text-neutral-400">|</span>
-      <span class="text-[#00e5ff] font-semibold text-[9px]">AP 1 ENGAGED</span>
+      <span class="text-[#00e5ff] font-semibold text-[11px]">AP 1 ENGAGED</span>
     </div>
     <div class="flex items-center gap-2">
-      <span class="text-neutral-400 text-[9px]">LOC | GS</span>
+      <span class="text-neutral-400 text-[11px]">LOC | GS</span>
       <span class="w-1.5 h-1.5 rounded-full bg-[#00e676] animate-pulse"></span>
     </div>
   </div>
@@ -21,17 +21,17 @@
     <canvas id="pfd-canvas" class="w-full h-full max-h-[140px] block" width="340" height="140"></canvas>
     
     <!-- Altimeter & Airspeed Numerical Badges -->
-    <div class="absolute left-1 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-[#090b10] border border-[#00e5ff]/40 text-[#00e5ff] font-mono text-[10px] font-bold shadow-lg">
+    <div class="absolute left-1 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-[#090b10] border border-[#00e5ff]/40 text-[#00e5ff] font-mono text-[11px] font-bold shadow-lg">
       <span id="speed-val">142</span> <span class="text-[8px] text-neutral-400">KTS</span>
     </div>
     
-    <div class="absolute right-1 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-[#090b10] border border-[#00e676]/40 text-[#00e676] font-mono text-[10px] font-bold shadow-lg">
+    <div class="absolute right-1 top-1/2 -translate-y-1/2 px-1.5 py-0.5 rounded bg-[#090b10] border border-[#00e676]/40 text-[#00e676] font-mono text-[11px] font-bold shadow-lg">
       <span id="alt-val">02480</span> <span class="text-[8px] text-neutral-400">FT</span>
     </div>
   </div>
 
   <!-- PFD Bottom Telemetry Footer -->
-  <div class="flex items-center justify-between text-[9px] font-mono text-neutral-400 border-t border-white/[0.06] pt-1.5 z-10 bg-[#07080b]/80">
+  <div class="flex items-center justify-between text-[11px] font-mono text-neutral-400 border-t border-white/[0.06] pt-1.5 z-10 bg-[#07080b]/80">
     <span class="text-neutral-300">QNH: <strong class="text-white">1013 hPa</strong></span>
     <span class="text-[#00e5ff]">RWY 35R • ILS 109.50</span>
     <span>HDG: <strong class="text-white" id="hdg-val">352°</strong></span>

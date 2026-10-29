@@ -12,7 +12,7 @@
   >
     <span class="w-2 h-2 rounded-full bg-[#00e5ff] shadow-[0_0_6px_#00e5ff] animate-ping" aria-hidden="true"></span>
     <span class="font-bold tracking-wider">[ ⌘K<span class="hidden sm:inline"> / KONSOL</span> ]</span>
-    <span class="text-[10px] text-neutral-400 hidden sm:inline">CLI</span>
+    <span class="text-[11px] text-neutral-400 hidden sm:inline">CLI</span>
   </button>
 </div>
 
@@ -35,7 +35,7 @@
           <span class="w-2.5 h-2.5 rounded-full bg-green-500/80 inline-block"></span>
         </div>
         <span class="text-[11px] text-neutral-400 font-semibold pl-2">
-          mami@arbag-dev:~$ // AVIONICS COCKPIT SHELL
+          arbag.dev ~ komut konsolu
         </span>
       </div>
 
@@ -50,10 +50,10 @@
     <!-- Terminal Output Log -->
     <div id="terminal-output" class="p-4 overflow-y-auto space-y-2 flex-1 text-[11px] text-neutral-300 min-h-[220px]">
       <div class="text-[#00e5ff] font-bold">
-        ARBAG.DEV AVIONICS KONSOLU v2.4 // SİSTEM KONTROLÜ AKTİF
+        ARBAG.DEV KOMUT KONSOLU
       </div>
       <div class="text-neutral-400">
-        Kullanılabilir komutlar: <span class="text-white">ai</span>, <span class="text-white">embedded</span>, <span class="text-white">lab</span>, <span class="text-white">arinc</span>, <span class="text-white">vtol</span>, <span class="text-white">qrh</span>, <span class="text-white">adsb</span>, <span class="text-white">status</span>, <span class="text-white">cv</span>, <span class="text-white">clear</span>, <span class="text-white">exit</span>
+        Kullanılabilir komutlar: <span class="text-white">ai</span>, <span class="text-white">embedded</span>, <span class="text-white">lab</span>, <span class="text-white">arinc</span>, <span class="text-white">vtol</span>, <span class="text-white">qrh</span>, <span class="text-white">adsb</span>, <span class="text-white">cv</span>, <span class="text-white">clear</span>, <span class="text-white">exit</span>
       </div>
     </div>
 
@@ -65,7 +65,7 @@
         id="terminal-input"
         autocomplete="off"
         spellcheck="false"
-        placeholder="Bir komut yazın (örn: status, arinc, vtol)..."
+        placeholder="Bir komut yazın (örn: lab, arinc, cv)..."
         aria-label="Komut"
         class="flex-1 bg-transparent text-white font-mono text-xs outline-none placeholder:text-neutral-400 focus-visible:underline decoration-[#00e5ff]"
       />
@@ -153,7 +153,6 @@
               • <span class="text-white">embedded</span> : Gömülü Sistemler ve Düşük Seviye Yazılım bölümüne gider.<br/>
               • <span class="text-white">lab</span>      : Canlı Aviyonik &amp; Donanım Laboratuvarını (/lab) açar.<br/>
               • <span class="text-white">arinc</span> / <span class="text-white">vtol</span> / <span class="text-white">qrh</span> / <span class="text-white">adsb</span> : İlgili lab aracına gider.<br/>
-              • <span class="text-white">status</span>   : Örnek simülasyon telemetrisini listeler.<br/>
               • <span class="text-white">cv</span>       : Düz metin mühendislik özgeçmişini açar.<br/>
               • <span class="text-white">clear</span>    : Konsol ekranını temizler.<br/>
               • <span class="text-white">exit</span>     : Terminali kapatır.
@@ -184,21 +183,6 @@
             resp.innerText = 'Canlı Aviyonik & Donanım Laboratuvarı açılıyor...';
             closeTerminal();
             window.location.href = '/lab';
-            break;
-
-          case 'status':
-            resp.innerHTML = `
-              <div class="text-[#00e676] font-bold">[ÖRNEK TELEMETRİ: SİMÜLASYON DEĞERLERİ]</div>
-              • ATA 21/36 Kabin Basıncı: 8.2 PSI (NORMAL)<br/>
-              • ATA 22 Otopilot PID: STABIL (3-EKSEN)<br/>
-              • ATA 24 Elektrik Güç: 115V AC 400Hz (IDG 1 & 2 DENGELİ)<br/>
-              • ATA 27 Rüzgar Tüneli: CL/CD OPTIMAL<br/>
-              • ATA 28 Yakıt Hatları: 12,400 KG CROSSFEED KAPALI<br/>
-              • ATA 29 Hidrolik: 3000 PSI (NORMAL)<br/>
-              • ATA 34 ILS Yaklaşma: RWY 35R LOC/GS KİLİTLİ<br/>
-              • ATA 72 Turbofan N1/EGT: %84 N1 / 620°C NORMAL<br/>
-              • ATA 85 Piston Motoru: DÖRT ZAMANLI DÖNGÜ AKTİF
-            `;
             break;
 
           case 'arinc':

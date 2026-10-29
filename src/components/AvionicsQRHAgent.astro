@@ -43,11 +43,11 @@
           <span class="px-2 py-0.5 rounded bg-red-500/20 text-red-400 font-bold tracking-wider" id="master-annunciator">
             ⚠ MASTER WARNING
           </span>
-          <span class="text-[10px] text-neutral-400 font-bold" id="qrh-code">ATA 24-20-00</span>
+          <span class="text-[11px] text-neutral-400 font-bold" id="qrh-code">ATA 24-20-00</span>
         </div>
 
         <div class="space-y-1.5">
-          <div class="text-[10px] text-neutral-400 uppercase">Teşhis Edilen Arıza:</div>
+          <div class="text-[11px] text-neutral-400 uppercase">Teşhis Edilen Arıza:</div>
           <h4 class="text-white font-bold text-sm leading-snug" id="fault-title">
             IDG 1 + IDG 2 DUAL AC GENERATOR DROP
           </h4>
@@ -56,7 +56,7 @@
           </p>
         </div>
 
-        <div class="p-2.5 rounded bg-[#090b10] border border-white/5 space-y-1 text-[10px]">
+        <div class="p-2.5 rounded bg-[#090b10] border border-white/5 space-y-1 text-[11px]">
           <div class="flex justify-between text-neutral-400">
             <span>Kritik Eylem Süresi:</span>
             <span class="text-red-400 font-bold" id="critical-time">&lt; 30 Saniye</span>
@@ -72,7 +72,7 @@
       <div class="lg:col-span-8 p-4 rounded-xl bg-black/40 border border-white/[0.06] space-y-4 font-mono text-xs">
         <div class="flex items-center justify-between border-b border-white/5 pb-2 text-[11px]">
           <span class="text-[#00e5ff] font-bold">QRH ADIM ADIM İZOLASYON PROSEDÜRÜ (CHECKLIST)</span>
-          <span class="text-neutral-400 text-[10px]" id="step-counter">0 / 4 ADIM TAMAMLANDI</span>
+          <span class="text-neutral-400 text-[11px]" id="step-counter">0 / 4 ADIM TAMAMLANDI</span>
         </div>
 
         <!-- Checklist Items Container -->
@@ -244,7 +244,7 @@
       textCol.className = 'space-y-0.5';
       textCol.innerHTML = `
         <div class="text-white font-bold text-xs">${idx + 1}. ${st.action}</div>
-        <div class="text-[10px] text-neutral-400 font-mono">${st.note}</div>
+        <div class="text-[11px] text-neutral-400 font-mono">${st.note}</div>
       `;
 
       stepRow.appendChild(cb);

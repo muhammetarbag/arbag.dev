@@ -4,22 +4,15 @@ import CommandPalette from '../components/CommandPalette.astro';
 
 const aiProjects = [
   {
-    tag: "AJAN MİMARİSİ // DETERMINISTIC AI",
-    title: "Hermes & Avenox: Grunt vs. Judgment Ajan Modeli",
-    desc: "LLM'lerin halüsinasyon ve bağlam şişmesi (context rot) riskini azaltmayı hedefleyen iki kademeli karar mimarisi. Veri toplama deterministik shell/kod araçlarıyla (Grunt) LLM token'ı harcamadan yapılır; yüksek akıl yürütme (Judgment) modeline yalnızca filtrelenmiş karar matrisi iletilir.",
-    metrics: ["Deterministik Toplama", "Filtrelenmiş Girdi", "Deterministik Sentez"],
-    tech: ["Python Asyncio", "Deterministic Filters", "Tool-Calling", "Context Guardrails"]
-  },
-  {
-    tag: "EMNİYET VE ONAY // SAFETY GATE",
-    title: "Draft-Gate: İki Kademeli Durum Mutasyon Protokolü",
-    desc: "Otonom ajanların harici sistemleri kontrolsüz değiştirmesini önlemek için tasarlanmış 'Draft-Only' yayınlama mimarisi. Dış dünyaya etki eden, geri döndürülemez eylemler (dosya yazma, durum değiştirme, donanım komutu) operatör onayı ve işlem makbuzu olmadan yürütülmemesi hedefiyle kapı arkasına alınır.",
-    metrics: ["Operatör Makbuzu", "Geri Alınabilir Durum", "Fail-Safe Default"],
-    tech: ["Audit Trail", "Human-in-the-Loop", "State Machine", "Approval Gates"]
+    tag: "AJAN TASARIMI // TASARIM NOTLARI",
+    title: "Deterministik LLM Ajan Mimarisi",
+    desc: "İki fikir üzerine kurulu bir ajan tasarımı. Grunt vs. Judgment: veri toplama deterministik betiklerle LLM'e gitmeden yapılır, akıl yürütme modeline yalnızca filtrelenmiş girdi iletilir. Draft-Gate: dış dünyaya etki eden geri döndürülemez eylemler operatör onayı ve işlem makbuzu olmadan çalışmaz. Şu an yalnızca tasarım notları var; yayımlanmış kod veya karşılaştırmalı ölçüm yok.",
+    metrics: ["Grunt vs. Judgment", "Draft-Gate", "Operatör Onayı"],
+    tech: ["Python", "Tool-Calling", "Human-in-the-Loop", "Audit Trail"]
   },
   {
     tag: "AVİYONİK AI // EĞİTİM PROTOTİPİ",
-    title: "Hermes-Avionics: Kural Tabanlı Kokpit Karar Destek Prototipi",
+    title: "Kural Tabanlı Kokpit Karar Destek Prototipi",
     desc: "QRH prosedürlerinden ve arıza izolasyon el kitaplarından (FIM) esinlenen, kural ağacıyla çalışan eğitim prototipi. Çift jeneratör kaybı, kabin dekompresyonu gibi senaryolarda adım adım kontrol listesi sunar. Sertifikalı bir sistem değildir ve DO-178C kapsamında geliştirilmemiştir.",
     metrics: ["Kural Tabanlı", "Hata Ağacı", "Eğitim Prototipi"],
     tech: ["Deterministic Logic", "Fault Trees", "QRH Checklists", "Web Demo"]
@@ -74,11 +67,11 @@ const systemsProjects = [
               />
               <div class="absolute inset-0 bg-gradient-to-t from-[#050506] via-transparent to-transparent opacity-75"></div>
               <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-[10px] font-mono text-[#00e676]">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-[11px] font-mono text-[#00e676]">
                   <span class="w-1.5 h-1.5 rounded-full bg-[#00e676] animate-pulse"></span>
                   STAJ &amp; AR-GE'YE AÇIK
                 </span>
-                <span class="text-[10px] font-mono text-neutral-300 bg-black/70 backdrop-blur-md px-2 py-0.5 rounded border border-white/10">
+                <span class="text-[11px] font-mono text-neutral-300 bg-black/70 backdrop-blur-md px-2 py-0.5 rounded border border-white/10">
                   ERU H.E.E.
                 </span>
               </div>
@@ -115,7 +108,7 @@ const systemsProjects = [
             <!-- Eyebrow Tag -->
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#00e5ff]/30 bg-[#00e5ff]/10">
               <span class="w-1.5 h-1.5 rounded-full bg-[#00e5ff]"></span>
-              <span class="mono-telemetry text-[10px] text-[#00e5ff] font-bold">
+              <span class="mono-telemetry text-[11px] text-[#00e5ff] font-bold">
                 AVİYONİK SİMÜLASYON // DETERMİNİSTİK AI // SİSTEM YAZILIMI
               </span>
             </div>
@@ -167,82 +160,6 @@ const systemsProjects = [
         </div>
       </div>
 
-      <!-- Secondary Bento 1: AI Architectural Pillars (Col 6) -->
-      <div class="lg:col-span-6 hardware-card">
-        <div class="hardware-card-inner space-y-4">
-          <div class="specular-line"></div>
-          
-          <div class="flex items-center justify-between border-b border-white/[0.05] pb-2 text-[10px] mono-telemetry text-neutral-400">
-            <span class="text-[#00e5ff] font-bold">01 // YAPAY ZEKA VE AJAN FELSEFESİ</span>
-            <span>HERMES &amp; AVENOX</span>
-          </div>
-
-          <div class="space-y-3 font-mono text-xs">
-            <div class="flex items-start gap-2.5">
-              <span class="text-[#00e5ff] font-bold mt-0.5">▹</span>
-              <div>
-                <strong class="text-white">Deterministik Grunt vs. Judgment:</strong>
-                <p class="text-[11px] text-neutral-400 mt-0.5">Veri toplamayı LLM yerine saf betiklerle yapıp, modele yalnızca damıtılmış sentez bırakma mimarisi.</p>
-              </div>
-            </div>
-
-            <div class="flex items-start gap-2.5">
-              <span class="text-[#00e5ff] font-bold mt-0.5">▹</span>
-              <div>
-                <strong class="text-white">Draft-Gate Onay Mekanizması:</strong>
-                <p class="text-[11px] text-neutral-400 mt-0.5">Dış dünyaya etki eden mutasyonların operatör makbuzu olmadan gerçekleşmesini engelleyen emniyet kapısı.</p>
-              </div>
-            </div>
-
-            <div class="flex items-start gap-2.5">
-              <span class="text-[#00e5ff] font-bold mt-0.5">▹</span>
-              <div>
-                <strong class="text-white">Kural Tabanlı Karar Destek Prototipi:</strong>
-                <p class="text-[11px] text-neutral-400 mt-0.5">QRH ve arıza ağacı prosedürlerinden esinlenen, LLM içermeyen kural ağacı. Eğitim amaçlıdır, sertifikalı değildir.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Secondary Bento 2: Low-Level Systems Pillars (Col 6) -->
-      <div class="lg:col-span-6 hardware-card">
-        <div class="hardware-card-inner space-y-4">
-          <div class="specular-line"></div>
-          
-          <div class="flex items-center justify-between border-b border-white/[0.05] pb-2 text-[10px] mono-telemetry text-neutral-400">
-            <span class="text-[#00e676] font-bold">02 // SİSTEM YAZILIMI &amp; DONANIM</span>
-            <span>LINUX &amp; EMBEDDED</span>
-          </div>
-
-          <div class="space-y-3 font-mono text-xs">
-            <div class="flex items-start gap-2.5">
-              <span class="text-[#00e676] font-bold mt-0.5">▹</span>
-              <div>
-                <strong class="text-white">Gömülü Linux &amp; Çekirdek:</strong>
-                <p class="text-[11px] text-neutral-400 mt-0.5">POSIX paylaşımlı bellek, soket IPC boru hatları ve FreeRTOS gerçek zamanlı görev zamanlaması.</p>
-              </div>
-            </div>
-
-            <div class="flex items-start gap-2.5">
-              <span class="text-[#00e676] font-bold mt-0.5">▹</span>
-              <div>
-                <strong class="text-white">Kısıtlı Cihazlar &amp; Donanım:</strong>
-                <p class="text-[11px] text-neutral-400 mt-0.5">Düşük bellekli cihazlarda (Tizen TV) uygulama geliştirme; UART, SPI ve I2C ile donanım hata ayıklama.</p>
-              </div>
-            </div>
-
-            <div class="flex items-start gap-2.5">
-              <span class="text-[#00e676] font-bold mt-0.5">▹</span>
-              <div>
-                <strong class="text-white">Aviyonik Veri Yolları (ARINC / 1553B):</strong>
-                <p class="text-[11px] text-neutral-400 mt-0.5">Havacılık standartlarında veri yolu protokollerinin yazılımsal ve sayısal işaret (DSP) analizi.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
     </div>
   </section>
 
@@ -254,7 +171,7 @@ const systemsProjects = [
 
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
           <div class="space-y-4 max-w-2xl">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#00e5ff]/30 bg-[#00e5ff]/10 text-[#00e5ff] font-mono text-[10px] font-bold">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#00e5ff]/30 bg-[#00e5ff]/10 text-[#00e5ff] font-mono text-[11px] font-bold">
               <span class="w-1.5 h-1.5 rounded-full bg-[#00e5ff] animate-ping"></span>
               <span>AYRI SEKMEDE CANLI ÇALIŞAN DENEY MERKEZİ</span>
             </div>
@@ -273,19 +190,19 @@ const systemsProjects = [
 
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 font-mono text-xs">
               <div class="p-2.5 rounded-lg bg-black/50 border border-white/10">
-                <div class="text-[10px] text-neutral-400">KOKPİT</div>
+                <div class="text-[11px] text-neutral-400">KOKPİT</div>
                 <div class="font-bold text-white mt-0.5">Canlı PFD</div>
               </div>
               <div class="p-2.5 rounded-lg bg-black/50 border border-white/10">
-                <div class="text-[10px] text-neutral-400">VERİ YOLU</div>
+                <div class="text-[11px] text-neutral-400">VERİ YOLU</div>
                 <div class="font-bold text-[#00e5ff] mt-0.5">ARINC 429</div>
               </div>
               <div class="p-2.5 rounded-lg bg-black/50 border border-white/10">
-                <div class="text-[10px] text-neutral-400">AERODİNAMİK</div>
+                <div class="text-[11px] text-neutral-400">AERODİNAMİK</div>
                 <div class="font-bold text-amber-400 mt-0.5">VTOL Tilt Sim</div>
               </div>
               <div class="p-2.5 rounded-lg bg-black/50 border border-white/10">
-                <div class="text-[10px] text-neutral-400">EMNİYET</div>
+                <div class="text-[11px] text-neutral-400">EMNİYET</div>
                 <div class="font-bold text-[#00e676] mt-0.5">QRH Copilot</div>
               </div>
             </div>
@@ -300,7 +217,7 @@ const systemsProjects = [
               <span>Canlı Laboratuvara Git</span>
               <span class="text-[#00e5ff] group-hover:translate-x-1 transition-transform">→</span>
             </a>
-            <p class="text-[10px] font-mono text-neutral-400 text-center">
+            <p class="text-[11px] font-mono text-neutral-400 text-center">
               9 ATA Laboratuvarı • Tarayıcıda, sunucusuz çalışır
             </p>
           </div>
@@ -321,14 +238,14 @@ const systemsProjects = [
       </p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {aiProjects.map((p) => (
         <div class="hardware-card group">
           <div class="hardware-card-inner flex flex-col justify-between space-y-6">
             <div class="specular-line"></div>
 
             <div class="space-y-4">
-              <div class="flex items-center justify-between text-[10px] font-mono border-b border-white/[0.06] pb-3">
+              <div class="flex items-center justify-between text-[11px] font-mono border-b border-white/[0.06] pb-3">
                 <span class="text-[#00e5ff] font-bold">{p.tag}</span>
                 <span class="w-1.5 h-1.5 rounded-full bg-[#00e5ff]"></span>
               </div>
@@ -346,7 +263,7 @@ const systemsProjects = [
               <!-- Metrics / Highlights -->
               <div class="grid grid-cols-3 gap-2 text-center font-mono">
                 {p.metrics.map((m) => (
-                  <div class="p-1.5 rounded bg-white/[0.03] border border-white/5 text-[9px] text-[#00e676] font-semibold">
+                  <div class="p-1.5 rounded bg-white/[0.03] border border-white/5 text-[11px] text-[#00e676] font-semibold">
                     {m}
                   </div>
                 ))}
@@ -355,7 +272,7 @@ const systemsProjects = [
               <!-- Tech Badges -->
               <div class="flex flex-wrap gap-1.5 pt-1">
                 {p.tech.map((t) => (
-                  <span class="px-2 py-0.5 rounded bg-black/40 border border-white/10 text-[10px] font-mono text-neutral-300">
+                  <span class="px-2 py-0.5 rounded bg-black/40 border border-white/10 text-[11px] font-mono text-neutral-300">
                     {t}
                   </span>
                 ))}
@@ -386,7 +303,7 @@ const systemsProjects = [
             <div class="specular-line"></div>
 
             <div class="space-y-4">
-              <div class="flex items-center justify-between text-[10px] font-mono border-b border-white/[0.06] pb-3">
+              <div class="flex items-center justify-between text-[11px] font-mono border-b border-white/[0.06] pb-3">
                 <span class="text-[#00e676] font-bold">{p.tag}</span>
                 <span class="w-1.5 h-1.5 rounded-full bg-[#00e676]"></span>
               </div>
@@ -404,7 +321,7 @@ const systemsProjects = [
               <!-- Metrics / Highlights -->
               <div class="grid grid-cols-3 gap-2 text-center font-mono">
                 {p.metrics.map((m) => (
-                  <div class="p-1.5 rounded bg-white/[0.03] border border-white/5 text-[9px] text-cyan-300 font-semibold">
+                  <div class="p-1.5 rounded bg-white/[0.03] border border-white/5 text-[11px] text-cyan-300 font-semibold">
                     {m}
                   </div>
                 ))}
@@ -413,7 +330,7 @@ const systemsProjects = [
               <!-- Tech Badges -->
               <div class="flex flex-wrap gap-1.5 pt-1">
                 {p.tech.map((t) => (
-                  <span class="px-2 py-0.5 rounded bg-black/40 border border-white/10 text-[10px] font-mono text-neutral-300">
+                  <span class="px-2 py-0.5 rounded bg-black/40 border border-white/10 text-[11px] font-mono text-neutral-300">
                     {t}
                   </span>
                 ))}
@@ -569,101 +486,31 @@ const systemsProjects = [
     </div>
   </section>
 
-  <!-- 05 // KİLİT VAKA ANALİZLERİ (CASE STUDIES DEEP DIVE) -->
+  <!-- 04 // ÖRNEK ÇALIŞMA -->
   <section id="vaka-analizi" class="max-w-6xl mx-auto px-6 mb-32 scroll-mt-24">
     <div class="mb-12 border-b border-white/[0.06] pb-6">
-      <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">04 // MÜHENDİSLİK VAKA ANALİZLERİ</div>
-      <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Kritik Kısıtlar &amp; Çözüm Mimarisi</h2>
+      <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">04 // ÖRNEK ÇALIŞMA</div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">ATA 24 Elektrik Güç Laboratuvarı</h2>
       <p class="text-xs text-neutral-400 max-w-xl font-mono mt-2">
-        Sadece "ne yapıldı" değil; hangi operasyonel kısıtlar altında, hangi ödünleşimler (trade-offs) verilerek ve hangi kritik hatalar aşılarak inşa edildi?
+        Laboratuvarlardan birinin nasıl çalıştığı: problem, yaklaşım ve zor nokta.
       </p>
     </div>
 
     <div class="space-y-8">
       
-      <!-- Case Study 1: Deterministic AI and Mission Safety -->
-      <div class="hardware-card">
-        <div class="hardware-card-inner p-8 space-y-6">
-          <div class="specular-line"></div>
-          
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.08] pb-4">
-            <span class="text-xs font-mono text-[#00e5ff] font-bold">VAKA 01 // HERMES &amp; AVENOX: DETERMINISTIK AJAN EMNİYET MİMARİSİ</span>
-            <span class="text-[10px] mono-telemetry text-neutral-400">STANDART: DRAFT-GATE &amp; OPERATOR RECEIPT</span>
-          </div>
-
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="space-y-3 lg:col-span-1">
-              <h3 class="text-lg font-bold text-white">Operasyonel Problem &amp; Kısıt</h3>
-              <p class="text-xs text-neutral-400 leading-relaxed">
-                LLM tabanlı otonom ajanların kontrolsüz çalışması durumunda dosya sistemini bozması, yanlış API mutasyonları yapması veya bağlam penceresini (context window) gereksiz yere şişirerek maliyet patlamasına yol açması.
-              </p>
-            </div>
-
-            <div class="space-y-3 lg:col-span-1">
-              <h3 class="text-lg font-bold text-white">Grunt vs. Judgment Mimarisi</h3>
-              <p class="text-xs text-neutral-400 leading-relaxed">
-                Veri toplama adımları LLM token döngüsünden tamamen çıkarılarak <strong>deterministik kabuk betiklerine</strong> (Grunt) devredildi. Toplanan ham veri önceden filtrelenerek yüksek akıl yürütme modeline yalnızca karar için gerekli asgari bilgi sağlandı.
-              </p>
-            </div>
-
-            <div class="space-y-3 lg:col-span-1">
-              <h3 class="text-lg font-bold text-white">Elde Edilen Somut Çıktı</h3>
-              <p class="text-xs text-neutral-400 leading-relaxed">
-                Veri toplama LLM döngüsünün dışına alındı ve dış mutasyonlar Draft-Gate ile operatör makbuzuna bağlandı. Token tasarrufu bu mimarinin hedefidir; karşılaştırmalı bir ölçüm henüz yayımlanmadı.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Case Study 2: Tizen Smart TV & Reverse Engineering -->
-      <div class="hardware-card">
-        <div class="hardware-card-inner p-8 space-y-6">
-          <div class="specular-line"></div>
-          
-          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.08] pb-4">
-            <span class="text-xs font-mono text-[#00e676] font-bold">VAKA 02 // MHATv: KISITLI SMART TV DONANIMINDA DİNAMİK EKLENTİ YÜRÜTME</span>
-            <span class="text-[10px] mono-telemetry text-neutral-400">ORTAM: SAMSUNG TIZEN OS</span>
-          </div>
-
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="space-y-3 lg:col-span-1">
-              <h3 class="text-lg font-bold text-white">Kısıtlı Donanım Sınırı</h3>
-              <p class="text-xs text-neutral-400 leading-relaxed">
-                Eski nesil Tizen TV'lerin çift çekirdekli ARM işlemcileri ve 512 MB serbest RAM sınırı, modern SPA framework'lerinin DOM yükünü kaldıramıyordu.
-              </p>
-            </div>
-
-            <div class="space-y-3 lg:col-span-1">
-              <h3 class="text-lg font-bold text-white">Dinamik Eklenti &amp; İzolasyon</h3>
-              <p class="text-xs text-neutral-400 leading-relaxed">
-                CloudStream benzeri, JavaScript eklentilerini çalışma zamanında yükleyen ve ana uygulamadan ayrı tutan bir plugin mimarisi tasarlandı.
-              </p>
-            </div>
-
-            <div class="space-y-3 lg:col-span-1">
-              <h3 class="text-lg font-bold text-white">Durum</h3>
-              <p class="text-xs text-neutral-400 leading-relaxed">
-                Kaynak kodu private. Bellek ölçümleri ve ayrıntılar henüz yayımlanmadı; görüşmede paylaşılabilir.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- Case Study 3: ATA 24 Power Grid -->
       <div class="hardware-card">
         <div class="hardware-card-inner p-8 space-y-6">
           <div class="specular-line"></div>
           
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.08] pb-4">
-            <span class="text-xs font-mono text-[#00e5ff] font-bold">VAKA 03 // ATA 24 AIRCRAFT ELECTRICAL POWER DISTRIBUTION</span>
-            <span class="text-[10px] mono-telemetry text-neutral-400">KAPSAM: BASİTLEŞTİRİLMİŞ EĞİTİM MODELİ</span>
+            <span class="text-xs font-mono text-[#00e5ff] font-bold">ATA 24 // UÇAK ELEKTRİK GÜÇ DAĞITIMI</span>
+            <span class="text-[11px] mono-telemetry text-neutral-400">KAPSAM: BASİTLEŞTİRİLMİŞ EĞİTİM MODELİ</span>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="space-y-3 lg:col-span-1">
-              <h3 class="text-lg font-bold text-white">Operasyonel Problem &amp; Kısıt</h3>
+              <h3 class="text-lg font-bold text-white">Problem</h3>
               <p class="text-xs text-neutral-400 leading-relaxed">
                 Uçak AC jeneratörleri bağımsız frekanslarda çalıştığı için asla paralel bağlanamaz. 
                 Sol jeneratör devreden çıktığında Bus Tie kapanmalı ve yük atma (Load Shedding) otomatik devreye girmelidir.
@@ -671,7 +518,7 @@ const systemsProjects = [
             </div>
 
             <div class="space-y-3 lg:col-span-1">
-              <h3 class="text-lg font-bold text-white">Mimari Ödünleşim (Trade-off)</h3>
+              <h3 class="text-lg font-bold text-white">Yaklaşım</h3>
               <p class="text-xs text-neutral-400 leading-relaxed">
                 Ağır SPICE analog simülatörleri yerine, bara topolojisini yönlü graf olarak ele alan bir <strong>yol çözücü ve kilitleme (interlock) mantığı</strong> yazıldı. Sonuç: tarayıcıda gerçek zamanlı çalışan, deterministik bir model.
               </p>
@@ -731,7 +578,6 @@ const systemsProjects = [
         <ul class="space-y-2 text-neutral-400">
           <li>• ARINC 429 &amp; 1553B Veri Yolları</li>
           <li>• Mode-S &amp; ADS-B Çerçeve Çözümleme</li>
-          <li>• DO-178C / DO-254 (öğrenme aşamasında)</li>
           <li>• ILS / VOR / DME Navigasyon</li>
           <li>• Uçak Güç Dağıtımı (ATA 24)</li>
         </ul>
