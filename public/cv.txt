@@ -21,12 +21,12 @@ represent a specific aircraft.
 EDUCATION
 --------------------------------------------------------------------------------
 * Erciyes University, Faculty of Aviation and Space Sciences
-  Aviation Electrical & Electronics (3rd year, in progress)
+  Aviation Electrical & Electronics (2024 - present, 3rd year)
   Course topics: Aircraft Electrical Systems (ATA 24), Radio Navigation & ILS
   (AEE 301), Automatic Flight Control (ATA 22 / AEE 303), Bleed Air &
   Pressurization (ATA 21/36), Hydraulic Systems (ATA 29), Fuel Systems (ATA 28).
 
-* Çukurova University
+* Çukurova University (2021 - 2023)
   Associate degree (Önlisans), Electrical
 
 --------------------------------------------------------------------------------
