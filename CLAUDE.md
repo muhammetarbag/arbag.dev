@@ -22,12 +22,14 @@ The domain is registered at Squarespace, which points its nameservers to Cloudfl
 - `src/lib/modes.ts` — Mode-S / ADS-B frame decoding and CRC-24, used by `AdsbDissector.astro`. Keep it pure (no DOM) so the tests can import it.
 - `src/layouts/Layout.astro` — shared shell, meta/OpenGraph tags.
 - `src/styles/global.css` — Tailwind entry and global styles.
+- `public/_redirects` — stable lab URLs: cards on `/lab` link to `/l/<repo>/`, which 302s to the GitHub Pages deployment. If a lab moves or the GitHub user is renamed, change only this file. Add a pair of lines (with and without trailing slash) for each new lab.
 - `public/` — static files (`profile.webp`, `cv.txt`, `og.png`, `robots.txt`, `sitemap.xml`) and `_headers` (security headers, CSP, cache rules). The CSP allows only same-origin assets plus Cloudflare Web Analytics; adding a third-party script, font or image host needs a matching change there.
 
 ## Things that will bite you
 - Import CSS in the Astro frontmatter (`import '../styles/global.css'` in `Layout.astro`). A static `<link>` to the stylesheet failed to bundle (commit a87d9de).
 - Don't add `routes` with `custom_domain` to `wrangler.jsonc` without checking: it broke the build once and was reverted (commit d6564f3). The domain and its DNS are managed on the Cloudflare/Squarespace side, not in this file.
 - `wrangler.jsonc` uses `not_found_handling: 404-page`, so unknown paths return `dist/404.html` (from `src/pages/404.astro`) with status 404. New pages need their own file under `src/pages/`, and should be added to `public/sitemap.xml`.
+- The dev machine's locale is Turkish: `sed`/`grep` ranges like `[a-z]` skip the letter `i`. Use `LC_ALL=C` for bulk text replacements.
 - Site claims must be backed by something public. Don't reintroduce unmeasured metrics, "DO-178C compliant" wording, or projects without a repo or demo; lab copy should match the lab READMEs ("simplified educational model").
 - Large single-file pages (`index.astro` ~750 lines, `lab.astro` ~450): make targeted edits, don't rewrite whole files.
 - `.env` and `.env.production` are gitignored. Keep secrets out of the repo.
