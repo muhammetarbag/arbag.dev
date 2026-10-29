@@ -26,6 +26,9 @@ EDUCATION
   (AEE 301), Automatic Flight Control (ATA 22 / AEE 303), Bleed Air &
   Pressurization (ATA 21/36), Hydraulic Systems (ATA 29), Fuel Systems (ATA 28).
 
+* Çukurova University
+  Associate degree (Önlisans), Electrical
+
 --------------------------------------------------------------------------------
 PROJECTS (public source on GitHub, live demos in the browser)
 --------------------------------------------------------------------------------
