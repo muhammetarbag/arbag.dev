@@ -1,5 +1,7 @@
 ---
 import '../styles/global.css';
+import '@fontsource-variable/geist';
+import '@fontsource-variable/jetbrains-mono';
 
 interface Props {
   title?: string;
@@ -7,9 +9,21 @@ interface Props {
 }
 
 const {
-  title = "Muhammet Hüseyin Arbağ — Systems & Avionics Engineering",
-  description = "Havacılık elektrik-elektroniği, Linux sistemleri ve deterministik yapay zeka ajan mimarileri üzerine çalışan sistem araştırmacısı."
+  title = "Muhammet Hüseyin Arbağ — Havacılık Elektrik-Elektroniği Öğrencisi",
+  description = "Havacılık elektrik-elektroniği öğrencisi. Aviyonik simülasyon, Linux sistemleri ve deterministik yapay zeka ajan tasarımları."
 } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL('/og.png', Astro.site).href;
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Muhammet Hüseyin Arbağ',
+  url: 'https://arbag.dev',
+  jobTitle: 'Havacılık Elektrik-Elektroniği Öğrencisi',
+  affiliation: { '@type': 'CollegeOrUniversity', name: 'Erciyes Üniversitesi' },
+  sameAs: ['https://github.com/muhammetarbag'],
+};
 ---
 
 <!doctype html>
@@ -20,24 +34,32 @@ const {
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#050506" />
-    
+    <link rel="canonical" href={canonical} />
+
     <!-- OpenGraph / Social -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://arbag.dev" />
+    <meta property="og:site_name" content="arbag.dev" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <script type="application/ld+json" set:html={JSON.stringify(personLd)} />
     
     <!-- Favicon: High-precision SVG Aircraft Crosshair / Radar -->
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050506'/%3E%3Ccircle cx='32' cy='32' r='20' fill='none' stroke='%2300e5ff' stroke-width='2' stroke-dasharray='4 2'/%3E%3Cpath d='M32 8v48M8 32h48' stroke='%2300e676' stroke-width='1.5' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%2300e676'/%3E%3C/svg%3E" />
     
-    <!-- Fonts: Inter / JetBrains Mono via CDN fallback -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-    
   </head>
   <body class="bg-[#050506] text-[#ededef] min-h-screen relative selection:bg-[#00e5ff]/20 selection:text-white">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:px-3 focus:py-1.5 focus:rounded focus:bg-[#00e5ff] focus:text-[#050506] focus:text-xs focus:font-mono focus:font-semibold"
+    >İçeriğe geç</a>
+
     <!-- Procedural Noise Grain -->
     <div class="bg-noise" aria-hidden="true"></div>
     
@@ -46,7 +68,7 @@ const {
 
     <!-- Floating Island Navbar -->
     <header class="fixed top-5 inset-x-0 z-50 flex justify-center px-4">
-      <nav class="flex items-center justify-between gap-6 px-4 py-2 rounded-full border border-white/[0.08] bg-[#090a0c]/80 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] max-w-4xl w-full">
+      <nav aria-label="Ana gezinme" class="flex items-center justify-between gap-6 px-4 py-2 rounded-full border border-white/[0.08] bg-[#090a0c]/80 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] max-w-4xl w-full">
         <!-- Brand / Identity -->
         <a href="/" class="flex items-center gap-2.5 group">
           <div class="w-6 h-6 rounded-md bg-white/[0.06] border border-white/10 flex items-center justify-center font-mono text-[11px] font-bold text-[#00e5ff] group-hover:border-[#00e5ff]/50 transition-colors">
@@ -77,22 +99,22 @@ const {
           
           <!-- Distinctive Highlighted Pill for the Live Simulation Lab -->
           <a
-            href="/lab"
+            href="/lab/"
             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-[#00e5ff]/40 bg-[#00e5ff]/10 hover:bg-[#00e5ff]/20 text-[#00e5ff] hover:text-white font-mono text-[11px] font-semibold transition-all shadow-[0_0_12px_rgba(0,229,255,0.15)]"
           >
             <span>Laboratuvar</span>
-            <span class="text-xs">⚡</span>
+            <span class="text-xs" aria-hidden="true">⚡</span>
           </a>
 
-          <a href="/#iletisim" class="hover:text-white transition-colors">İletişim</a>
+          <a href="/#iletisim" class="hidden sm:inline hover:text-white transition-colors">İletişim</a>
           
           <!-- Button-in-Button CTA -->
           <a
             href="mailto:muhammet@arbag.dev"
             class="group inline-flex items-center gap-2.5 pl-3.5 pr-1.5 py-1 rounded-full border border-white/10 bg-white/[0.05] hover:bg-white/[0.1] hover:border-white/20 active:scale-[0.98] transition-all"
           >
-            <span class="text-[11px] text-neutral-200">Bağlantı</span>
-            <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[10px] text-neutral-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">
+            <span class="text-[11px] text-neutral-200 whitespace-nowrap">E-posta</span>
+            <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[10px] text-neutral-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" aria-hidden="true">
               ↗
             </span>
           </a>
@@ -101,7 +123,7 @@ const {
     </header>
 
     <!-- Main Content Slot -->
-    <main class="pt-28 pb-20">
+    <main id="main" class="pt-28 pb-20">
       <slot />
     </main>
 
@@ -109,10 +131,10 @@ const {
     <footer id="iletisim" class="border-t border-white/[0.06] bg-[#07080a] pt-12 pb-12 px-6">
       <div class="max-w-5xl mx-auto space-y-8">
         <!-- Footer Meta & Links -->
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 text-xs text-neutral-500">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 text-xs text-neutral-400">
           <div>
             <p class="text-neutral-300 font-medium font-mono text-sm">Muhammet Hüseyin Arbağ</p>
-            <p class="text-[11px] mt-1 text-neutral-500">
+            <p class="text-[11px] mt-1 text-neutral-400">
               Erciyes Üniversitesi Havacılık Elektrik & Elektroniği • Kayseri, TR
             </p>
           </div>
@@ -128,8 +150,8 @@ const {
         </div>
 
         <div class="flex items-center justify-between border-t border-white/[0.04] pt-6 text-[10px] mono-telemetry text-neutral-600">
-          <span>HOSTED ON CLOUDFLARE EDGE // ZERO RUNTIME JS BY DEFAULT</span>
-          <span>© 2026 ARBAG.DEV • ALL CRITICAL BUSES NORMAL</span>
+          <span>HOSTED ON CLOUDFLARE</span>
+          <span>© 2026 ARBAG.DEV</span>
         </div>
       </div>
     </footer>

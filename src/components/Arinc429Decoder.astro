@@ -20,11 +20,11 @@
         </p>
       </div>
 
-      <div class="flex items-center gap-2 text-xs font-mono">
-        <span class="text-neutral-400">Önayar:</span>
+      <div class="flex items-center gap-2 text-xs font-mono min-w-0 max-w-full">
+        <label for="arinc-preset" class="text-neutral-400 shrink-0">Önayar:</label>
         <select
           id="arinc-preset"
-          class="bg-[#090b10] border border-white/10 rounded px-2.5 py-1 text-xs text-white font-mono focus:border-[#00e5ff] outline-none"
+          class="min-w-0 max-w-full bg-[#090b10] border border-white/10 rounded px-2.5 py-1 text-xs text-white font-mono focus:border-[#00e5ff] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#00e5ff]"
         >
           <option value="alt">Etiket 203: Barometrik İrtifa (Feet)</option>
           <option value="tas">Etiket 210: Gerçek Hava Hızı (KTS)</option>
@@ -59,7 +59,7 @@
 
       <!-- Hex & Parity Status Box -->
       <div class="flex flex-col justify-between p-3 rounded-lg bg-black/60 border border-white/10 font-mono text-xs space-y-2">
-        <div class="flex items-center justify-between text-[10px] text-neutral-500">
+        <div class="flex items-center justify-between text-[10px] text-neutral-400">
           <span>HEX KELİMESİ</span>
           <span class="text-[#00e676] font-bold" id="parity-status">ODD PARITY: OK</span>
         </div>
@@ -77,7 +77,7 @@
     <div class="space-y-3 font-mono">
       <div class="flex items-center justify-between text-[11px] text-neutral-400">
         <span>32-BIT VERİ YOLU HARİTASI (LSB ➡️ MSB)</span>
-        <span class="text-[10px] text-neutral-500">Etiket (1-8) | SDI (9-10) | Veri Alanı (11-29) | SSM (30-31) | P (32)</span>
+        <span class="text-[10px] text-neutral-400">Etiket (1-8) | SDI (9-10) | Veri Alanı (11-29) | SSM (30-31) | P (32)</span>
       </div>
 
       <!-- Bit Cells Visualizer (32 bits) -->
@@ -251,7 +251,7 @@
       } else if (bitNum <= 10) {
         colorClass = 'bg-amber-500/20 text-amber-300 border-amber-500/40'; // SDI
       } else if (bitNum <= 29) {
-        colorClass = b === 1 ? 'bg-cyan-500/40 text-white font-bold border-[#00e5ff]' : 'bg-white/[0.03] text-neutral-500 border-white/5';
+        colorClass = b === 1 ? 'bg-cyan-500/40 text-white font-bold border-[#00e5ff]' : 'bg-white/[0.03] text-neutral-400 border-white/5';
       } else if (bitNum <= 31) {
         colorClass = 'bg-blue-500/20 text-blue-300 border-blue-500/40'; // SSM
       } else {

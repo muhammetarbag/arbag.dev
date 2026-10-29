@@ -3,21 +3,26 @@
 ---
 
 <!-- Trigger Button Floating in Bottom-Right -->
-<div class="fixed bottom-6 right-6 z-40">
+<div class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40">
   <button
     id="open-terminal-btn"
     class="group flex items-center gap-2.5 px-3.5 py-2 rounded-full border border-white/10 bg-[#090b10]/90 backdrop-blur-xl text-xs font-mono text-neutral-300 hover:text-white hover:border-[#00e5ff]/50 shadow-[0_10px_25px_rgba(0,0,0,0.8)] active:scale-[0.98] transition-all"
     title="Aviyonik Komuta Konsolunu Aç (Kısayol: ~ veya ⌘K)"
+    aria-label="Komut konsolunu aç"
   >
-    <span class="w-2 h-2 rounded-full bg-[#00e5ff] shadow-[0_0_6px_#00e5ff] animate-ping"></span>
-    <span class="font-bold tracking-wider">[ ⌘K / KONSOL ]</span>
-    <span class="text-[10px] text-neutral-500 hidden sm:inline">CLI</span>
+    <span class="w-2 h-2 rounded-full bg-[#00e5ff] shadow-[0_0_6px_#00e5ff] animate-ping" aria-hidden="true"></span>
+    <span class="font-bold tracking-wider">[ ⌘K<span class="hidden sm:inline"> / KONSOL</span> ]</span>
+    <span class="text-[10px] text-neutral-400 hidden sm:inline">CLI</span>
   </button>
 </div>
 
 <!-- Terminal Modal Overlay -->
 <div
   id="terminal-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Komut konsolu"
+  inert
   class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-200"
 >
   <div class="relative w-full max-w-2xl rounded-2xl border border-white/15 bg-[#07090d] shadow-2xl overflow-hidden font-mono text-xs flex flex-col max-h-[85vh]">
@@ -36,7 +41,7 @@
 
       <button
         id="close-terminal-btn"
-        class="text-neutral-500 hover:text-white text-xs px-2 py-0.5 rounded border border-white/5 hover:border-white/20 transition-colors"
+        class="text-neutral-400 hover:text-white text-xs px-2 py-0.5 rounded border border-white/5 hover:border-white/20 transition-colors"
       >
         ESC
       </button>
@@ -47,8 +52,8 @@
       <div class="text-[#00e5ff] font-bold">
         ARBAG.DEV AVIONICS KONSOLU v2.4 // SİSTEM KONTROLÜ AKTİF
       </div>
-      <div class="text-neutral-500">
-        Kullanılabilir komutlar: <span class="text-white">ai</span>, <span class="text-white">embedded</span>, <span class="text-white">lab</span>, <span class="text-white">status</span>, <span class="text-white">cv</span>, <span class="text-white">clear</span>, <span class="text-white">exit</span>
+      <div class="text-neutral-400">
+        Kullanılabilir komutlar: <span class="text-white">ai</span>, <span class="text-white">embedded</span>, <span class="text-white">lab</span>, <span class="text-white">arinc</span>, <span class="text-white">vtol</span>, <span class="text-white">qrh</span>, <span class="text-white">adsb</span>, <span class="text-white">status</span>, <span class="text-white">cv</span>, <span class="text-white">clear</span>, <span class="text-white">exit</span>
       </div>
     </div>
 
@@ -61,7 +66,8 @@
         autocomplete="off"
         spellcheck="false"
         placeholder="Bir komut yazın (örn: status, arinc, vtol)..."
-        class="flex-1 bg-transparent text-white font-mono text-xs outline-none placeholder:text-neutral-600"
+        aria-label="Komut"
+        class="flex-1 bg-transparent text-white font-mono text-xs outline-none placeholder:text-neutral-400 focus-visible:underline decoration-[#00e5ff]"
       />
     </div>
   </div>
@@ -76,6 +82,7 @@
 
   function openTerminal() {
     if (modal && input) {
+      modal.removeAttribute('inert');
       modal.classList.remove('opacity-0', 'pointer-events-none');
       input.focus();
     }
@@ -84,6 +91,17 @@
   function closeTerminal() {
     if (modal) {
       modal.classList.add('opacity-0', 'pointer-events-none');
+      modal.setAttribute('inert', '');
+      openBtn?.focus();
+    }
+  }
+
+  // Scroll to a lab widget; those only exist on /lab, so jump there from other pages.
+  function goToLabTool(id: string) {
+    if (window.location.pathname.replace(/\/$/, '') === '/lab') {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      window.location.href = `/lab/#${id}`;
     }
   }
 
@@ -97,11 +115,12 @@
         e.preventDefault();
         modal.classList.contains('opacity-0') ? openTerminal() : closeTerminal();
       } else if (e.key === '`' || e.key === '~') {
-        if (document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+        const tag = document.activeElement?.tagName;
+        if (tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT') {
           e.preventDefault();
           modal.classList.contains('opacity-0') ? openTerminal() : closeTerminal();
         }
-      } else if (e.key === 'Escape') {
+      } else if (e.key === 'Escape' && !modal.classList.contains('opacity-0')) {
         closeTerminal();
       }
     });
@@ -114,7 +133,13 @@
         if (!cmd) return;
 
         const cmdLine = document.createElement('div');
-        cmdLine.innerHTML = `<span class="text-[#00e676] font-bold">$</span> <span class="text-white">${cmd}</span>`;
+        const prompt = document.createElement('span');
+        prompt.className = 'text-[#00e676] font-bold';
+        prompt.textContent = '$';
+        const typed = document.createElement('span');
+        typed.className = 'text-white';
+        typed.textContent = ` ${cmd}`;
+        cmdLine.append(prompt, typed);
         output.appendChild(cmdLine);
 
         const resp = document.createElement('div');
@@ -125,9 +150,10 @@
             resp.innerHTML = `
               <strong>KULLANILABİLİR KOMUTLAR:</strong><br/>
               • <span class="text-white">ai</span>       : Yapay Zeka ve Ajan Mimarileri bölümüne gider.<br/>
-              • <span class="text-white">embedded</span> : Gömülü Sistemler ve Tersine Mühendislik bölümüne gider.<br/>
+              • <span class="text-white">embedded</span> : Gömülü Sistemler ve Düşük Seviye Yazılım bölümüne gider.<br/>
               • <span class="text-white">lab</span>      : Canlı Aviyonik &amp; Donanım Laboratuvarını (/lab) açar.<br/>
-              • <span class="text-white">status</span>   : Sistem telemetrisi ve baraların durumunu listeler.<br/>
+              • <span class="text-white">arinc</span> / <span class="text-white">vtol</span> / <span class="text-white">qrh</span> / <span class="text-white">adsb</span> : İlgili lab aracına gider.<br/>
+              • <span class="text-white">status</span>   : Örnek simülasyon telemetrisini listeler.<br/>
               • <span class="text-white">cv</span>       : Düz metin mühendislik özgeçmişini açar.<br/>
               • <span class="text-white">clear</span>    : Konsol ekranını temizler.<br/>
               • <span class="text-white">exit</span>     : Terminali kapatır.
@@ -162,13 +188,13 @@
 
           case 'status':
             resp.innerHTML = `
-              <div class="text-[#00e676] font-bold">[SİSTEM TELEMETRİSİ: TÜM BARALAR NORMAL]</div>
+              <div class="text-[#00e676] font-bold">[ÖRNEK TELEMETRİ: SİMÜLASYON DEĞERLERİ]</div>
               • ATA 21/36 Kabin Basıncı: 8.2 PSI (NORMAL)<br/>
               • ATA 22 Otopilot PID: STABIL (3-EKSEN)<br/>
               • ATA 24 Elektrik Güç: 115V AC 400Hz (IDG 1 & 2 DENGELİ)<br/>
               • ATA 27 Rüzgar Tüneli: CL/CD OPTIMAL<br/>
               • ATA 28 Yakıt Hatları: 12,400 KG CROSSFEED KAPALI<br/>
-              • ATA 29 Hidrolik: G: 3000 PSI, B: 3000 PSI, Y: 3000 PSI<br/>
+              • ATA 29 Hidrolik: 3000 PSI (NORMAL)<br/>
               • ATA 34 ILS Yaklaşma: RWY 35R LOC/GS KİLİTLİ<br/>
               • ATA 72 Turbofan N1/EGT: %84 N1 / 620°C NORMAL<br/>
               • ATA 85 Piston Motoru: DÖRT ZAMANLI DÖNGÜ AKTİF
@@ -178,25 +204,31 @@
           case 'arinc':
             resp.innerText = 'ARINC 429 Ayrıştırıcısına yönlendiriliyor...';
             closeTerminal();
-            document.getElementById('arinc-tool')?.scrollIntoView({ behavior: 'smooth' });
+            goToLabTool('arinc-tool');
             break;
 
           case 'vtol':
             resp.innerText = 'ARK-04 VTOL Simülatörüne yönlendiriliyor...';
             closeTerminal();
-            document.getElementById('vtol-spec')?.scrollIntoView({ behavior: 'smooth' });
+            goToLabTool('vtol-spec');
             break;
 
           case 'qrh':
-            resp.innerText = 'Acil Durum Teşhis Motoruna (QRH) yönlendiriliyor...';
+            resp.innerText = 'QRH kontrol listesi prototipine yönlendiriliyor...';
             closeTerminal();
-            document.getElementById('qrh-tool')?.scrollIntoView({ behavior: 'smooth' });
+            goToLabTool('qrh-tool');
+            break;
+
+          case 'adsb':
+            resp.innerText = 'ADS-B çerçeve çözücüye yönlendiriliyor...';
+            closeTerminal();
+            goToLabTool('adsb-tool');
             break;
 
           case 'labs':
-            resp.innerText = 'The 9-System Laboratuvar Matrisine kaydırılıyor...';
+            resp.innerText = 'ATA laboratuvar matrisine kaydırılıyor...';
             closeTerminal();
-            document.getElementById('laboratuvarlar')?.scrollIntoView({ behavior: 'smooth' });
+            goToLabTool('laboratuvarlar');
             break;
 
           case 'cv':
@@ -213,7 +245,8 @@
             return;
 
           default:
-            resp.innerHTML = `<span class="text-red-400">Komut bulunamadı: "${cmd}".</span> Yardım için <span class="text-white">help</span> yazın.`;
+            resp.textContent = `Komut bulunamadı: "${cmd}". Yardım için help yazın.`;
+            resp.classList.add('text-red-400');
         }
 
         output.appendChild(resp);

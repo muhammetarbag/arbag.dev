@@ -16,15 +16,15 @@
           </span>
         </div>
         <p class="text-[11px] text-neutral-400 font-mono">
-          Deterministik QRH &amp; FIM (Fault Isolation Manual) Akıllı Çözümleyici: DO-178C Emniyet Mantığı
+          Kural tabanlı QRH &amp; FIM (Fault Isolation Manual) kontrol listesi prototipi. Eğitim amaçlıdır, sertifikalı değildir.
         </p>
       </div>
 
-      <div class="flex items-center gap-2 text-xs font-mono">
-        <span class="text-neutral-400">Arıza Senaryosu:</span>
+      <div class="flex items-center gap-2 text-xs font-mono min-w-0 max-w-full">
+        <label for="qrh-scenario-select" class="text-neutral-400 shrink-0">Arıza Senaryosu:</label>
         <select
           id="qrh-scenario-select"
-          class="bg-[#090b10] border border-white/10 rounded px-2.5 py-1 text-xs text-white font-mono focus:border-red-400 outline-none"
+          class="min-w-0 max-w-full bg-[#090b10] border border-white/10 rounded px-2.5 py-1 text-xs text-white font-mono focus:border-red-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-red-400"
         >
           <option value="dual-gen">ATA 24 // Çift Jeneratör Kaybı (Dual IDG Trip)</option>
           <option value="decomp">ATA 21 // Ani Kabin Basınç Kaybı (Cabin Alt &gt; 10k ft)</option>
@@ -47,7 +47,7 @@
         </div>
 
         <div class="space-y-1.5">
-          <div class="text-[10px] text-neutral-500 uppercase">Teşhis Edilen Arıza:</div>
+          <div class="text-[10px] text-neutral-400 uppercase">Teşhis Edilen Arıza:</div>
           <h4 class="text-white font-bold text-sm leading-snug" id="fault-title">
             IDG 1 + IDG 2 DUAL AC GENERATOR DROP
           </h4>
@@ -72,7 +72,7 @@
       <div class="lg:col-span-8 p-4 rounded-xl bg-black/40 border border-white/[0.06] space-y-4 font-mono text-xs">
         <div class="flex items-center justify-between border-b border-white/5 pb-2 text-[11px]">
           <span class="text-[#00e5ff] font-bold">QRH ADIM ADIM İZOLASYON PROSEDÜRÜ (CHECKLIST)</span>
-          <span class="text-neutral-500 text-[10px]" id="step-counter">0 / 4 ADIM TAMAMLANDI</span>
+          <span class="text-neutral-400 text-[10px]" id="step-counter">0 / 4 ADIM TAMAMLANDI</span>
         </div>
 
         <!-- Checklist Items Container -->
