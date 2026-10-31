@@ -16,6 +16,7 @@
     --aero-cyan: #00e5ff;
     --aero-amber: #ffab00;
     --aero-red: #ff1744;
+    color-scheme: dark;
   }
 
   body {
