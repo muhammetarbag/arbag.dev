@@ -34,6 +34,7 @@ const personLd = {
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#050506" />
+    <meta name="color-scheme" content="dark" />
     <link rel="canonical" href={canonical} />
 
     <!-- OpenGraph / Social -->
@@ -68,7 +69,7 @@ const personLd = {
 
     <!-- Floating Island Navbar -->
     <header class="fixed top-5 inset-x-0 z-50 flex justify-center px-4">
-      <nav aria-label="Ana gezinme" class="flex items-center justify-between gap-6 px-4 py-2 rounded-full border border-white/[0.08] bg-[#090a0c]/80 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] max-w-4xl w-full">
+      <nav aria-label="Ana gezinme" class="flex items-center justify-between gap-3 sm:gap-6 px-4 py-2 rounded-full border border-white/[0.08] bg-[#090a0c]/80 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.8)] max-w-4xl w-full">
         <!-- Brand / Identity -->
         <a href="/" class="flex items-center gap-2.5 group">
           <div class="w-6 h-6 rounded-md bg-white/[0.06] border border-white/10 flex items-center justify-center font-mono text-[11px] font-bold text-[#00e5ff] group-hover:border-[#00e5ff]/50 transition-colors">
@@ -80,15 +81,15 @@ const personLd = {
         </a>
 
         <!-- Telemetry Status Pill (Hidden on tiny mobile) -->
-        <div class="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.05]">
+        <div class="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.05]">
           <span class="mono-telemetry text-[11px] text-neutral-400" id="utc-clock">UTC --:--:--</span>
         </div>
 
         <!-- Links & Action Button -->
         <div class="flex items-center gap-2.5 sm:gap-3.5 text-xs font-medium text-neutral-400">
-          <a href="/#yazilim-ai" class="hidden sm:inline hover:text-white transition-colors text-neutral-200">Yazılım &amp; AI</a>
+          <a href="/#yazilim-ai" class="hidden md:inline hover:text-white transition-colors text-neutral-200">Yazılım &amp; AI</a>
           <a href="/#gomulu-sistem" class="hidden md:inline hover:text-white transition-colors">Gömülü Sistem</a>
-          <a href="/#ozgecmis" class="hidden sm:inline hover:text-white transition-colors">Özgeçmiş</a>
+          <a href="/#ozgecmis" class="hidden md:inline hover:text-white transition-colors">Özgeçmiş</a>
           <a href="/#vaka-analizi" class="hidden lg:inline hover:text-white transition-colors">Örnek Çalışma</a>
           
           <!-- Distinctive Highlighted Pill for the Live Simulation Lab -->
@@ -100,12 +101,12 @@ const personLd = {
             <span class="text-xs" aria-hidden="true">⚡</span>
           </a>
 
-          <a href="/#iletisim" class="hidden sm:inline hover:text-white transition-colors">İletişim</a>
+          <a href="/#iletisim" class="hidden md:inline hover:text-white transition-colors">İletişim</a>
           
           <!-- Button-in-Button CTA -->
           <a
             href="mailto:muhammet@arbag.dev"
-            class="group inline-flex items-center gap-2.5 pl-3.5 pr-1.5 py-1 rounded-full border border-white/10 bg-white/[0.05] hover:bg-white/[0.1] hover:border-white/20 active:scale-[0.98] transition-all"
+            class="group hidden sm:inline-flex items-center gap-2.5 pl-3.5 pr-1.5 py-1 rounded-full border border-white/10 bg-white/[0.05] hover:bg-white/[0.1] hover:border-white/20 active:scale-[0.98] transition-all"
           >
             <span class="text-[11px] text-neutral-200 whitespace-nowrap">E-posta</span>
             <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[11px] text-neutral-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" aria-hidden="true">
