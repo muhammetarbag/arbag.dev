@@ -75,6 +75,17 @@ const laboratories = [
     statusColor: "emerald"
   },
   {
+    ata: "ATA 34",
+    category: "avionics",
+    title: "Pitot-Static & Air Data Lab",
+    kicker: "Pitot-Statik Sistem & ADC",
+    desc: "Pitot tüpü, statik portlar, TAT sondası ve ADC; beş arıza modunda ASI, altimetre ve VSI hataları, QNH, soğuk hava ve alternatif statik deneyleri (basitleştirilmiş eğitim modeli).",
+    url: "/l/pitot-static-lab/",
+    badge: "CANLI SİMÜLATÖR",
+    status: "NORMAL",
+    statusColor: "emerald"
+  },
+  {
     ata: "ATA 34 / AEE 301",
     category: "avionics",
     title: "Radio Navigation & ILS Lab",
@@ -123,7 +134,7 @@ const laboratories = [
 
 <Layout
   title="Canlı Aviyonik & Donanım Laboratuvarı — Muhammet Hüseyin Arbağ"
-  description="ARINC 429 çözücü, VTOL geçiş simülatörü, QRH kontrol listesi prototipi, ADS-B çerçeve çözücü ve 9 interaktif ATA uçak laboratuvarı."
+  description="ARINC 429 çözücü, VTOL geçiş simülatörü, QRH kontrol listesi prototipi, ADS-B çerçeve çözücü ve 10 interaktif ATA uçak laboratuvarı."
 >
   <div class="max-w-6xl mx-auto px-6 mb-24">
     
@@ -161,7 +172,7 @@ const laboratories = [
         </div>
         <div class="p-3 rounded-xl bg-white/[0.02] border border-white/10">
           <div class="text-[11px] text-neutral-400">ATA SİMÜLATÖRLERİ</div>
-          <div class="text-base font-bold text-[#00e676]">9 Lab + 1 Prototip</div>
+          <div class="text-base font-bold text-[#00e676]">10 Lab + 1 Prototip</div>
         </div>
       </div>
     </div>
@@ -212,11 +223,11 @@ const laboratories = [
 
     </div>
 
-    <!-- The 9-System Synoptic Matrix -->
+    <!-- The 10-System Synoptic Matrix -->
     <section id="laboratuvarlar" class="space-y-8 scroll-mt-24 mb-20">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/[0.06] pb-6">
         <div>
-          <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">02 // THE 9-SYSTEM MATRIX</div>
+          <div class="mono-telemetry text-[11px] text-[#00e5ff] font-semibold mb-2">02 // THE 10-SYSTEM MATRIX</div>
           <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">ATA Uçak Sistem Simülatörleri</h2>
         </div>
         <p class="text-xs text-neutral-400 max-w-md font-mono">
@@ -305,13 +316,13 @@ const laboratories = [
           class="filter-btn active px-3 py-1.5 rounded-full border border-[#00e5ff]/40 bg-[#00e5ff]/10 text-white font-semibold transition-all"
           data-filter="all"
         >
-          TÜMÜ (9 + 1 PROTOTİP)
+          TÜMÜ (10 + 1 PROTOTİP)
         </button>
         <button
           class="filter-btn px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-all"
           data-filter="avionics"
         >
-          ✈️ AVİYONİK (3)
+          ✈️ AVİYONİK (4)
         </button>
         <button
           class="filter-btn px-3 py-1.5 rounded-full border border-white/10 bg-white/5 text-neutral-400 hover:text-white transition-all"
@@ -333,7 +344,7 @@ const laboratories = [
         </button>
       </div>
 
-      <!-- The 9 Labs Cards Grid -->
+      <!-- The 10 Labs Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="labs-grid">
         {laboratories.map((lab) => (
           <a

@@ -37,4 +37,4 @@ The domain is registered at Squarespace, which points its nameservers to Cloudfl
 
 ## Conventions
 - Commit style in history: `feat:`, `fix:`, `refactor:`, `clean:` prefixes, lowercase, imperative.
-- "The 9-System" list is sorted strictly by ATA chapter number (commit 0c0c36c).
+- "The 10-System" lab list is sorted strictly by ATA chapter number (commit 0c0c36c).
