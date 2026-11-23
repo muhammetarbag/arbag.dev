@@ -53,6 +53,22 @@
     let targetRoll = 0;
     let animFrame: number;
     let time = 0;
+    let w = canvas.width;
+    let h = canvas.height;
+
+    // Match the backing store to the displayed size so the PFD stays sharp on HiDPI screens
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      if (!ctx || rect.width === 0 || rect.height === 0) return;
+      const dpr = window.devicePixelRatio || 1;
+      w = rect.width;
+      h = rect.height;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    new ResizeObserver(resize).observe(canvas);
 
     // Track mouse over container for subtle haptic response
     container.addEventListener('mousemove', (e) => {
@@ -79,8 +95,6 @@
       pitch += (targetPitch + naturalBreathingPitch - pitch) * 0.08;
       roll += (targetRoll + naturalBreathingRoll - roll) * 0.08;
 
-      const w = canvas.width;
-      const h = canvas.height;
       const cx = w / 2;
       const cy = h / 2;
 
