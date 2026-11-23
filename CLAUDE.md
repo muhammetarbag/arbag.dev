@@ -3,7 +3,7 @@
 Personal portfolio of Muhammet Hüseyin Arbağ (aviation electrical/electronics student; AI agents, Linux, embedded). Live at https://arbag.dev. Site copy is in Turkish.
 
 ## Stack
-Astro 5 (static output) + Tailwind v4 via `@tailwindcss/vite`, hosted on Cloudflare Workers as static assets (`wrangler.jsonc`, `assets.directory: ./dist`).
+Astro 7 (static output) + Tailwind v4 via `@tailwindcss/vite`, hosted on Cloudflare Workers as static assets (`wrangler.jsonc`, `assets.directory: ./dist`).
 The domain is registered at Squarespace, which points its nameservers to Cloudflare; DNS and hosting are both managed in Cloudflare.
 
 ## Commands
