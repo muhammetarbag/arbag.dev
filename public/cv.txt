@@ -32,7 +32,7 @@ EDUCATION
 --------------------------------------------------------------------------------
 PROJECTS (public source on GitHub, live demos in the browser)
 --------------------------------------------------------------------------------
-Training labs, 9 in total, TypeScript, each with its own live demo:
+Training labs, 10 in total, TypeScript, each with its own live demo:
 
 [1] Aircraft Electrical Power Lab (ATA 24)
     115V AC / 28V DC bus topology, generator and bus-tie logic with interlocks,
@@ -48,7 +48,12 @@ Training labs, 9 in total, TypeScript, each with its own live demo:
     script and a quiz.
     https://muhammetarbag.github.io/bleed-air-pressurization-lab/
 
-[4] Other labs: Autoflight (ATA 22), Hydraulic Power (ATA 29), Fuel System
+[4] Pitot-Static & Air Data Lab (ATA 34)
+    Pitot/static lines, TAT probe and ADC; five fault modes, QNH and
+    cold-air altimeter error, alternate static source.
+    https://muhammetarbag.github.io/pitot-static-lab/
+
+[5] Other labs: Autoflight (ATA 22), Hydraulic Power (ATA 29), Fuel System
     (ATA 28), Turbofan Engine, Four-Stroke Engine, Wind Tunnel.
     https://github.com/muhammetarbag
 
