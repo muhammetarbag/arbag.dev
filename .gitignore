@@ -15,7 +15,10 @@ pnpm-debug.log*
 
 # environment variables
 .env
-.env.production
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
 
 # OS files
 .DS_Store
@@ -23,3 +26,6 @@ Thumbs.db
 
 # wrangler local state
 .wrangler/
+
+# local agent state and worktrees
+.claude/
